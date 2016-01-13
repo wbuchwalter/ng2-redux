@@ -1,9 +1,8 @@
 import {Store, Reducer} from 'redux';
 import {Provider} from 'angular2/core';
 
-export interface provider extends Function {
-    (store: Store): Provider
-}
+export function provider(store: Store): Provider;
+
 
 export interface INgRedux {
     getReducer(): Reducer;
