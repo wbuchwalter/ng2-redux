@@ -9,21 +9,3 @@ export function provider(store) {
     return { connect: _connector.connect, ...store};
   }});
 }
-
-
-/*
- const createStoreWithMiddleware = applyInjectableMiddleware(thunk, 'promise')(createStore);
-*/
-/*
-export function applyInjectableMiddleware(middlewares) {
-    const injector = new Injector();
-    let resolvedMiddlewares = [];
-    _.forEach(middlewares, middleware => {
-        _.isString(middleware)
-            ? resolvedMiddlewares.push(Injector.resolve(middleware))
-            : resolvedMiddlewares.push(middleware)
-    });
-
-    return redux.applyMiddleware(...resolvedMiddlewares);
-}
-*/
