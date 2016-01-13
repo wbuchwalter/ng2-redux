@@ -4,12 +4,7 @@ import {Provider} from 'angular2/core';
 export function provider(store: Store): Provider;
 
 
-export interface INgRedux {
-    getReducer(): Reducer;
-    replaceReducer(nextReducer: Reducer): void;
-    dispatch(action: any): any;
-    getState(): any;
-    subscribe(listener: Function): Function;
+export interface INgRedux extends Store {
     connect(
         mapStateToTarget: (state: any) => Object,
         mapDispatchToTarget?: Object | ((dispatch: Function) => Object)
