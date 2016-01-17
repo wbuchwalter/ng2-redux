@@ -4,9 +4,12 @@
   "description": "Angular 2 bindings for Redux",
   "main": "./lib/index.js",
   "scripts": {
-    "build": "rm -rf lib && `npm bin`/babel src --out-dir lib",
-    "test": "mocha --compilers js:babel/register --recursive"
+    "build": "rimraf ./lib; tsc",
+    "postinstall": "typings install",
+    "test": "mocha --compilers js:babel/register --recursive --require ts-node/register",
+    "typings": "typings install"
   },
+  "typings": "lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/wbuchwalter/ng2-redux.git"
@@ -27,18 +30,20 @@
     "babel-loader": "^5.3.2",
     "expect": "^1.8.0",
     "mocha": "^2.2.5",
-    "sinon": "^1.16.1",
-    "webpack": "^1.10.5",
-    "angular2": "^2.0.0-alpha.53",
     "react": "^0.13.3",
-    "redux-devtools": "^2.1.0"
+    "rimraf": "^2.5.2",
+    "sinon": "^1.16.1",
+    "ts-node": "^0.5.5",
+    "typescript": "^1.8.7",
+    "webpack": "^1.12.11"
   },
   "peerDependencies": {
-    "redux": "^2.0.0 || ^3.0.0",
-    "angular2": "^2.0.0-alpha.53"
+    "angular2": "^2.0.0-beta.8",
+    "redux": "^3.3.1"
   },
   "dependencies": {
     "invariant": "^2.1.0",
-    "lodash": "^3.10.1"
+    "lodash": "^3.10.1",
+    "typings": "^0.7.4"
   }
 }
