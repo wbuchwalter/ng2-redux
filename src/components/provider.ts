@@ -1,13 +1,29 @@
 import Connector from './connector';
 import {provide, Injector} from 'angular2/core';
-let redux = require('redux');
+import * as Redux from 'redux';
 
-export function provider(store) {
+interface IConnect {
+  (mapStateToTarget: Function, mapDispatchToTarget: Function);
+}
+
+interface INgRedux<T> extends Redux.Store<T> {
+  connect: IConnect
+}
+
+export function provider<T>(store: Redux.Store<T>) {
   const _connector = new Connector(store);
+  const factory = (): INgRedux<T> => {
+    // TS doesn't seem to like this with ...spread :(
+    return <INgRedux<T>>{
+      connect: _connector.connect,
+      dispatch: store.dispatch,
+      subscribe: store.subscribe,
+      getState: store.getState,
+      replaceReducer: store.replaceReducer
+    }
+  };
 
-  return provide('ngRedux', {useFactory: () => {
-    return { connect: _connector.connect, ...store};
-  }});
+  return provide('ngRedux', {useFactory: factory });
 }
 
 
