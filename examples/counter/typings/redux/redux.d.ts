@@ -11,11 +11,17 @@ declare module 'redux' {
 
 declare module Redux {
 
-  interface Action {
+  interface IAction {}
+
+  interface Action extends IAction{
     type: string;
     payload?: any;
     error?: boolean;
     meta?: any;
+  }
+
+  interface ActionAsync extends IAction {
+    (...args: any[]):any;
   }
 
   interface Map<T> {
@@ -23,7 +29,7 @@ declare module Redux {
   }
 
   interface ActionCreator {
-    (...args: any[]): Action;
+    (...args: any[]): IAction;
   }
 
   interface Listener {
@@ -39,11 +45,11 @@ declare module Redux {
   }
 
   interface Dispatch {
-    (action: Action): Action;
+    (action: IAction): IAction;
   }
 
   interface PartialDispatch {
-    (): Action;
+    (): IAction;
   }
 
   interface MiddlewareArg<T> {
@@ -57,7 +63,7 @@ declare module Redux {
 
   interface Store<T> {
     replaceReducer(nextReducer: Reducer<T>): void;
-    dispatch(action: Action): Action;
+    dispatch(action: IAction): IAction;
     getState(): T;
     subscribe(listener: Listener): Unsubscribe;
   }

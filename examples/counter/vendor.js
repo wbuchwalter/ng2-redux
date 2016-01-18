@@ -1,7 +1,8 @@
 // Polyfills
+import 'es6-shim';
 import 'core-js';
 import 'reflect-metadata';
-import 'zone.js';
+import 'zone.js/dist/zone';
 
 // Angular 2
 import 'angular2/bootstrap';

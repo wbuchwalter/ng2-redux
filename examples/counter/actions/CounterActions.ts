@@ -1,14 +1,21 @@
 export const INCREMENT_COUNTER:string = 'INCREMENT_COUNTER';
 export const DECREMENT_COUNTER:string = 'DECREMENT_COUNTER';
 
+export interface ICounterDispatch extends Redux.Map<Redux.ActionCreator>{
+  increment(): Redux.Dispatch;
+  decrement(): Redux.Dispatch;
+  incrementIfOdd(): Redux.Dispatch;
+  incrementAsync(): Redux.Dispatch;
+}
+
 export var increment = () => {
-  return {
+  return <Redux.Action>{
     type: INCREMENT_COUNTER
   };
 }
 
 export var decrement = () => {
-  return {
+  return <Redux.Action>{
     type: DECREMENT_COUNTER
   };
 }

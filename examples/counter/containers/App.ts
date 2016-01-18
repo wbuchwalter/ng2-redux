@@ -35,6 +35,7 @@ export default class App implements OnDestroy {
   }
 
   mapDispatchToThis(dispatch) {
-    return bindActionCreators(CounterActions, dispatch);
+    return bindActionCreators<any,
+      CounterActions.ICounterDispatch>(CounterActions, dispatch);
   }
 }
