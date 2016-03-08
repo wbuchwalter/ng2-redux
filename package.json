@@ -5,7 +5,7 @@
   "main": "./lib/index.js",
   "scripts": {
     "build": "rm -rf lib; tsc",
-    "postinstall": "npm run typings",
+    "postinstall": "typings install",
     "test": "mocha --compilers js:babel/register --recursive --require ts-node/register",
     "typings": "typings install"
   },
@@ -34,7 +34,6 @@
     "sinon": "^1.16.1",
     "ts-node": "^0.5.5",
     "typescript": "^1.8.7",
-    "typings": "^0.7.1",
     "webpack": "^1.12.11"
   },
   "peerDependencies": {
@@ -43,6 +42,7 @@
   },
   "dependencies": {
     "invariant": "^2.1.0",
-    "lodash": "^3.10.1"
+    "lodash": "^3.10.1",
+    "typings": "^0.7.4"
   }
 }
