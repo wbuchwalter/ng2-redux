@@ -4,9 +4,10 @@
   "description": "Angular 2 bindings for Redux",
   "main": "./lib/index.js",
   "scripts": {
-    "postinstall": "tsd install",
     "build": "rm -rf lib; tsc",
-    "test": "mocha --compilers js:babel/register --recursive --require ts-node/register"
+    "postinstall": "npm run typings",
+    "test": "mocha --compilers js:babel/register --recursive --require ts-node/register",
+    "typings": "typings install"
   },
   "typings": "lib/",
   "repository": {
@@ -37,6 +38,7 @@
     "ts-node": "^0.5.5",
     "tsd": "^0.6.5",
     "typescript": "^1.7.5",
+    "typings": "^0.7.1",
     "webpack": "^1.12.11"
   },
   "peerDependencies": {

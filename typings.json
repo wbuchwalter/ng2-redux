@@ -1,0 +1,9 @@
+{
+  "name": "ng2-redux",
+  "version": false,
+  "ambientDependencies": {
+    "invariant": "registry:dt/invariant#2.2.0+20160118023809",
+    "lodash": "github:DefinitelyTyped/DefinitelyTyped/lodash/lodash.d.ts#70bf7e2bfeb0d5b1b651ef3219bcc65c8eec117e",
+    "redux": "github:rangle/typings-redux/redux.d.ts"
+  }
+}
