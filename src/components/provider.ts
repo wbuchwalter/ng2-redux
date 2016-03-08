@@ -1,5 +1,5 @@
 import Connector from './connector';
-import {provide, Injector} from 'angular2/core';
+import {provide, Injector, Provider} from 'angular2/core';
 import * as Redux from 'redux';
 
 interface IConnect {

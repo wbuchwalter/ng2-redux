@@ -1,5 +1,4 @@
 node_modules/
-lib/
 *.tgz
 examples/counter/dist/components/*
 examples/counter/dist/containers/*

@@ -15,6 +15,7 @@
   "exclude": [
     "node_modules",
     "dist",
+    "lib",
     "examples",
     "typings/browser",
     "typings/browser.d.ts"
