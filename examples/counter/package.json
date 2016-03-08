@@ -4,6 +4,7 @@
   "description": "Counter example for ng2-redux",
   "main": "server.js",
   "scripts": {
+    "postinstall": "typings install",
     "start": "node server.js"
   },
   "repository": {
