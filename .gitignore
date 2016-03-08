@@ -8,3 +8,5 @@ examples/counter/dist/index.*
 npm-debug.log
 src/typings/
 typings
+
+tmp/
