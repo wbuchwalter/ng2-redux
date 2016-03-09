@@ -9,7 +9,7 @@
     "test": "mocha --compilers js:babel/register --recursive --require ts-node/register",
     "typings": "typings install"
   },
-  "typings": "lib/",
+  "typings": "lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/wbuchwalter/ng2-redux.git"
@@ -31,6 +31,7 @@
     "expect": "^1.8.0",
     "mocha": "^2.2.5",
     "react": "^0.13.3",
+    "reflect-metadata": "^0.1.3",
     "rimraf": "^2.5.2",
     "sinon": "^1.16.1",
     "ts-node": "^0.5.5",

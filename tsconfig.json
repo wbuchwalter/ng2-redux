@@ -17,6 +17,7 @@
     "dist",
     "lib",
     "examples",
+    "tmp",
     "typings/browser",
     "typings/browser.d.ts"
   ]
