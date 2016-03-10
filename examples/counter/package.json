@@ -23,9 +23,7 @@
   },
   "homepage": "https://github.com/wbuchwalter/ng2-redux#readme",
   "dependencies": {
-    "angular2": "^2.0.0-beta.8",
     "es6-shim": "^0.35.0",
-    "ng2-redux": "^2.0.2",
     "redux": "^3.0.0",
     "redux-devtools": "^2.1.0",
     "redux-thunk": "^0.1.0",
