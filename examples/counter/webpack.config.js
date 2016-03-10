@@ -4,7 +4,7 @@ var webpack = require('webpack');
 module.exports = {
   devtool: 'source-map',
   entry: [
-    './vendor.js',
+    './vendor.ts',
     './index'
   ],
   output: {
@@ -16,11 +16,15 @@ module.exports = {
     new webpack.NoErrorsPlugin()
   ],
   resolve: {
-    extensions: ['', '.js', '.ts']
+    extensions: ['', '.js', '.ts'],
+    fallback: __dirname + '/../../node_modules',
+    alias: {
+      angular2$: __dirname + '/../../node_modules/angular2'
+    }
   },
   module: {
     loaders: [
-      { test: /\.ts$/,  loader: 'ts', exclude: /node_modules/ },
+      { test: /\.ts$/,  loader: 'ts-loader', exclude: /node_modules/ },
       { test: /\.js$/,  loader: 'babel', exclude: /node_modules/ }
     ]
   },

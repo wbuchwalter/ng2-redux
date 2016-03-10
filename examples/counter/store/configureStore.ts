@@ -1,9 +1,14 @@
-import {createStore, applyMiddleware, compose} from 'redux';
+import * as Redux from 'redux';
+const {createStore, applyMiddleware, compose} = Redux;
 const thunk = require('redux-thunk');
 import reducer from '../reducers/index';
-const devTools = require('redux-devTools').devTools;
+const devTools = require('redux-devtools').devTools;
 
-const finalCreateStore = compose(
+export interface RootState {
+  counter: number;
+}
+
+const finalCreateStore = <Redux.CreateStore<RootState>>compose(
   applyMiddleware(thunk),
   devTools()
 )(createStore);

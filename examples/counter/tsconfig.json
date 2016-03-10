@@ -14,24 +14,10 @@
         "moduleResolution": "node",
         "outDir": "dist"
     },
-    "filesGlob": [
-        "./**/*.ts",
-        "!./node_modules/**/*.ts"
-    ],
-    "files": [
-        "./actions/CounterActions.ts",
-        "./components/Counter.ts",
-        "./containers/App.ts",
-        "./index.ts",
-        "./reducers/counter.ts",
-        "./reducers/index.ts",
-        "./store/configureStore.ts",
-        "./typings/_custom/custom.d.ts",
-        "./typings/_custom/webpack.d.ts",
-        "./typings/redux/redux.d.ts",
-        "./typings/tsd.d.ts"
-    ],
-    "atom": {
-        "rewriteTsconfig": true
-    }
+    "exclude": [
+        "node_modules",
+        "dist",
+        "typings/main",
+        "typings/main.d.ts"
+    ]
 }
