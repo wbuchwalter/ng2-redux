@@ -1,2 +1,2 @@
-export {provider} from './components/provider';
+export {provider, NgRedux} from './components/provider';
 
