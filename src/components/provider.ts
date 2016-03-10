@@ -12,34 +12,8 @@ interface INgRedux<T> extends Redux.Store<T> {
 
 export function provider<T>(store: Redux.Store<T>) {
   const _connector = new Connector(store);
-  const factory = (): INgRedux<T> => {
-    // TS doesn't seem to like this with ...spread :(
-    return <INgRedux<T>>{
-      connect: _connector.connect,
-      dispatch: store.dispatch,
-      subscribe: store.subscribe,
-      getState: store.getState,
-      replaceReducer: store.replaceReducer
-    }
-  };
-
+  const factory = (): INgRedux<T> => <INgRedux<T>>Object.assign({},{connect: _connector.connect}, store);
   return provide('ngRedux', {useFactory: factory });
 }
 
 
-/*
- const createStoreWithMiddleware = applyInjectableMiddleware(thunk, 'promise')(createStore);
-*/
-/*
-export function applyInjectableMiddleware(middlewares) {
-    const injector = new Injector();
-    let resolvedMiddlewares = [];
-    _.forEach(middlewares, middleware => {
-        _.isString(middleware)
-            ? resolvedMiddlewares.push(Injector.resolve(middleware))
-            : resolvedMiddlewares.push(middleware)
-    });
-
-    return redux.applyMiddleware(...resolvedMiddlewares);
-}
-*/
