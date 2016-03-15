@@ -1,11 +1,15 @@
 import shallowEqual from '../utils/shallowEqual';
 import wrapActionCreators from '../utils/wrapActionCreators';
-import invariant from 'invariant';
-import _ from 'lodash';
+import * as Redux from 'redux';
+import * as invariant from 'invariant';
+import * as _ from 'lodash';
 
-export default class Connector {
+export default class Connector<RootState> {
+  private _store: Redux.Store<RootState>;
+  private _defaultMapStateToTarget: Function;
+  private _defaultMapDispatchToTarget: Function;
 
-  constructor(store) {
+  constructor(store: Redux.Store<RootState>) {
     this._store = store;
     this._defaultMapStateToTarget = () => ({});
     this._defaultMapDispatchToTarget = dispatch => ({ dispatch });

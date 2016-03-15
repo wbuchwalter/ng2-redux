@@ -22,22 +22,22 @@ describe('Connector', () => {
     connector = new Connector(store);
   });
 
-	it('Should throw when target is not a Function or a plain object', () => {
-	  expect(connector.connect(() => ({})).bind(connector, 15)).toThrow();
+  it('Should throw when target is not a Function or a plain object', () => {
+    expect(connector.connect(() => ({})).bind(connector, 15)).toThrow();
     expect(connector.connect(() => ({})).bind(connector, undefined)).toThrow();
     expect(connector.connect(() => ({})).bind(connector, 'test')).toThrow();
 
     expect(connector.connect(() => ({})).bind(connector, {})).toNotThrow();
     expect(connector.connect(() => ({})).bind(connector, () => {})).toNotThrow();
 
-	});
+  });
 
   it('Should throw when selector does not return a plain object', () => {
     expect(connector.connect.bind(connector, state => state.foo)).toThrow();
   });
 
   it('Should extend target (Object) with selected state once directly after creation', () => {
-     connector.connect(
+    connector.connect(
       () => ({
         vm: { test: 1 }
       }))(targetObj);
@@ -61,7 +61,7 @@ describe('Connector', () => {
 
     targetObj.baz = 0;
 
-    //this should not replace our mutation, since the state didn't change 
+    //this should not replace our mutation, since the state didn't change
     store.dispatch({ type: 'ACTION', payload: 5 });
 
     expect(targetObj.baz).toBe(0);
@@ -74,7 +74,7 @@ describe('Connector', () => {
     expect(_.isFunction(targetObj.ac2)).toBe(true);
   });
 
-   it('Should return an unsubscribing function', () => {
+  it('Should return an unsubscribing function', () => {
     const unsubscribe = connector.connect(state => state)(targetObj);
     store.dispatch({ type: 'ACTION', payload: 5 });
 

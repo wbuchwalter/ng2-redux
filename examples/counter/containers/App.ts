@@ -15,13 +15,17 @@ import * as CounterActions from '../actions/CounterActions';
   </counter>
   `
 })
-export default class App implements OnDestroy {
-
+export class App {
   protected unsubscribe: Function;
 
-  constructor( @Inject('ngRedux') ngRedux, @Inject('devTools') devTools) {
-    devTools.start(ngRedux);
-    this.unsubscribe = ngRedux.connect(this.mapStateToThis, this.mapDispatchToThis)(this);
+  constructor(@Inject('ngRedux') private ngRedux,
+              @Inject('devTools') private devTools) {
+  }
+
+  ngOnInit() {
+    this.devTools.start(this.ngRedux);
+    this.unsubscribe = this.ngRedux.connect(
+      this.mapStateToThis, this.mapDispatchToThis)(this);
   }
 
   ngOnDestroy() {
@@ -35,6 +39,7 @@ export default class App implements OnDestroy {
   }
 
   mapDispatchToThis(dispatch) {
-    return bindActionCreators(CounterActions, dispatch);
+    return bindActionCreators<any,
+      CounterActions.ICounterDispatch>(CounterActions, dispatch);
   }
 }
