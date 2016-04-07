@@ -27,7 +27,7 @@ export class App {
 
   ngOnInit() {
 
-    //this.devTools.start(this.ngRedux);
+    this.devTools.start(this.ngRedux);
     this.counter$ = this.ngRedux.select(state => state.counter);
     
   }
