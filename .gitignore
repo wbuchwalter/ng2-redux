@@ -9,3 +9,4 @@ examples/counter/typings/
 src/typings/
 typings/
 tmp/
+lib/
