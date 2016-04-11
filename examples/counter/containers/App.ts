@@ -1,15 +1,18 @@
 import {Component, Inject, OnDestroy} from 'angular2/core';
-import {bindActionCreators} from 'redux';
+import {Observable} from 'rxjs';
 import {AsyncPipe} from 'angular2/common';
 import {Counter} from '../components/Counter';
 import * as CounterActions from '../actions/CounterActions';
 import {NgRedux} from '../../../src';
+
+import {RootState} from '../store/configureStore';
+
 @Component({
-  selector: 'root',
-  directives: [Counter],
-  pipes: [AsyncPipe],
-  template: `
-  <counter [counter]="counter$ | async"
+    selector: 'root',
+    directives: [Counter],
+    pipes: [AsyncPipe],
+    template: `
+  <counter [counter]="counter$| async"
     [increment]="increment"
     [decrement]="decrement"
     [incrementIfOdd]="incrementIfOdd"
@@ -17,29 +20,34 @@ import {NgRedux} from '../../../src';
   </counter>
   `
 })
+
 export class App {
-  protected unsubscribe: Function;
-  counter:number;
-  counter$:any;
-  constructor(private ngRedux:NgRedux,
-              @Inject('devTools') private devTools) {
-  }
-
-  ngOnInit() {
-
-    this.devTools.start(this.ngRedux);
-    this.counter$ = this.ngRedux.select(state => state.counter);
     
-  }
+    counter$: any;
 
-  ngOnDestroy() {
+    // Will be added to instance with mapDispatchToTarget
+
+    increment: () => any;
+    decrement: () => any;
     
-  }
+    constructor(private ngRedux: NgRedux<RootState>,
+        @Inject('devTools') private devTools) {
+    }
 
-  
-  increment = () => this.ngRedux.dispatch(CounterActions.increment())
-  decrement = () => this.ngRedux.dispatch(CounterActions.decrement())
-  incrementIfOdd = () => this.ngRedux.dispatch(CounterActions.incrementIfOdd())
-  incrementIfAsync = () => this.ngRedux.dispatch(CounterActions.incrementIfAsync())
-  
+    ngOnInit() {
+        let {increment, decrement } = CounterActions;
+        this.devTools.start(this.ngRedux);
+        this.counter$ = this.ngRedux
+            .select(state => state.counter)
+        this.ngRedux.mapDispatchToTarget({ increment, decrement })(this);
+    }
+
+    // Can also call ngRedux.dispatch directly
+
+    incrementIfOdd = () => this.ngRedux
+        .dispatch(<any>CounterActions.incrementIfOdd());
+
+    incrementAsync = () => this.ngRedux
+        .dispatch(<any>CounterActions.incrementAsync());
+
 }

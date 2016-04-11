@@ -25,7 +25,7 @@
   "dependencies": {
     "es6-shim": "^0.35.0",
     "react": "^0.14.8",
-    "redux": "^3.0.0",
+    "redux": "^3.4.0",
     "redux-devtools": "^2.1.0",
     "redux-logger": "^2.6.1",
     "redux-thunk": "^0.1.0",
