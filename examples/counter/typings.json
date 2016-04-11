@@ -3,6 +3,7 @@
   "version": false,
   "ambientDependencies": {
     "es6-shim": "registry:dt/es6-shim#0.31.2+20160215162030",
-    "redux": "github:rangle/typings-redux/redux.d.ts"
+    "redux": "github:rangle/typings-redux/redux.d.ts",
+    "redux-logger": "registry:dt/redux-logger#2.6.0+20160316155526"
   }
 }
