@@ -9,6 +9,7 @@ export default class Connector<RootState> {
   private _defaultMapStateToTarget: Function;
   private _defaultMapDispatchToTarget: Function;
 
+
   constructor(store: Redux.Store<RootState>) {
     this._store = store;
     this._defaultMapStateToTarget = () => ({});

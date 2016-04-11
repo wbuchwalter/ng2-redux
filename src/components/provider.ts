@@ -13,7 +13,10 @@ interface INgRedux<T> extends Redux.Store<T> {
 
 export function provider<T>(store: Redux.Store<T>) {
   const _connector = new Connector(store);
-  const factory = (): INgRedux<T> => <INgRedux<T>>Object.assign({},{connect: _connector.connect}, store);
+  const factory = (): INgRedux<T> => <INgRedux<T>>Object.assign({},
+    { connect: _connector.connect },
+    store);
   return provide('ngRedux', { useFactory: factory });
 }
+
 
