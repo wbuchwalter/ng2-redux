@@ -2,8 +2,13 @@
   "name": "counter-redux",
   "version": false,
   "ambientDependencies": {
+<<<<<<< f64dbe73dfed7507865dd7c3ccaebc43b4dc5436
     "es6-shim": "registry:dt/es6-shim#0.31.2+20160215162030",
     "redux": "github:rangle/typings-redux/redux.d.ts",
     "redux-logger": "registry:dt/redux-logger#2.6.0+20160316155526"
+=======
+    "es6-shim": "registry:dt/es6-shim#0.31.2+20160215162030"
+>>>>>>> wip
   }
+
 }

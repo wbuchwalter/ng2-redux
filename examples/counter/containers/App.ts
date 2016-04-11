@@ -4,6 +4,11 @@ import {AsyncPipe} from 'angular2/common';
 import {Counter} from '../components/Counter';
 import * as CounterActions from '../actions/CounterActions';
 import {NgRedux} from '../../../src';
+
+interface IAppState {
+  counter: number;
+}
+
 @Component({
   selector: 'root',
   directives: [Counter],
@@ -21,7 +26,7 @@ export class App {
   protected unsubscribe: Function;
   counter:number;
   counter$:any;
-  constructor(private ngRedux:NgRedux,
+  constructor(private ngRedux: NgRedux<IAppState>,
               @Inject('devTools') private devTools) {
   }
 
@@ -40,6 +45,6 @@ export class App {
   increment = () => this.ngRedux.dispatch(CounterActions.increment())
   decrement = () => this.ngRedux.dispatch(CounterActions.decrement())
   incrementIfOdd = () => this.ngRedux.dispatch(CounterActions.incrementIfOdd())
-  incrementIfAsync = () => this.ngRedux.dispatch(CounterActions.incrementIfAsync())
+  incrementAsync = () => this.ngRedux.dispatch(CounterActions.incrementAsync())
   
 }
