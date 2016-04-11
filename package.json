@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rimraf ./lib; tsc",
     "postinstall": "typings install",
-    "test": "mocha --compilers js:babel/register --recursive --require ts-node/register",
+    "test": "ts-node ./node_modules/mocha/bin/_mocha  --opts ./test/mocha.opts",
     "typings": "typings install"
   },
   "typings": "lib/index.d.ts",
@@ -42,8 +42,7 @@
     "ts-node": "^0.5.5",
     "typescript": "^1.8.7",
     "webpack": "^1.12.11",
-    "zone.js": "0.6.10",
-    "redux": "3.3.1"
+    "zone.js": "0.6.10"
   },
   "dependencies": {
     "invariant": "^2.1.0",

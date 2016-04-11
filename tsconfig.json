@@ -18,6 +18,7 @@
     "lib",
     "examples",
     "tmp",
+    "test",
     "typings/browser",
     "typings/browser.d.ts"
   ]
