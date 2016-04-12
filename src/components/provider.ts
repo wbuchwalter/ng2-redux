@@ -1,5 +1,6 @@
+import { BehaviorSubject } from 'rxjs';
 import Connector from './connector';
-import {provide, Injector, Provider} from 'angular2/core';
+import {provide, Injector, Provider, Inject, Injectable} from 'angular2/core';
 import * as Redux from 'redux';
 
 interface IConnect {
@@ -12,33 +13,7 @@ interface INgRedux<T> extends Redux.Store<T> {
 
 export function provider<T>(store: Redux.Store<T>) {
   const _connector = new Connector(store);
-  const factory = (): INgRedux<T> => {
-    return <INgRedux<T>>{
-      connect: _connector.connect,
-      dispatch: store.dispatch,
-      subscribe: store.subscribe,
-      getState: store.getState,
-      replaceReducer: store.replaceReducer
-    }
-  };
-
-  return provide('ngRedux', {useFactory: factory });
+  const factory = (): INgRedux<T> => <INgRedux<T>>Object.assign({},{connect: _connector.connect}, store);
+  return provide('ngRedux', { useFactory: factory });
 }
 
-
-/*
- const createStoreWithMiddleware = applyInjectableMiddleware(thunk, 'promise')(createStore);
-*/
-/*
-export function applyInjectableMiddleware(middlewares) {
-    const injector = new Injector();
-    let resolvedMiddlewares = [];
-    _.forEach(middlewares, middleware => {
-        _.isString(middleware)
-            ? resolvedMiddlewares.push(Injector.resolve(middleware))
-            : resolvedMiddlewares.push(middleware)
-    });
-
-    return redux.applyMiddleware(...resolvedMiddlewares);
-}
-*/

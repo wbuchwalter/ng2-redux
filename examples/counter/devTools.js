@@ -21,6 +21,7 @@ function startDevTools(ngRedux) {
 
 class DevToolsReactComponent extends Component {
   render() {
+    
     return (
       <div>
         <DebugPanel top right bottom>
