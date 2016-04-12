@@ -3,11 +3,12 @@ import wrapActionCreators from '../../src/utils/wrapActionCreators';
 import * as Redux from 'redux';
 
 
-interface ITestAction extends Redux.Action {
- 
+interface ITestActionCreator extends Redux.ActionCreatorsMapObject {
+  action: (payload:any) => any;
+
 }
 
-describe.only('Utils', () => {
+describe('Utils', () => {
   describe('wrapActionCreators', () => {
     it('should return a function that wraps function in a call to bindActionCreators', () => {
 
@@ -34,15 +35,21 @@ describe.only('Utils', () => {
       const actionResult = {type: 'action'};
 
       const actionCreator = (payload) => ({type: 'TYPE', payload}) 
-        
+      const actionCreators = {
+        action : (payload) => ({type: 'TYPE', payload})
+      }
 
-      const wrapped = wrapActionCreators(actionCreator);
+      const test = wrapActionCreators<Redux.ActionCreator<any>>(actionCreator);
+      const x = test(dispatch);
+      console.log('xxx', x('hi there'));
+     
+      const wrapped = wrapActionCreators<ITestActionCreator>(actionCreators);
       //expect(wrapped).toBeA(Function);
       //expect(() => wrapped(dispatch)).toNotThrow();
      
       const bound = wrapped(dispatch);
       //expect(bound()).toNotThrow();
-      console.log('bound',bound('payload'))  
+      console.log('bound',bound.action('hi'))  
 
     });
   });
