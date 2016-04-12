@@ -1,42 +1,48 @@
 import {expect} from 'chai';
 import wrapActionCreators from '../../src/utils/wrapActionCreators';
+import * as Redux from 'redux';
 
-interface TestDispatchMap extends Redux.Map<TestPartialDispatch> {
-  action: TestPartialDispatch;
+
+interface ITestAction extends Redux.Action {
+ 
 }
 
-interface TestAction extends Redux.Action {
-  dispatched: Redux.Action;
-}
-
-interface TestPartialDispatch extends Redux.PartialDispatch {
-  (): TestAction; 
-}
-
-describe('Utils', () => {
+describe.only('Utils', () => {
   describe('wrapActionCreators', () => {
-    it('should return a function that wraps argument in a call to bindActionCreators', () => {
+    it('should return a function that wraps function in a call to bindActionCreators', () => {
 
-      function dispatch(action) {
+    /*  let actionCreator = (payload) => {
+        console.log('oh hai', payload);
+       return { type: 'TEST',
+        payload }
+      }
+      let dispatch = (action) => {
+        console.log('here', action);
+        return { dispatched: action }
+      }
+
+      let wrapped = wrapActionCreators(actionCreator);
+      let result = wrapped(dispatch)();
+      console.log('result', result);*/
+
+    function dispatch(action) {
         return {
           dispatched: action
         };
       }
 
-      const actionResult = { type: 'test-action' };
+      const actionResult = {type: 'action'};
 
-      const actionCreators = {
-        action: () => actionResult
-      };
+      const actionCreator = (payload) => ({type: 'TYPE', payload}) 
+        
 
-      const wrapped = wrapActionCreators<
-        Redux.Map<Redux.ActionCreator>, TestDispatchMap>(actionCreators);
-      expect(typeof wrapped).to.equal('function');
-      expect(() => wrapped(dispatch)).not.to.throw(Error);
-
+      const wrapped = wrapActionCreators(actionCreator);
+      //expect(wrapped).toBeA(Function);
+      //expect(() => wrapped(dispatch)).toNotThrow();
+     
       const bound = wrapped(dispatch);
-      expect(bound.action).not.to.throw(Error);
-      expect(bound.action().dispatched).to.equal(actionResult);
+      //expect(bound()).toNotThrow();
+      console.log('bound',bound('payload'))  
 
     });
   });

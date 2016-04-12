@@ -3,13 +3,6 @@ export const DECREMENT_COUNTER:string = 'DECREMENT_COUNTER';
 import * as Redux from 'redux';
 
 
-export interface ICounterDispatch<T> extends Redux.ActionCreator<T> {
-  increment(): Redux.Dispatch<T>;
-  decrement(): Redux.Dispatch<T>;
-  incrementIfOdd(): Redux.Dispatch<T>;
-  incrementAsync(): Redux.Dispatch<T>;
-}
-
 export var increment = () => {
   return <Redux.Action>{
     type: INCREMENT_COUNTER

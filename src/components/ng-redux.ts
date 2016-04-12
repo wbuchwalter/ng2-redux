@@ -1,11 +1,11 @@
 import {Injectable, Inject} from 'angular2/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Store, Action } from 'redux';
+import { Store, Action, ActionCreator } from 'redux';
 import * as invariant from 'invariant';
 
 
 @Injectable()
-export class NgRedux<T extends Store<T>> {
+export class NgRedux<T> {
   store: BehaviorSubject<T>;
   _ngRedux: any;
 
@@ -40,7 +40,8 @@ ${VALID_SELECTORS.join(',')}. Instead recieved %s`;
 
   }
 
-  dispatch = (action: Action) => this._ngRedux.dispatch(action)
+  dispatch = (action: Action | ActionCreator<any>) =>
+    this._ngRedux.dispatch(action)
   
   observableFromStore = (store: Store<T>) => {
     return new BehaviorSubject(store.getState());
