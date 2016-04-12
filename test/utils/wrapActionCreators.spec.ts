@@ -1,56 +1,41 @@
 import {expect} from 'chai';
 import wrapActionCreators from '../../src/utils/wrapActionCreators';
-import * as Redux from 'redux';
+import {ActionCreator, ActionCreatorsMapObject}  from 'redux';
 
 
-interface ITestActionCreator extends Redux.ActionCreatorsMapObject {
-  action: (payload:any) => any;
+interface ITest extends ActionCreatorsMapObject {
+  action: (payload: any) => any;
 
 }
 
-describe('Utils', () => {
-  describe('wrapActionCreators', () => {
-    it('should return a function that wraps function in a call to bindActionCreators', () => {
+describe('wrapActionCreators', () => {
+  it(`should return a function that wraps function in a 
+    call to bindActionCreators`, () => {
 
-    /*  let actionCreator = (payload) => {
-        console.log('oh hai', payload);
-       return { type: 'TEST',
-        payload }
-      }
-      let dispatch = (action) => {
-        console.log('here', action);
-        return { dispatched: action }
-      }
 
-      let wrapped = wrapActionCreators(actionCreator);
-      let result = wrapped(dispatch)();
-      console.log('result', result);*/
+      let dispatch = (action) => ({ dispatched: action });
 
-    function dispatch(action) {
-        return {
-          dispatched: action
-        };
-      }
 
-      const actionResult = {type: 'action'};
+      const actionResult = { type: 'action' };
 
-      const actionCreator = (payload) => ({type: 'TYPE', payload}) 
-      const actionCreators = {
-        action : (payload) => ({type: 'TYPE', payload})
-      }
+      const action = (payload) => ({ type: 'TYPE', payload });
+      const actionCreatorObj = { action };
 
-      const test = wrapActionCreators<Redux.ActionCreator<any>>(actionCreator);
-      const x = test(dispatch);
-      console.log('xxx', x('hi there'));
-     
-      const wrapped = wrapActionCreators<ITestActionCreator>(actionCreators);
-      //expect(wrapped).toBeA(Function);
-      //expect(() => wrapped(dispatch)).toNotThrow();
-     
-      const bound = wrapped(dispatch);
-      //expect(bound()).toNotThrow();
-      console.log('bound',bound.action('hi'))  
 
+      const wrappedAction = wrapActionCreators<ActionCreator<any>>(action);
+      const boundActionResult = wrappedAction(dispatch)('payload');
+      expect(boundActionResult.dispatched)
+        .to
+        .deep
+        .equal({ type: 'TYPE', payload: 'payload' });
+
+      const wrappedActionObj = wrapActionCreators<ITest>(actionCreatorObj);
+      const boundActionObjResult = wrappedActionObj(dispatch).action('payload');
+
+      expect(boundActionObjResult.dispatched)
+        .to
+        .deep
+        .equal({ type: 'TYPE', payload: 'payload' });
     });
-  });
 });
+

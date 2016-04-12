@@ -6,9 +6,9 @@
     "invariant": "registry:dt/invariant#2.2.0+20160118023809",
     "lodash": "github:DefinitelyTyped/DefinitelyTyped/lodash/lodash.d.ts#70bf7e2bfeb0d5b1b651ef3219bcc65c8eec117e",
     "mocha": "registry:dt/mocha#2.2.5+20160317120654"
+    
   },
   "dependencies": {
     "chai": "registry:npm/chai#3.5.0+20160402210230"
-    
   }
 }

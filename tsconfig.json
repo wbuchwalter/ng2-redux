@@ -12,13 +12,15 @@
     "noImplicitAny": false,
     "declaration": true
   },
+  "compileOnSave": false,
+  "buildOnSave": false,
   "exclude": [
     "node_modules",
     "dist",
     "lib",
     "examples",
     "tmp",
-    "test",
+  //  "test",
     "typings/browser",
     "typings/browser.d.ts"
   ]

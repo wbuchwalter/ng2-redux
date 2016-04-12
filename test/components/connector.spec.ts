@@ -3,6 +3,7 @@ import { createStore } from 'redux';
 import Connector from '../../src/components/connector';
 import * as _ from 'lodash';
 
+
 function returnPojo() {
   return {};
 }
