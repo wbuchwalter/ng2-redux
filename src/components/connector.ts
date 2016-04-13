@@ -25,7 +25,7 @@ export default class Connector<RootState> {
         const finalMapStateToTarget = mapStateToTarget || this._defaultMapStateToTarget;
         invariant(
             _.isFunction(finalMapStateToTarget),
-            'mapStateToTarget must be a Function. Instead received $s.', finalMapStateToTarget
+            'mapStateToTarget must be a Function. Instead received %s.', finalMapStateToTarget
         );
 
         let slice = this.getStateSlice(this._store.getState(), finalMapStateToTarget);
