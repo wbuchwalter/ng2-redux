@@ -33,10 +33,10 @@ export class NgRedux<T> implements INgRedux<T> {
       typeof selector === 'symbol') {
       return this.store
         .map(state => state[selector])
-        .distinctUntilChanged()
+        .distinctUntilChanged(comparer);
     } else if (typeof selector === 'function') {
       return this.store
-        .map(selector).distinctUntilChanged();
+        .map(selector).distinctUntilChanged(comparer);
     }
 
   }

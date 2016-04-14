@@ -5,10 +5,12 @@ import {expect, use} from 'chai';
 import {NgRedux} from '../../components/ng-redux';
 import * as _ from 'lodash';
 import * as sinon from 'sinon';
+import shallowEqual from '../../utils/shallowEqual';
 use(sinonChai);
 
 interface IAppState {
   foo: string;
+  bar: string;
   baz: number;
 
 }
@@ -22,6 +24,7 @@ describe('NgRedux Observable Store', () => {
   beforeEach(() => {
     defaultState = {
       foo: 'bar',
+      bar: 'foo',
       baz: -1,
     };
 
@@ -31,6 +34,8 @@ describe('NgRedux Observable Store', () => {
           return Object.assign({}, state, { foo: action.payload });
         case 'UPDATE_BAZ':
           return Object.assign({}, state, { baz: action.payload });
+        case 'UPDATE_BAR':
+          return Object.assign({}, state, { bar: action.payload });
         default:
           return state;
       }
@@ -103,11 +108,57 @@ describe('NgRedux Observable Store', () => {
       foo$.unsubscribe();
 
     });
+    
+    it('should not call the sub if the result of the function is the same',()=>{
+      let ngRedux = new NgRedux<IAppState>(store);
+      let fooData;
+      let spy = sinon.spy((foo) => { fooData = foo; });
+      let foo$ = ngRedux
+        .select(state =>`${state.foo}-${state.baz}`)
+        .subscribe(spy);
 
+      expect(spy).to.have.been.calledOnce;
+      expect(fooData).to.equal('bar--1');
+     
+      ngRedux.dispatch({ type: 'UPDATE_BAR', payload: 'bar' });
+      expect(spy).to.have.been.calledOnce;
+      expect(fooData).to.equal('bar--1');
+     
+       ngRedux.dispatch({ type: 'UPDATE_FOO', payload: 'update' });
+       expect(fooData).to.equal('update--1');
+       expect(spy).to.have.been.calledTwice;
+     
+       ngRedux.dispatch({ type: 'UPDATE_BAZ', payload: 2 });
+       expect(fooData).to.equal('update-2');
+       expect(spy).to.have.been.calledThrice;
+      
+    });
+    
+    it(`should accept a custom compare function`,() =>{
+       let ngRedux = new NgRedux<IAppState>(store);
+      let fooData;
+      let spy = sinon.spy((foo) => { fooData = foo; });
+      let cmp = (a, b) => a.data === b.data;
+      
+      let foo$ = ngRedux
+        .select(state => ({data: `${state.foo}-${state.baz}`}), cmp)
+        .subscribe(spy);
 
-
-
-
-
+      expect(spy).to.have.been.calledOnce;
+      expect(fooData.data).to.equal('bar--1');
+     
+      ngRedux.dispatch({ type: 'UPDATE_BAR', payload: 'bar' });
+      expect(spy).to.have.been.calledOnce;
+      expect(fooData.data).to.equal('bar--1');
+     
+      ngRedux.dispatch({ type: 'UPDATE_FOO', payload: 'update' }); 
+      expect(fooData.data).to.equal('update--1');
+      expect(spy).to.have.been.calledTwice;
+     
+      ngRedux.dispatch({ type: 'UPDATE_BAZ', payload: 2 });
+      expect(fooData.data).to.equal('update-2');
+      expect(spy).to.have.been.calledThrice;
+    
+  });
 
 });
