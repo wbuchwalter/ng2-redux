@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rimraf ./lib; tsc",
     "postinstall": "typings install",
-    "test": "ts-node ./node_modules/mocha/bin/_mocha  --opts ./test/mocha.opts",
+    "test": "karma start",
     "typings": "typings install"
   },
   "typings": "lib/index.d.ts",
