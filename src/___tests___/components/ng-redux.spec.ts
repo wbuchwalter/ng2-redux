@@ -114,7 +114,7 @@ describe('NgRedux Observable Store', () => {
       let fooData;
       let spy = sinon.spy((foo) => { fooData = foo; });
       let foo$ = ngRedux
-        .select(state =>`${state.foo}-${state.baz}`)
+        .select(state => `${state.foo}-${state.baz}`)
         .subscribe(spy);
 
       expect(spy).to.have.been.calledOnce;
