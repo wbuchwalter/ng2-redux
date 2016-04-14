@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import { createStore } from 'redux';
-import Connector from '../../src/components/connector';
+import Connector from '../../components/connector';
 import * as _ from 'lodash';
 
 

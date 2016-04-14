@@ -20,8 +20,10 @@
     "lib",
     "examples",
     "tmp",
-  //  "test",
+    "test",
+    "src/tests.entry.ts",
     "typings/browser",
-    "typings/browser.d.ts"
+    "typings/browser.d.ts",
+    "src/test"
   ]
 }

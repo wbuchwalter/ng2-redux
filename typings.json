@@ -5,10 +5,11 @@
     "es6-shim": "registry:dt/es6-shim#0.31.2+20160215162030",
     "invariant": "registry:dt/invariant#2.2.0+20160118023809",
     "lodash": "github:DefinitelyTyped/DefinitelyTyped/lodash/lodash.d.ts#70bf7e2bfeb0d5b1b651ef3219bcc65c8eec117e",
-    "mocha": "registry:dt/mocha#2.2.5+20160317120654"
-    
+    "jasmine": "github:DefinitelyTyped/DefinitelyTyped/jasmine/jasmine.d.ts#dd638012d63e069f2c99d06ef4dcc9616a943ee4",
+    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#20e1eb9616922d382d918cc5a21870a9dbe255f5"
   },
   "dependencies": {
-    "chai": "registry:npm/chai#3.5.0+20160402210230"
+    "chai": "registry:npm/chai#3.5.0+20160402210230",
+    "sinon": "registry:npm/sinon#1.16.0+20160309002336"
   }
 }
