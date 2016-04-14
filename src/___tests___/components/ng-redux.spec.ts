@@ -1,8 +1,11 @@
+import 'reflect-metadata';
+import * as sinonChai from 'sinon-chai';
 import { createStore } from 'redux';
+import {expect, use} from 'chai';
 import {NgRedux} from '../../components/ng-redux';
 import * as _ from 'lodash';
 import * as sinon from 'sinon';
-import { fakeAsync, tick, expect } from 'angular2/testing';
+use(sinonChai);
 
 interface IAppState {
   foo: string;
@@ -41,8 +44,8 @@ describe('NgRedux Observable Store', () => {
     let state$ = ngRedux
       .select(state => state)
       .subscribe(state => {
-        expect(state.foo).toEqual('bar');
-        expect(state.baz).toEqual(-1);
+        expect(state.foo).to.equal('bar');
+        expect(state.baz).to.equal(-1);
 
         done();
       });
@@ -53,55 +56,53 @@ describe('NgRedux Observable Store', () => {
     let foo$ = ngRedux
       .select('foo')
       .subscribe(stateSlice => {
-        expect(stateSlice).toEqual('bar');
+        expect(stateSlice).to.equal('bar');
         done();
       });
   });
 
   it('should not trigger a selector if that slice of state was not changed',
-    <any>fakeAsync((): void => {
+    (): void => {
       let ngRedux = new NgRedux<IAppState>(store);
       let fooData;
-      let fooHandler = {
-        subscribe: foo => { fooData = foo; }
-      }
-      spyOn(fooHandler, 'subscribe').and.callThrough();
+      
+      let spy = sinon.spy((foo) => { fooData = foo; });
+      
+      
       let foo$ = ngRedux
         .select('foo')
-        .subscribe(fooHandler.subscribe);
+        .subscribe(spy);
 
       ngRedux.dispatch({ type: 'UPDATE_BAR', payload: 0 });
-
-      expect(fooHandler.subscribe).toHaveBeenCalledTimes(1);
-      expect(fooData).toEqual('bar');
+          
+      expect(spy).to.have.been.calledOnce;
+      
+      expect(fooData).to.equal('bar');
       ngRedux.dispatch({ type: 'UPDATE_FOO', payload: 'changeFoo' });
-      expect(fooHandler.subscribe).toHaveBeenCalledTimes(2);
-      expect(fooData).toEqual('changeFoo');
+      expect(spy).to.have.been.calledTwice;
+      expect(fooData).to.equal('changeFoo');
+      foo$.unsubscribe();
 
-
-    }));
+    });
 
   it('should not trigger a selector if the action payload is the same',
-    <any>fakeAsync((): void => {
+    (): void => {
       let ngRedux = new NgRedux<IAppState>(store);
       let fooData;
-      let fooHandler = {
-        subscribe: foo => { fooData = foo; }
-      }
-      spyOn(fooHandler, 'subscribe').and.callThrough();
+      let spy = sinon.spy((foo) => { fooData = foo; });
       let foo$ = ngRedux
         .select('foo')
-        .subscribe(fooHandler.subscribe);
+        .subscribe(spy);
 
-      expect(fooHandler.subscribe).toHaveBeenCalledTimes(1);
-      expect(fooData).toEqual('bar');
+      expect(spy).to.have.been.calledOnce;
+      expect(fooData).to.equal('bar');
 
       ngRedux.dispatch({ type: 'UPDATE_FOO', payload: 'bar' });
-      expect(fooHandler.subscribe).toHaveBeenCalledTimes(1);
-      expect(fooData).toEqual('bar');
+      expect(spy).to.have.been.calledOnce;
+      expect(fooData).to.equal('bar');
+      foo$.unsubscribe();
 
-
-    }));
+    });
 
 
 
