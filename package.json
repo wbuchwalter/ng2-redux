@@ -1,6 +1,6 @@
 {
   "name": "ng2-redux",
-  "version": "2.2.0-0",
+  "version": "2.2.1-0",
   "description": "Angular 2 bindings for Redux",
   "main": "./lib/index.js",
   "scripts": {
@@ -21,15 +21,15 @@
   ],
   "author": "William Buchwalter <wbuchwalter@gmail.com> (http://github.com/wbuchwalter)",
   "contributors": [
-    { 
+    {
       "name": "Evan Schultz",
       "email": "evan@rangle.io",
       "url": "https://github.com/e-schultz"
-   },
-   { 
-     "name": "Michael Bennett",
-     "url": "https://github.com/bennett000"
-   } 
+    },
+    {
+      "name": "Michael Bennett",
+      "url": "https://github.com/bennett000"
+    }
   ],
   "license": "MIT",
   "bugs": {
