@@ -9,10 +9,11 @@
     "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#20e1eb9616922d382d918cc5a21870a9dbe255f5"
   },
   "dependencies": {
-    "chai": "registry:npm/chai#3.5.0+20160402210230",
-    "sinon": "registry:npm/sinon#1.16.0+20160309002336"
+    "redux": "github:reactjs/redux/index.d.ts#324849df224acdfdf88a17bce97ec400031a705c"
   },
   "devDependencies": {
-    "sinon-chai": "registry:npm/sinon-chai#2.8.0+20160310030142"
+    "sinon-chai": "registry:npm/sinon-chai#2.8.0+20160310030142",
+    "chai": "registry:npm/chai#3.5.0+20160402210230",
+    "sinon": "registry:npm/sinon#1.16.0+20160309002336"
   }
 }
