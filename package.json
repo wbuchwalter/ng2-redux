@@ -20,6 +20,17 @@
     "Angular"
   ],
   "author": "William Buchwalter <wbuchwalter@gmail.com> (http://github.com/wbuchwalter)",
+  "contributors": [
+    { 
+      "name": "Evan Schultz",
+      "email": "evan@rangle.io",
+      "url": "https://github.com/e-schultz"
+   },
+   { 
+     "name": "Michael Bennett",
+     "url": "https://github.com/bennett000"
+   } 
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/wbuchwalter/ng2-redux/issues"
