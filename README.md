@@ -24,14 +24,14 @@ npm install --save ng2-redux
 
 ## Quick Start
 
-#### Initialization
+### Initialization
 
 ```JS
 import {bootstrap} from 'angular2/platform/browser';
 import {createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
 import {App} from './containers/App';
-import {provider} from  'ng2-redux';
+import {provider, NgRedux} from  'ng2-redux';
 import {rootReducer} from './reducers';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
@@ -39,17 +39,48 @@ const store = createStoreWithMiddleware(rootReducer);
 
 bootstrap(
   App,
-  [provider(store)]
+  [provider(store)],
+  NgRedux
   );
 ```
 
 #### Usage
 
+`ng2-redux` has two ways that it can be used. The first way is using the `ngRedux.connect` API, which will map the state and dispatch actions to the provided target. 
+
+There is also `ngRedux.select`, which will expose a slice of your state as an RxJs observable. 
+
+
+#### ngRedux.select 
 ```JS
 import * as CounterActions from '../actions/CounterActions';
+import {NgRedux} from 'ng2-redux';
+import {Observable} from 'rxjs';
 
 class CounterApp {
-  constructor( @Inject('ngRedux') ngRedux) {
+  count$: Observable<number>;
+  counterSubscription: Function;
+  
+  constructor(private ngRedux: NgRedux) { }
+
+  ngOnInit() {
+    this.count$ = this.ngRedux
+    .select(n=>n.counter)   
+    this.ngRedux.mapDispatchToTarget(CounterActions)
+   
+  }
+
+}
+```
+
+#### ngRedux.connect
+
+```JS
+import * as CounterActions from '../actions/CounterActions';
+import {NgRedux} from 'ng2-redux';
+
+class CounterApp {
+  constructor(ngRedux: NgRedux) {
     this.unsubscribe = ngRedux.connect(this.mapStateToThis, this.mapDispatchToThis)(this);
   }
 
@@ -70,6 +101,7 @@ class CounterApp {
   }
 }
 ```
+
 
 ## API
 
@@ -98,9 +130,33 @@ connect(this.mapStateToThis, this.mapDispatchToThis)(this);
 connect(this.mapState, this.mapDispatch)((selectedState, actions) => {/* ... */});
 ```
 
-
 #### Remarks
 * The `mapStateToTarget` function takes a single argument of the entire Redux store’s state and returns an object to be passed as props. It is often called a selector. Use reselect to efficiently compose selectors and compute derived data.
+
+
+### select(key | function,[comparer]) => Observable
+
+Exposes a slice of state as an observable. Accepts either a key-path, or a selector function.
+
+If using the async pipe, you do not need to subscribe to it explicitly, but can use the angular Async pipe to observe for values.
+
+#### Arguments
+
+* `key` \(*string*): A key within the state that you want to subscribe to. 
+* `selector` \(*Function*): A function that accepts the application state, and returns the slice you want subscribe to for changes. 
+
+
+e.g:
+```JS
+this.counter$ = this.ngRedux.select(state=>state.counter);
+// or 
+this.counterSubscription = this.ngRedux
+  .select(state=>state.counter)
+  .subscribe(count=>this.counter = count);
+// or
+
+this.counter$ = this.ngRedux.select('counter');  
+```
 
 
 ### Store API
