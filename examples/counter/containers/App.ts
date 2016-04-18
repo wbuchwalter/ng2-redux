@@ -1,5 +1,5 @@
 import {Component, Inject, OnDestroy} from 'angular2/core';
-import {bindActionCreators} from 'redux';
+import {Observable} from 'rxjs';
 import {AsyncPipe} from 'angular2/common';
 import {Counter} from '../components/Counter';
 import * as CounterActions from '../actions/CounterActions';
@@ -23,33 +23,32 @@ interface IAppState {
   `
 })
 export class App {
-    protected unsubscribe: Function;
-    counter: number;
+    
     counter$: any;
+
+    // Will be added to instance with mapDispatchToTarget
+
+    increment: () => any;
+    decrement: () => any;
+    
     constructor(private ngRedux: NgRedux<IAppState>,
         @Inject('devTools') private devTools) {
     }
 
     ngOnInit() {
-
+        let {increment, decrement } = CounterActions;
         this.devTools.start(this.ngRedux);
-        this.counter$ = this.ngRedux.select(state => state.counter)
-        //this.ngRedux.connect(()=>({}),CounterActions)(this)
-        let {increment, decrement } = CounterActions
+        this.counter$ = this.ngRedux
+            .select(state => state.counter);
         this.ngRedux.mapDispatchToTarget({ increment, decrement })(this)
-
-
-
-    }
-    incrementIfOdd = () => this.ngRedux.dispatch(CounterActions.incrementIfOdd())
-    incrementAsync = () => this.ngRedux.dispatch(CounterActions.incrementAsync())
-
-
-    ngOnDestroy() {
-
     }
 
+    // Can also call ngRedux.dispatch directly
 
+    incrementIfOdd = () => this.ngRedux
+        .dispatch(CounterActions.incrementIfOdd())
 
+    incrementAsync = () => this
+        .ngRedux.dispatch(CounterActions.incrementAsync())
 
 }
