@@ -13,14 +13,21 @@ const checkSelector = (s) => VALID_SELECTORS.indexOf(typeof s, 0) >= 0;
 export class NgRedux<T> implements INgRedux<T> {
   store: BehaviorSubject<T>;
 
+  /** 
+   * @param _ngRedux  
+   */
   constructor( @Inject('ngRedux') private _ngRedux) {
     this.store = this.observableFromStore(_ngRedux);
     this._ngRedux.subscribe(() => this.store.next(this._ngRedux.getState()));
     Object.assign(this, _ngRedux);
 
-
   }
 
+  /**
+   * @param selector
+   * @param comparer
+   * @returns {Observable<S>}
+   */
   select<S>(selector: string | number | symbol | ((state: T) => S),
     comparer?: (x: any, y: any) => boolean): Observable<S> {
 
@@ -41,6 +48,10 @@ export class NgRedux<T> implements INgRedux<T> {
 
   }
 
+  /**
+   * @param mapStateToTarget
+   * @param mapDispatchToTarget
+   */
   connect = (mapStateToTarget: Function, mapDispatchToTarget: Function) => {
     return target => this._ngRedux
       .connect(mapStateToTarget, mapDispatchToTarget)(target);
@@ -50,15 +61,21 @@ export class NgRedux<T> implements INgRedux<T> {
     return this._ngRedux.mapDispatchToTarget(actions)(target);
   };
 
+  /**
+   * @param action
+   */
   dispatch = (action: Action | ActionCreator<any>) => {
     return this._ngRedux.dispatch(action);
   };
 
+  /**
+   * @param store
+   */  
   observableFromStore = (store: Store<T>) => {
     return new BehaviorSubject(store.getState());
   };
 
-  getState = () => {
+  getState = (): T => {
     return this._ngRedux.getState();
   };
 

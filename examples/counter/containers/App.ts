@@ -5,9 +5,7 @@ import {Counter} from '../components/Counter';
 import * as CounterActions from '../actions/CounterActions';
 import {NgRedux} from '../../../src';
 
-interface IAppState {
-    counter: number;
-}
+import {RootState} from '../store/configureStore';
 
 @Component({
     selector: 'root',
@@ -31,7 +29,7 @@ export class App {
     increment: () => any;
     decrement: () => any;
     
-    constructor(private ngRedux: NgRedux<IAppState>,
+    constructor(private ngRedux: NgRedux<RootState>,
         @Inject('devTools') private devTools) {
     }
 

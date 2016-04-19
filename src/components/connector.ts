@@ -9,16 +9,18 @@ export default class Connector<RootState> {
     private _defaultMapStateToTarget: Function;
     private _defaultMapDispatchToTarget: Function;
 
-    wrapActionCreators = (actions) => wrapActionCreators(actions)
+    
     constructor(store: Redux.Store<RootState>) {
         this._store = store;
         this._defaultMapStateToTarget = () => ({});
         this._defaultMapDispatchToTarget = dispatch => ({ dispatch });
     }
 
-    mapDispatchToTarget = actions => target => {
+    wrapActionCreators = (actions) => wrapActionCreators(actions);
+    
+    mapDispatchToTarget = (actions) => target => {
         return this.updateTarget(target, {}, this.getBoundActions(actions));
-    }
+    };
 
     connect = (mapStateToTarget, mapDispatchToTarget) => {
 
@@ -43,7 +45,7 @@ export default class Connector<RootState> {
                 'a plain object.'
             );
 
-            //Initial update
+            // Initial update
 
             this.updateTarget(target, slice, boundActionCreators);
 
@@ -62,7 +64,7 @@ export default class Connector<RootState> {
     };
 
 
-    updateTarget(target, StateSlice, dispatch) {
+    private updateTarget(target, StateSlice, dispatch) {
         if (_.isFunction(target)) {
             target(StateSlice, dispatch);
         } else {
@@ -70,7 +72,7 @@ export default class Connector<RootState> {
         }
     }
 
-    getStateSlice(state, mapStateToScope) {
+    private getStateSlice(state, mapStateToScope) {
         const slice = mapStateToScope(state);
 
         invariant(
@@ -82,7 +84,7 @@ export default class Connector<RootState> {
         return slice;
     }
 
-    getBoundActions = (actions) => {
+    private getBoundActions = (actions) => {
         const finalMapDispatchToTarget = _.isPlainObject(actions) ?
             wrapActionCreators(actions) :
             actions || this._defaultMapDispatchToTarget;
