@@ -16,7 +16,8 @@ export class NgRedux<T> implements INgRedux<T> {
   /** 
    * @param _ngRedux  
    */
-  constructor( @Inject('ngRedux') private _ngRedux) {
+  constructor(private _ngRedux) {
+    
     this.store = this.observableFromStore(_ngRedux);
     this._ngRedux.subscribe(() => this.store.next(this._ngRedux.getState()));
     Object.assign(this, _ngRedux);
