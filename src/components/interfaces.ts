@@ -6,5 +6,5 @@ export interface IConnect {
 
 export interface INgRedux<T> extends Store<T> {
   connect: IConnect;
-  mapDispatchToTarget: Function;
+  mapActions: Function;
 }

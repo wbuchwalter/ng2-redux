@@ -58,7 +58,7 @@ export class NgRedux<T> implements INgRedux<T> {
       .connect(mapStateToTarget, mapDispatchToTarget)(target);
   };
 
-  mapDispatchToTarget = (actions) => (target) => {
+  mapActions = (actions) => (target) => {
     return this._ngRedux.mapDispatchToTarget(actions)(target);
   };
 
