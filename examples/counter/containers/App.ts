@@ -38,15 +38,15 @@ export class App {
         this.devTools.start(this.ngRedux);
         this.counter$ = this.ngRedux
             .select(state => state.counter);
-        this.ngRedux.mapDispatchToTarget({ increment, decrement })(this)
+        this.ngRedux.mapDispatchToTarget({ increment, decrement })(this);
     }
 
     // Can also call ngRedux.dispatch directly
 
     incrementIfOdd = () => this.ngRedux
-        .dispatch(CounterActions.incrementIfOdd())
+        .dispatch(CounterActions.incrementIfOdd());
 
-    incrementAsync = () => this
-        .ngRedux.dispatch(CounterActions.incrementAsync())
+    incrementAsync = () => this.ngRedux
+        .dispatch(CounterActions.incrementAsync());
 
 }
