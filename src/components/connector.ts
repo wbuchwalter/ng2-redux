@@ -22,13 +22,16 @@ export default class Connector<RootState> {
 
     connect = (mapStateToTarget, mapDispatchToTarget) => {
 
-        const finalMapStateToTarget = mapStateToTarget || this._defaultMapStateToTarget;
+        const finalMapStateToTarget = mapStateToTarget
+            || this._defaultMapStateToTarget;
+
         invariant(
             _.isFunction(finalMapStateToTarget),
-            'mapStateToTarget must be a Function. Instead received %s.', finalMapStateToTarget
-        );
+            'mapStateToTarget must be a Function. Instead received %s.',
+            finalMapStateToTarget);
 
-        let slice = this.getStateSlice(this._store.getState(), finalMapStateToTarget);
+        let slice = this.getStateSlice(this._store.getState(),
+            finalMapStateToTarget);
 
         const boundActionCreators = this.getBoundActions(mapDispatchToTarget);
 
@@ -36,23 +39,27 @@ export default class Connector<RootState> {
 
             invariant(
                 _.isFunction(target) || _.isObject(target),
-                'The target parameter passed to connect must be a Function or a plain object.'
+                'The target parameter passed to connect must be a Function or' +
+                'a plain object.'
             );
 
             //Initial update
+
             this.updateTarget(target, slice, boundActionCreators);
 
             const unsubscribe = this._store.subscribe(() => {
-                const nextSlice = this.getStateSlice(this._store.getState(), finalMapStateToTarget);
+                const nextSlice = this.getStateSlice(this._store.getState(),
+                    finalMapStateToTarget);
+
                 if (!shallowEqual(slice, nextSlice)) {
                     slice = nextSlice;
                     this.updateTarget(target, slice, boundActionCreators);
                 }
             });
             return unsubscribe;
-        }
+        };
 
-    }
+    };
 
 
     updateTarget(target, StateSlice, dispatch) {
@@ -80,11 +87,13 @@ export default class Connector<RootState> {
             wrapActionCreators(actions) :
             actions || this._defaultMapDispatchToTarget;
         invariant(
-            _.isPlainObject(finalMapDispatchToTarget) || _.isFunction(finalMapDispatchToTarget),
-            'mapDispatchToTarget must be a plain Object or a Function. Instead received %s.', finalMapDispatchToTarget
-        );
-        return finalMapDispatchToTarget(this._store.dispatch);
-    }
+            _.isPlainObject(finalMapDispatchToTarget)
+            || _.isFunction(finalMapDispatchToTarget),
+            'mapDispatchToTarget must be a plain Object or a Function. ' +
+            'Instead received % s.',
+            finalMapDispatchToTarget);
 
+        return finalMapDispatchToTarget(this._store.dispatch);
+    };
 
 }

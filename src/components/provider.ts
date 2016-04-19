@@ -2,15 +2,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import Connector from './connector';
 import {provide, Injector, Provider, Inject, Injectable} from 'angular2/core';
 import * as Redux from 'redux';
-
-
-export interface IConnect {
-  (mapStateToTarget: Function, mapDispatchToTarget: Function);
-}
-export interface INgRedux<T> extends Redux.Store<T> {
-  connect: IConnect
-  mapDispatchToTarget: Function
-}
+import {INgRedux} from './interfaces';
 
 export function provider<T>(store: Redux.Store<T>) {
   const _connector = new Connector(store);

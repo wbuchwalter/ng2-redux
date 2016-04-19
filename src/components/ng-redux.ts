@@ -2,7 +2,7 @@ import {Injectable, Inject} from 'angular2/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Store, Action, ActionCreator, Reducer } from 'redux';
 import * as invariant from 'invariant';
-import { INgRedux } from './provider';
+import { INgRedux } from './interfaces';
 
 const VALID_SELECTORS = ['string', 'number', 'symbol', 'function'];
 const ERROR_MESSAGE = `Expected selector to be one of: 
@@ -47,7 +47,7 @@ export class NgRedux<T> implements INgRedux<T> {
   };
 
   mapDispatchToTarget = (actions) => (target) => {
-    return this._ngRedux.mapDispatchToTarget(actions)(target)
+    return this._ngRedux.mapDispatchToTarget(actions)(target);
   };
 
   dispatch = (action: Action | ActionCreator<any>) => {
