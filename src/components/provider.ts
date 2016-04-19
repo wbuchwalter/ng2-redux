@@ -13,5 +13,8 @@ export function provider<T>(store: Redux.Store<T>) {
       mapDispatchToTarget: _connector.mapDispatchToTarget
     },
     store);
-  return provide(NgRedux, { useFactory: () => new NgRedux(factory()) });
+  
+  return [provide(NgRedux, { useFactory: () => new NgRedux(factory()) }),
+  provide('ngRedux', {useExisting: NgRedux})];
+   
 }
