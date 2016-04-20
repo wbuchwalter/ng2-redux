@@ -12,6 +12,8 @@
     "noImplicitAny": false,
     "declaration": true
   },
+  "compileOnSave": false,
+  "buildOnSave": false,
   "exclude": [
     "node_modules",
     "dist",
@@ -19,7 +21,9 @@
     "examples",
     "tmp",
     "test",
+    "src/tests.entry.ts",
     "typings/browser",
-    "typings/browser.d.ts"
+    "typings/browser.d.ts",
+    "src/test"
   ]
 }
