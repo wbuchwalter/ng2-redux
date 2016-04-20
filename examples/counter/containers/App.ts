@@ -38,7 +38,7 @@ export class App {
         this.devTools.start(this.ngRedux);
         this.counter$ = this.ngRedux
             .select(state => state.counter);
-        this.ngRedux.mapActions({ increment, decrement })(this);
+        this.ngRedux.mapDispatchToTarget({ increment, decrement })(this);
     }
 
     // Can also call ngRedux.dispatch directly
