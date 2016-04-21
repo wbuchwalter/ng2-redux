@@ -1,7 +1,9 @@
-import { bindActionCreators } from 'redux';
+import { ActionCreator,
+  ActionCreatorsMapObject,
+  bindActionCreators as bac,
+  Dispatch } from 'redux';
 
-export default function wrapActionCreators<T extends
-  Redux.Map<Redux.ActionCreator>,
-    TP extends Redux.Map<Redux.PartialDispatch>>(actionCreators) {
-  return dispatch => bindActionCreators<T, TP>(actionCreators, dispatch);
+export default function wrapActionCreator
+  <T extends ActionCreator<T> | ActionCreatorsMapObject>(actionCreators) {
+  return (dispatch: Dispatch<any>): T => bac(actionCreators, dispatch);
 }

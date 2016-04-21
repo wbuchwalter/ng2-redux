@@ -11,7 +11,7 @@ bootstrap(
   App,
   [
     provider(store),
-    devTools,
-    NgRedux
+    devTools
+    
   ]
 );
