@@ -1,0 +1,6 @@
+machine:
+  node:
+    version: 5.9.0
+   npm:
+    version: 3.7.3
+      
