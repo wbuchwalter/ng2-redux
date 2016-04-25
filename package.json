@@ -33,9 +33,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wbuchwalter/ng2-redux/issues"
+    "url": "https://github.com/angular-redux/ng2-redux/issues"
   },
-  "homepage": "https://github.com/wbuchwalter/ng2-redux#readme",
+  "homepage": "https://github.com/angular-redux/ng2-redux#readme",
   "devDependencies": {
     "angular2": "2.0.0-beta.14",
     "babel": "^5.8.12",
@@ -61,9 +61,5 @@
     "invariant": "^2.1.0",
     "lodash": "^3.10.1",
     "typings": "^0.7.4"
-  },
-  "engines": {
-    "node": ">=5.8.0",
-    "npm": ">=2.0.0"
   }
 }
