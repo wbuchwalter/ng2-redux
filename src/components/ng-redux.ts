@@ -1,12 +1,13 @@
 import shallowEqual from '../utils/shallowEqual';
 import wrapActionCreators from '../utils/wrapActionCreators';
+import { makeDecorator} from 'angular2/src/core/util/decorators'
 import * as Redux from 'redux';
 import * as invariant from 'invariant';
 import * as _ from 'lodash';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Store, Action, ActionCreator, Reducer } from 'redux';
 import {Injectable} from 'angular2/core';
-
+import { appInjector } from '../utils/appInjector';
 const VALID_SELECTORS = ['string', 'number', 'symbol', 'function'];
 const ERROR_MESSAGE = `Expected selector to be one of: 
 ${VALID_SELECTORS.join(',')}. Instead recieved %s`;
@@ -18,8 +19,7 @@ export class NgRedux<RootState> {
     private _store$: BehaviorSubject<RootState>;
     private _defaultMapStateToTarget: Function;
     private _defaultMapDispatchToTarget: Function;
-
-
+    
     /**
      * Creates an instance of NgRedux.
      * 
@@ -208,4 +208,46 @@ export class NgRedux<RootState> {
         return finalMapDispatchToTarget(this._store.dispatch);
     };
 
+}
+
+export const Select = <T>(stateKeyOrFunc?) => (target, key) => {
+    let bindingKey = (key.lastIndexOf('$') === key.length - 1) ? key.substring(0, key.length - 1) : key;
+
+    if (typeof stateKeyOrFunc === 'string') {
+        bindingKey = stateKeyOrFunc;      
+    }
+    
+    var _ngRedux;// = this['ngRedux'];
+    var injector;
+    var selector;
+    var obs = new BehaviorSubject<any>({});
+    function getter() {
+        
+        
+        if (!injector) {
+            injector = appInjector();
+            if (!injector) {
+                return;
+            }
+            _ngRedux = injector.get(NgRedux);
+        }
+        
+        selector = selector || _ngRedux.select(typeof stateKeyOrFunc === 'function' ? stateKeyOrFunc : bindingKey); 
+        return selector;
+        
+    };
+
+ 
+
+    // Delete property.
+    if (delete this[key]) {
+
+        // Create new property with getter and setter
+        Object.defineProperty(target, key, {
+            get: getter,
+            enumerable: true,
+            configurable: true
+            
+        });
+    }
 }
