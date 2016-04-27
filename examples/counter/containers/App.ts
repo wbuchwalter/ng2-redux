@@ -3,7 +3,7 @@ import {Observable} from 'rxjs';
 import {AsyncPipe} from 'angular2/common';
 import {Counter} from '../components/Counter';
 import * as CounterActions from '../actions/CounterActions';
-import {NgRedux} from '../../../src';
+import {NgRedux} from 'ng2-redux';
 
 import {RootState} from '../store/configureStore';
 
