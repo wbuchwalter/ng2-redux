@@ -1,2 +1,3 @@
 export {provider} from './components/provider';
-export { NgRedux }   from './components/ng-redux';
+export { NgRedux, Select }   from './components/ng-redux';
+export { appInjector } from './utils/appInjector';
