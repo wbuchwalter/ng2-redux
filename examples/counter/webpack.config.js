@@ -16,11 +16,7 @@ module.exports = {
     new webpack.NoErrorsPlugin()
   ],
   resolve: {
-    extensions: ['', '.js', '.ts'],
-    fallback: __dirname + '/../../node_modules',
-    alias: {
-      angular2$: __dirname + '/../../node_modules/angular2'
-    }
+    extensions: ['', '.js', '.ts']
   },
   module: {
     loaders: [
