@@ -23,6 +23,7 @@ import {RootState} from '../store/configureStore';
     <li>{{ funcCounter$ | async }}</li>
     <li>{{ stringKey$ | async }}</li>
     <li>{{ counterX2$ | async }}</li>
+    <li>{{ foo?.x }} - {{ foo?.y }}</li>
 <ul>
   `
 })
@@ -56,14 +57,14 @@ export class App {
 /*
 TODO: fix this - wont work rightnow because if the decorator can't get a reference to ngRedux, it returns undefined
 need a lazy way of being able to setup the decorator        
-
+*/
         this.counterX2$.combineLatest(this.stringKey$, (x, y) => {
             
-            return { x: x, y: y };
+            return { x: x * 2, y: y * 3 };
         }).subscribe(n => {
             
             this.foo = n;
-        })*/
+        })
     }
 
     // Can also call ngRedux.dispatch directly

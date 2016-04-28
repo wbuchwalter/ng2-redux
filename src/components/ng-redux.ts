@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Store, Action, ActionCreator, Reducer } from 'redux';
 import {Injectable} from 'angular2/core';
-import { appInjector } from '../utils/appInjector';
+import { appInjector$ } from '../utils/appInjector';
 const VALID_SELECTORS = ['string', 'number', 'symbol', 'function'];
 const ERROR_MESSAGE = `Expected selector to be one of: 
 ${VALID_SELECTORS.join(',')}. Instead recieved %s`;
@@ -19,7 +19,7 @@ export class NgRedux<RootState> {
     private _store$: BehaviorSubject<RootState>;
     private _defaultMapStateToTarget: Function;
     private _defaultMapDispatchToTarget: Function;
-    
+
     /**
      * Creates an instance of NgRedux.
      * 
@@ -214,40 +214,25 @@ export const Select = <T>(stateKeyOrFunc?) => (target, key) => {
     let bindingKey = (key.lastIndexOf('$') === key.length - 1) ? key.substring(0, key.length - 1) : key;
 
     if (typeof stateKeyOrFunc === 'string') {
-        bindingKey = stateKeyOrFunc;      
+        bindingKey = stateKeyOrFunc;
     }
-    
-    var _ngRedux;// = this['ngRedux'];
-    var injector;
-    var selector;
-    var obs = new BehaviorSubject<any>({});
-    function getter() {
-        
-        
-        if (!injector) {
-            injector = appInjector();
-            if (!injector) {
-                return;
-            }
-            _ngRedux = injector.get(NgRedux);
-        }
-        
-        selector = selector || _ngRedux.select(typeof stateKeyOrFunc === 'function' ? stateKeyOrFunc : bindingKey); 
-        return selector;
-        
-    };
 
- 
+    function getter() {
+        return appInjector$
+            .filter(n => n !== null)
+            .map(n => n.get(NgRedux))
+            .flatMap(n => n.select(typeof stateKeyOrFunc === 'function' ? stateKeyOrFunc : bindingKey))
+            
+    }
 
     // Delete property.
     if (delete this[key]) {
-
         // Create new property with getter and setter
         Object.defineProperty(target, key, {
             get: getter,
             enumerable: true,
             configurable: true
-            
         });
     }
 }
+

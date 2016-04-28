@@ -1,10 +1,4 @@
 import {Injector} from 'angular2/core';
+import {BehaviorSubject} from 'rxjs';
 
-let appInjectorRef: Injector;
-export const appInjector = (injector?: Injector):Injector => {
-	if (injector) {
-	  appInjectorRef = injector;
-	}
-
-	return appInjectorRef;
-};
+export const appInjector$: BehaviorSubject<any> = new BehaviorSubject(null);
