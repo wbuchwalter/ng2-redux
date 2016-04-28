@@ -170,9 +170,59 @@ ngRedux.subscribe(() => {
 
 This means that you are free to use Redux basic API in advanced cases where `connect`'s API would not fill your needs.
 
-
 ## Using DevTools
 
-In order to use Redux DevTools with your angular app, you need to install [react](https://www.npmjs.com/package/react), [react-redux](https://www.npmjs.com/package/react-redux) and [redux-devtools](https://www.npmjs.com/package/redux-devtools) as development dependencies.
+Ng2Redux is fully compatible with the Chrome extension version of the Redux dev tools:
 
-You can find a sample devtools implentation in the [counter example](https://github.com/wbuchwalter/ng2-redux/blob/master/examples/counter/devTools.js)
+https://github.com/zalmoxisus/redux-devtools-extension
+
+Here's how to enable them in your app (you probably only want to do
+this in development mode):
+
+1. Add the extension to your storeEnhancers:
+
+```typescript
+const enhancers = [];
+
+// Add Whatever other enhancers you want.
+
+if (__DEVMODE__ && window.devToolsExtension) {
+  enhancers = [ ...enhancers, window.devToolsExtension() ];
+}
+
+const store = compose(
+    applyMiddleware(middleware),
+    ...enhancers
+  )(createStore)(rootReducer, initialState);
+```
+
+2. Make Angular 2 update when store events come from the dev tools
+instead of Ng2Redux:
+
+```typescript
+@Component({
+  // etc.
+})
+export class App {
+  private unsubscribe: () => void;
+
+  constructor(
+    private ngRedux: NgRedux<IAppState>,
+    applicationRef: ApplicationRef) {
+
+    // etc.
+
+    if (__DEVMODE__) {
+      this.unsubscribe = ngRedux.subscribe(() => {
+        applicationRef.tick();
+      });
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
+  }
+};
+```

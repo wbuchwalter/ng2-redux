@@ -29,7 +29,6 @@
     "ng2-redux": "^2.2.2-beta.2",
     "react": "^0.14.8",
     "redux": "^3.4.0",
-    "redux-devtools": "^2.1.0",
     "redux-logger": "^2.6.1",
     "redux-thunk": "^2.0.1",
     "reflect-metadata": "0.1.2",
