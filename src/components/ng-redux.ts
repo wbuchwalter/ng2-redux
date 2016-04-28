@@ -13,6 +13,8 @@ const ERROR_MESSAGE = `Expected selector to be one of:
 ${VALID_SELECTORS.join(',')}. Instead recieved %s`;
 const checkSelector = (s) => VALID_SELECTORS.indexOf(typeof s, 0) >= 0;
 
+let scopeSingleton;
+
 @Injectable()
 export class NgRedux<RootState> {
     private _store: Redux.Store<RootState>;
@@ -26,6 +28,7 @@ export class NgRedux<RootState> {
      * @param {Redux.Store<RootState>} store Redux store 
      */
     constructor(store: Redux.Store<RootState>) {
+        scopeSingleton = this;
         this._store = store;
         this._store$ = this.observableFromStore(store);
         this._store.subscribe(() => this._store$.next(this._store.getState()));
@@ -236,3 +239,23 @@ export const Select = <T>(stateKeyOrFunc?) => (target, key) => {
     }
 }
 
+export const Dispatch = (func) => (targetClass, key) => {
+    const dispatcherInitializer = () => targetClass[key] = () => scopeSingleton.dispatch(func());  
+    preAugmentFunction(targetClass, 'ngOnInit', dispatcherInitializer);
+};
+
+function preAugmentFunction(target, functionName, fn) {
+
+    let oldFunction = target[functionName];
+
+    if (typeof oldFunction !== 'function') {
+        target[functionName] = fn;
+        return;
+    }
+
+    target[functionName] = function() {
+        fn.apply(this, arguments);
+        oldFunction.apply(this, arguments);
+    };
+
+}
