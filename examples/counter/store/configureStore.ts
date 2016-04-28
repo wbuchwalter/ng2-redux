@@ -2,7 +2,12 @@ import * as Redux from 'redux';
 const {createStore, applyMiddleware, compose} = Redux;
 const thunk = require('redux-thunk');
 import reducer from '../reducers/index';
-const devTools = require('redux-devtools').devTools;
+
+const enhancers = [];
+
+if (window.devToolsExtension) {
+  enhancers.push(window.devToolsExtension);
+}
 
 export interface RootState {
   counter: number;
@@ -10,7 +15,7 @@ export interface RootState {
 
 const finalCreateStore = <Redux.CreateStore<RootState>>compose(
   applyMiddleware(thunk),
-  devTools()
+  ...enhancers
 )(createStore);
 
 export default () => {

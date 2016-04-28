@@ -1,4 +1,4 @@
-import {Component, Inject, OnDestroy} from 'angular2/core';
+import {Component, Inject, OnDestroy, ApplicationRef} from 'angular2/core';
 import {Observable} from 'rxjs';
 import {AsyncPipe} from 'angular2/common';
 import {Counter} from '../components/Counter';
@@ -24,22 +24,30 @@ import {RootState} from '../store/configureStore';
 export class App {
     
     counter$: any;
+    unsubscribe: () => void;
 
     // Will be added to instance with mapDispatchToTarget
 
     increment: () => any;
     decrement: () => any;
-    
-    constructor(private ngRedux: NgRedux<RootState>,
-        @Inject('devTools') private devTools) {
-    }
+
+    constructor(
+        private ngRedux: NgRedux<RootState>,
+        private applicationRef: ApplicationRef) {}
 
     ngOnInit() {
         let {increment, decrement } = CounterActions;
-        this.devTools.start(this.ngRedux);
         this.counter$ = this.ngRedux
             .select(state => state.counter)
         this.ngRedux.mapDispatchToTarget({ increment, decrement })(this);
+
+        this.unsubscribe = this.ngRedux.subscribe(() => {
+          this.applicationRef.tick();
+        });
+    }
+
+    ngOnDestroy() {
+        this.unsubscribe();
     }
 
     // Can also call ngRedux.dispatch directly
