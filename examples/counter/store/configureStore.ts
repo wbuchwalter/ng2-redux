@@ -6,7 +6,7 @@ import reducer from '../reducers/index';
 const enhancers = [];
 
 if (window.devToolsExtension) {
-  enhancers.push(window.devToolsExtension);
+  enhancers.push(window.devToolsExtension());
 }
 
 export interface RootState {
