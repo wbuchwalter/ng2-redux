@@ -213,7 +213,7 @@ export class NgRedux<RootState> {
 
 }
 
-export const Select = <T>(stateKeyOrFunc?) => (target, key) => {
+export const select = <T>(stateKeyOrFunc?) => (target, key) => {
     let bindingKey = (key.lastIndexOf('$') === key.length - 1) ? key.substring(0, key.length - 1) : key;
 
     if (typeof stateKeyOrFunc === 'string') {
@@ -239,10 +239,14 @@ export const Select = <T>(stateKeyOrFunc?) => (target, key) => {
     }
 }
 
-export const Dispatch = (func) => (targetClass, key) => {
-    const dispatcherInitializer = () => targetClass[key] = () => scopeSingleton.dispatch(func());  
-    preAugmentFunction(targetClass, 'ngOnInit', dispatcherInitializer);
-};
+export const dispatchAll = (obj) => (targetClass) => 
+    Object.keys(obj).filter(key => typeof obj[key] === 'function')
+        .forEach(key => targetClass.prototype[key] = () => scopeSingleton.dispatch(<any>obj[key]()));
+
+export const dispatch = (func) => (targetClass, key) =>
+    preAugmentFunction(targetClass,
+                       'ngOnInit',
+                       () => targetClass[key] = () => scopeSingleton.dispatch(<any>func()));
 
 function preAugmentFunction(target, functionName, fn) {
 
