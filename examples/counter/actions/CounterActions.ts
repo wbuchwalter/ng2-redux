@@ -1,7 +1,5 @@
-export const INCREMENT_COUNTER:string = 'INCREMENT_COUNTER';
-export const DECREMENT_COUNTER:string = 'DECREMENT_COUNTER';
 import * as Redux from 'redux';
-
+import { INCREMENT_COUNTER, DECREMENT_COUNTER } from './constants';
 
 export var increment = () => {
   return <Redux.Action>{
