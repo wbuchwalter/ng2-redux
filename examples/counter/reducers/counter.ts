@@ -1,4 +1,7 @@
-import { INCREMENT_COUNTER, DECREMENT_COUNTER } from '../actions/CounterActions';
+import { 
+  INCREMENT_COUNTER,
+  DECREMENT_COUNTER
+} from '../actions/constants';
 
 export default (state:number = 0, action:any) => {
   switch (action.type) {
