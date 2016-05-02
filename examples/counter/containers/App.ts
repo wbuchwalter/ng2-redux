@@ -28,7 +28,7 @@ import {RootState} from '../store/configureStore';
   `
 })
 
-@dispatchAll(CounterActions)
+//@dispatchAll(CounterActions)
 export class App {
     
     @select() counter$: any;
@@ -36,12 +36,10 @@ export class App {
     @select('counter') stringKey$;
     @select(state => state.counter * 2) counterX2$: Observable<any>;
     foo: any;
-    //@dispatch(CounterActions.increment) increment: () => any;
-    //@dispatch(CounterActions.decrement) decrement: () => any;
-    //@dispatch(CounterActions.incrementIfOdd) incrementIfOdd: () => any;
-    //@dispatch(CounterActions.incrementAsync) incrementAsync: () => any;
-
-    
+    @dispatch(CounterActions.increment) increment: () => any;
+    @dispatch(CounterActions.decrement) decrement: () => any;
+    @dispatch(CounterActions.incrementIfOdd) incrementIfOdd: () => any;
+    @dispatch(CounterActions.incrementAsync) incrementAsync: () => any;
 
     ngOnInit() {
         this.counterX2$.combineLatest(this.stringKey$, (x, y) => {

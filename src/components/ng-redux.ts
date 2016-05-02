@@ -239,27 +239,11 @@ export const select = <T>(stateKeyOrFunc?) => (target, key) => {
     }
 }
 
-export const dispatchAll = (obj) => (targetClass) => 
+export const dispatchAll = (obj) => (targetClass) => {
     Object.keys(obj).filter(key => typeof obj[key] === 'function')
         .forEach(key => targetClass.prototype[key] = () => scopeSingleton.dispatch(<any>obj[key]()));
+};
 
-export const dispatch = (func) => (targetClass, key) =>
-    preAugmentFunction(targetClass,
-                       'ngOnInit',
-                       () => targetClass[key] = () => scopeSingleton.dispatch(<any>func()));
-
-function preAugmentFunction(target, functionName, fn) {
-
-    let oldFunction = target[functionName];
-
-    if (typeof oldFunction !== 'function') {
-        target[functionName] = fn;
-        return;
-    }
-
-    target[functionName] = function() {
-        fn.apply(this, arguments);
-        oldFunction.apply(this, arguments);
-    };
-
-}
+export const dispatch = (func) => (targetClass, key) => {
+    targetClass[key] = () => scopeSingleton.dispatch(<any>func());
+};
