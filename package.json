@@ -50,7 +50,7 @@
     "ts-loader": "^0.8.1",
     "ts-node": "^0.5.5",
     "typescript": "^1.8.10",
-    "@angular/core": "2.0.0-rc.0",
+    "@angular/core": "2.0.0-rc.1",
     "es6-shim": "^0.35.0",
     "redux": "^3.4.0",
     "reflect-metadata": "0.1.3",
