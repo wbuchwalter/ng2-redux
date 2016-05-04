@@ -18,6 +18,6 @@ const finalCreateStore = <Redux.StoreEnhancerStoreCreator<RootState>>compose(
   ...enhancers
 )(createStore);
 
-export default () => {
+export function configureStore() {
   return finalCreateStore(reducer, {counter:0} as RootState);
 }

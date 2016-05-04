@@ -5,10 +5,15 @@ import {NgRedux} from '../../components/ng-redux';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import * as _ from 'lodash';
+
 use(sinonChai);
 
 function returnPojo() {
   return {};
+}
+
+class MockApplicationRef {
+  tick: ()=> void;
 }
 
 describe('Connector', () => {
@@ -16,6 +21,7 @@ describe('Connector', () => {
   let connector;
   let targetObj;
   let defaultState;
+  let mockAppRef;
 
   beforeEach(() => {
     defaultState = {
@@ -27,7 +33,11 @@ describe('Connector', () => {
       return newState;
     });
     targetObj = {};
-    connector = new NgRedux(store);
+    mockAppRef = {
+      tick: sinon.spy()
+    }
+    connector = new NgRedux(mockAppRef);
+    connector.attach(store);
   });
 
   it('Should throw when target is not a Function or a plain object', () => {
@@ -116,19 +126,19 @@ describe('Connector', () => {
 
 });
 
-
 describe('NgRedux Observable Store', () => {
   interface IAppState {
     foo: string;
     bar: string;
     baz: number;
-
   };
   
   let store;
   let connector;
   let targetObj;
   let defaultState;
+  let ngRedux;
+  let mockAppRef;
 
   beforeEach(() => {
     defaultState = {
@@ -150,23 +160,25 @@ describe('NgRedux Observable Store', () => {
       }
     });
 
+    mockAppRef = {
+      tick: sinon.spy()
+    }
 
+    ngRedux = new NgRedux<IAppState>(mockAppRef);
+    ngRedux.attach(store);
   })
 
   it('should get the initial state', (done) => {
-    let ngRedux = new NgRedux<IAppState>(store);
     let state$ = ngRedux
       .select(state => state)
       .subscribe(state => {
         expect(state.foo).to.equal('bar');
         expect(state.baz).to.equal(-1);
-
         done();
       });
   });
 
   it('should accept a keyname for a selector', (done) => {
-    let ngRedux = new NgRedux<IAppState>(store);
     let foo$ = ngRedux
       .select('foo')
       .subscribe(stateSlice => {
@@ -177,11 +189,9 @@ describe('NgRedux Observable Store', () => {
 
   it('should not trigger a selector if that slice of state was not changed',
     (): void => {
-      let ngRedux = new NgRedux<IAppState>(store);
       let fooData;
 
       let spy = sinon.spy((foo) => { fooData = foo; });
-
 
       let foo$ = ngRedux
         .select('foo')
@@ -196,12 +206,10 @@ describe('NgRedux Observable Store', () => {
       expect(spy).to.have.been.calledTwice;
       expect(fooData).to.equal('changeFoo');
       foo$.unsubscribe();
-
     });
 
   it('should not trigger a selector if the action payload is the same',
     (): void => {
-      let ngRedux = new NgRedux<IAppState>(store);
       let fooData;
       let spy = sinon.spy((foo) => { fooData = foo; });
       let foo$ = ngRedux
@@ -215,11 +223,9 @@ describe('NgRedux Observable Store', () => {
       expect(spy).to.have.been.calledOnce;
       expect(fooData).to.equal('bar');
       foo$.unsubscribe();
-
     });
 
   it('should not call the sub if the result of the function is the same', () => {
-    let ngRedux = new NgRedux<IAppState>(store);
     let fooData;
     let spy = sinon.spy((foo) => { fooData = foo; });
     let foo$ = ngRedux
@@ -240,11 +246,9 @@ describe('NgRedux Observable Store', () => {
     ngRedux.dispatch({ type: 'UPDATE_BAZ', payload: 2 });
     expect(fooData).to.equal('update-2');
     expect(spy).to.have.been.calledThrice;
-
   });
 
   it(`should accept a custom compare function`, () => {
-    let ngRedux = new NgRedux<IAppState>(store);
     let fooData;
     let spy = sinon.spy((foo) => { fooData = foo; });
     let cmp = (a, b) => a.data === b.data;
@@ -267,7 +271,5 @@ describe('NgRedux Observable Store', () => {
     ngRedux.dispatch({ type: 'UPDATE_BAZ', payload: 2 });
     expect(fooData.data).to.equal('update-2');
     expect(spy).to.have.been.calledThrice;
-
   });
-
 });
