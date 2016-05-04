@@ -5,7 +5,11 @@ import { NgRedux } from 'ng2-redux';
 
 import { Counter } from '../components/Counter';
 import * as CounterActions from '../actions/CounterActions';
-import { RootState, configureStore } from '../store/configureStore';
+import { RootState, enhancers } from '../store/configureStore';
+
+import reducer from '../reducers/index';
+const thunk = require('redux-thunk').default;
+const createLogger = require('redux-logger');
 
 @Component({
     selector: 'root',
@@ -24,8 +28,14 @@ export class App {
     counter$: Observable<number>;
 
     constructor(private ngRedux: NgRedux<RootState>) {
+
         // Do this once in the top-level app component.
-        this.ngRedux.attach(configureStore());
+        this.ngRedux.configureStore(
+            reducer,
+            { counter: 0 },
+            [ thunk, createLogger()  ],
+            enhancers
+        );
 
         // Do this in each component that needs to observe the
         // redux store.

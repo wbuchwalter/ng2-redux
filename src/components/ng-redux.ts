@@ -1,18 +1,28 @@
 import * as invariant from 'invariant';
 import * as _ from 'lodash';
 import * as Redux from 'redux';
+
+import {
+    Store,
+    Action,
+    ActionCreator,
+    Reducer,
+    createStore,
+    applyMiddleware,
+    compose
+} from 'redux';
+
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/distinctUntilChanged';
 import { Injectable, ApplicationRef } from '@angular/core';
-import { Store, Action, ActionCreator, Reducer } from 'redux';
 
 import shallowEqual from '../utils/shallowEqual';
 import wrapActionCreators from '../utils/wrapActionCreators';
 
 const VALID_SELECTORS = ['string', 'number', 'symbol', 'function'];
-const ERROR_MESSAGE = `Expected selector to be one of: 
+const ERROR_MESSAGE = `Expected selector to be one of:
     ${VALID_SELECTORS.join(',')}. Instead recieved %s`;
 const checkSelector = (s) => VALID_SELECTORS.indexOf(typeof s, 0) >= 0;
 
@@ -33,14 +43,30 @@ export class NgRedux<RootState> {
     constructor(private _applicationRef: ApplicationRef) {}
 
     /**
-     * Attaches a redux store to NgRedux.
+     * configures a Redux store and allows NgRedux to observe and dispatch
+     * to it.
      * 
-     * This should only be called once for the lifetime of your app.
+     * This should only be called once for the lifetime of your app, for
+     * example in the constructor of your root component.
      *
-     * @param {Redux.Store<RootState>} store Redux store 
+     * @param {Redux.Reducer<RootState>} reducer Your app's root reducer
+     * @param {RootState} initState Your app's initial state
+     * @param {Redux.Middleware[]} middleware Optional Redux middlewares
+     * @param {Redux.StoreEnhancer<RootState>[]} Optional Redux store enhancers
      */
-    attach(store: Store<RootState>) {
+    configureStore(
+        reducer: Redux.Reducer<RootState>,
+        initState: RootState,
+        middleware: Redux.Middleware[] = [],
+        enhancers: Redux.StoreEnhancer<RootState>[] = []) {
+
         invariant(!this._store, 'Store already attached!');
+
+        const finalCreateStore = <Redux.StoreEnhancerStoreCreator<RootState>>compose(
+            applyMiddleware(...middleware),
+            ...enhancers
+            )(createStore);
+        const store = finalCreateStore(reducer, initState);
 
         this._store = store;
         this._store$ = new BehaviorSubject(store.getState());
@@ -59,7 +85,6 @@ export class NgRedux<RootState> {
 
         Object.assign(this, cleanedStore);
     }
-
 
     /**
      * Get an observable from the attached Redux store.

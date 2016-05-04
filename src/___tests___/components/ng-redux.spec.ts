@@ -17,10 +17,10 @@ class MockApplicationRef {
 }
 
 describe('Connector', () => {
-  let store;
-  let connector;
+  let ngRedux;
   let targetObj;
   let defaultState;
+  let rootReducer;
   let mockAppRef;
 
   beforeEach(() => {
@@ -28,42 +28,42 @@ describe('Connector', () => {
       foo: 'bar',
       baz: -1
     };
-    store = createStore((state = defaultState, action) => {
+    rootReducer = (state = defaultState, action) => {
       const newState = Object.assign({}, state, { baz: action.payload });
       return newState;
-    });
+    };
     targetObj = {};
     mockAppRef = {
       tick: sinon.spy()
     }
-    connector = new NgRedux(mockAppRef);
-    connector.attach(store);
+    ngRedux = new NgRedux(mockAppRef);
+    ngRedux.configureStore(rootReducer, defaultState);
   });
 
   it('Should throw when target is not a Function or a plain object', () => {
-    expect(connector.connect(returnPojo).bind(connector, 15))
+    expect(ngRedux.connect(returnPojo).bind(ngRedux, 15))
       .to.throw(Error);
-    expect(connector.connect(returnPojo).bind(connector, undefined))
+    expect(ngRedux.connect(returnPojo).bind(ngRedux, undefined))
       .to.throw(Error);
-    expect(connector.connect(returnPojo).bind(connector, 'test'))
+    expect(ngRedux.connect(returnPojo).bind(ngRedux, 'test'))
       .to.throw(Error);
 
-    expect(connector.connect(returnPojo).bind(connector, {}))
+    expect(ngRedux.connect(returnPojo).bind(ngRedux, {}))
       .not.to.throw(Error);
-    expect(connector.connect(returnPojo).bind(connector, returnPojo))
+    expect(ngRedux.connect(returnPojo).bind(ngRedux, returnPojo))
       .not.to.throw(Error);
 
   });
 
   it('Should throw when selector does not return a plain object', () => {
-    expect(connector.connect.bind(connector, state => state.foo))
+    expect(ngRedux.connect.bind(ngRedux, state => state.foo))
       .to.throw(Error);
   });
 
 
   it('Should extend target (Object) with selected state once directly after ' +
     'creation', () => {
-      connector.connect(
+      ngRedux.connect(
         () => ({
           vm: { test: 1 }
         }))(targetObj);
@@ -73,44 +73,44 @@ describe('Connector', () => {
 
   it('Should update the target (Object) passed to connect when the store ' +
     'updates', () => {
-      connector.connect(state => state)(targetObj);
-      store.dispatch({ type: 'ACTION', payload: 0 });
+      ngRedux.connect(state => state)(targetObj);
+      ngRedux.dispatch({ type: 'ACTION', payload: 0 });
       expect(targetObj.baz).to.equal(0);
-      store.dispatch({ type: 'ACTION', payload: 7 });
+      ngRedux.dispatch({ type: 'ACTION', payload: 7 });
       expect(targetObj.baz).to.equal(7);
     });
 
   it('Should prevent unnecessary updates when state does not change ' +
     '(shallowly)', () => {
-      connector.connect(state => state)(targetObj);
-      store.dispatch({ type: 'ACTION', payload: 5 });
+      ngRedux.connect(state => state)(targetObj);
+      ngRedux.dispatch({ type: 'ACTION', payload: 5 });
 
       expect(targetObj.baz).to.equal(5);
 
       targetObj.baz = 0;
 
       //this should not replace our mutation, since the state didn't change
-      store.dispatch({ type: 'ACTION', payload: 5 });
+      ngRedux.dispatch({ type: 'ACTION', payload: 5 });
 
       expect(targetObj.baz).to.equal(0);
     });
 
   it('Should extend target (object) with actionCreators', () => {
-    connector.connect(returnPojo,
+    ngRedux.connect(returnPojo,
       { ac1: returnPojo, ac2: () => { } })(targetObj);
     expect(_.isFunction(targetObj.ac1)).to.equal(true);
     expect(_.isFunction(targetObj.ac2)).to.equal(true);
   });
 
   it('Should return an unsubscribing function', () => {
-    const unsubscribe = connector.connect(state => state)(targetObj);
-    store.dispatch({ type: 'ACTION', payload: 5 });
+    const unsubscribe = ngRedux.connect(state => state)(targetObj);
+    ngRedux.dispatch({ type: 'ACTION', payload: 5 });
 
     expect(targetObj.baz).to.equal(5);
 
     unsubscribe();
 
-    store.dispatch({ type: 'ACTION', payload: 7 });
+    ngRedux.dispatch({ type: 'ACTION', payload: 7 });
 
     expect(targetObj.baz).to.equal(5);
 
@@ -119,9 +119,9 @@ describe('Connector', () => {
   it('Should provide dispatch to mapDispatchToTarget when receiving a ' +
     'Function', () => {
       let receivedDispatch;
-      connector.connect(
+      ngRedux.connect(
         returnPojo, dispatch => { receivedDispatch = dispatch })(targetObj);
-      expect(receivedDispatch).to.equal(store.dispatch);
+      expect(receivedDispatch).to.be.a('Function');
     });
 
 });
@@ -133,10 +133,10 @@ describe('NgRedux Observable Store', () => {
     baz: number;
   };
   
-  let store;
   let connector;
   let targetObj;
   let defaultState;
+  let rootReducer;
   let ngRedux;
   let mockAppRef;
 
@@ -147,7 +147,7 @@ describe('NgRedux Observable Store', () => {
       baz: -1,
     };
 
-    store = createStore((state = defaultState, action) => {
+    rootReducer = (state = defaultState, action) => {
       switch (action.type) {
         case 'UPDATE_FOO':
           return Object.assign({}, state, { foo: action.payload });
@@ -158,14 +158,14 @@ describe('NgRedux Observable Store', () => {
         default:
           return state;
       }
-    });
+    };
 
     mockAppRef = {
       tick: sinon.spy()
     }
 
     ngRedux = new NgRedux<IAppState>(mockAppRef);
-    ngRedux.attach(store);
+    ngRedux.configureStore(rootReducer, defaultState);
   })
 
   it('should get the initial state', (done) => {
