@@ -1,1 +1,1 @@
-export { NgRedux }   from './components/ng-redux';
+export { NgRedux, select }   from './components/ng-redux';

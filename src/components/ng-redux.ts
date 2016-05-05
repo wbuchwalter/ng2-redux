@@ -32,7 +32,7 @@ export class NgRedux<RootState> {
     private _store$: BehaviorSubject<RootState>;
     private _defaultMapStateToTarget: Function;
     private _defaultMapDispatchToTarget: Function;
-
+    static instance;
     /**
      * Creates an instance of NgRedux.
      *
@@ -40,7 +40,9 @@ export class NgRedux<RootState> {
      *  lets redux dev tools refresh the Angular 2 view when it changes
      *  the store.
      */
-    constructor(private _applicationRef: ApplicationRef) {}
+    constructor(private _applicationRef: ApplicationRef) {
+        NgRedux.instance = this;
+    }
 
     /**
      * configures a Redux store and allows NgRedux to observe and dispatch
@@ -255,4 +257,28 @@ export class NgRedux<RootState> {
 
         return finalMapDispatchToTarget(this._store.dispatch);
     };
+}
+
+export const select = <T>(stateKeyOrFunc?) => (target, key) => {
+    let bindingKey = (key.lastIndexOf('$') === key.length - 1) ? key.substring(0, key.length - 1) : key;
+
+    if (typeof stateKeyOrFunc === 'string') {
+        bindingKey = stateKeyOrFunc;
+    }
+
+    function getter() {
+        return NgRedux.instance.select(typeof stateKeyOrFunc === 'function' ? stateKeyOrFunc : bindingKey);
+        
+            
+    }
+
+    // Delete property.
+    if (delete this[key]) {
+        // Create new property with getter and setter
+        Object.defineProperty(target, key, {
+            get: getter,
+            enumerable: true,
+            configurable: true
+        });
+    }
 }
