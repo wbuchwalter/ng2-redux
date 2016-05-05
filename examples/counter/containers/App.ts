@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { AsyncPipe } from '@angular/common';
-import { NgRedux } from 'ng2-redux';
+import { NgRedux, select } from 'ng2-redux';
 
 import { Counter } from '../components/Counter';
 import * as CounterActions from '../actions/CounterActions';
 import { RootState, enhancers } from '../store/configureStore';
-
+import 'rxjs/add/operator/combineLatest';
 import reducer from '../reducers/index';
 const thunk = require('redux-thunk').default;
 const createLogger = require('redux-logger');
@@ -22,11 +22,14 @@ const createLogger = require('redux-logger');
         [incrementIfOdd]="incrementIfOdd"
         [incrementAsync]="incrementAsync">
     </counter>
+{{test?.x}} - {{test?.y}}
+
   `
 })
 export class App {
-    counter$: Observable<number>;
-
+    @select() counter$: Observable<number>;
+    @select('counter') counter2$: Observable<number>;
+    test: any;
     constructor(private ngRedux: NgRedux<RootState>) {
 
         // Do this once in the top-level app component.
@@ -37,9 +40,17 @@ export class App {
             enhancers
         );
 
+        this.counter$.combineLatest(this.counter2$,
+            (x, y) => {
+                
+                return { x: x * 2, y: y * 3 };
+            }).subscribe(n => {
+                this.test = n;
+            });
+
         // Do this in each component that needs to observe the
         // redux store.
-        this.counter$ = this.ngRedux.select<number>('counter');
+      
     }
 
     increment = () => this.ngRedux.dispatch(
