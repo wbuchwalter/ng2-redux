@@ -278,4 +278,9 @@ describe('NgRedux Observable Store', () => {
     expect(fooData.data).to.equal('update-2');
     expect(spy).to.have.been.calledThrice;
   });
+  
+  it('should force the Angular UI to update when a change is made externally', () => {
+    ngRedux.dispatch({ type: 'UPDATE_FOO', payload: 'update' });
+    expect(mockAppRef.tick).to.have.been.calledOnce;
+  });
 });
