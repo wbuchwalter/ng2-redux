@@ -60,7 +60,7 @@ export class NgRedux<RootState> {
         middleware: Redux.Middleware[] = [],
         enhancers: Redux.StoreEnhancer<RootState>[] = []) {
 
-        invariant(!this._store, 'Store already attached!');
+        invariant(!this._store, 'Store already configured!');
 
         const finalCreateStore = <Redux.StoreEnhancerStoreCreator<RootState>>compose(
             applyMiddleware(...middleware),

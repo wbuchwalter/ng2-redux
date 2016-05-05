@@ -168,6 +168,12 @@ describe('NgRedux Observable Store', () => {
     ngRedux.configureStore(rootReducer, defaultState);
   })
 
+  it('should throw when the store is configured twice', () => {
+    // Configured once in beforeEach, now we try to configure
+    // it a second time.
+    expect(ngRedux.configureStore.bind(ngRedux, rootReducer, defaultState)).to.throw(Error);
+  });
+
   it('should get the initial state', (done) => {
     let state$ = ngRedux
       .select(state => state)
