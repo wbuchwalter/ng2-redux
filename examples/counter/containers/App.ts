@@ -6,8 +6,9 @@ import { Counter } from '../components/Counter';
 import { CounterInfo } from '../components/CounterInfo';
 import * as CounterActions from '../actions/CounterActions';
 import { RootState, enhancers } from '../store/configureStore';
-
+import { Inject } from '@angular/core';
 import reducer from '../reducers/index';
+import { CapsActions } from '../actions/CapsActions';
 const thunk = require('redux-thunk').default;
 const createLogger = require('redux-logger');
 
@@ -22,7 +23,8 @@ const createLogger = require('redux-logger');
 })
 export class App {
 
-    constructor(private ngRedux: NgRedux<RootState>) {
+    constructor(private ngRedux: NgRedux<RootState>,
+    capsActions: CapsActions) {
 
         // Do this once in the top-level app component.
         this.ngRedux.configureStore(
@@ -31,7 +33,7 @@ export class App {
             [ thunk, createLogger()  ],
             enhancers
         );
-
+        this.ngRedux.dispatch(capsActions.makeUpper('can I'));
     }
 
 }
