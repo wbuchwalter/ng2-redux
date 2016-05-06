@@ -6,7 +6,7 @@ For Angular 1 see [ng-redux](https://github.com/wbuchwalter/ng-redux)
 [![Circle CI](https://circleci.com/gh/angular-redux/ng2-redux/tree/master.svg?style=svg)](https://circleci.com/gh/angular-redux/ng2-redux/tree/master)
 [![npm version](https://img.shields.io/npm/v/ng2-redux.svg?style=flat-square)](https://www.npmjs.com/package/ng2-redux)
 
-ng2-redux lets you easily connect your Angular 2 components with Redux.
+`ng2-redux` lets you easily connect your Angular 2 components with Redux.
 
 ## Table of Contents
 
@@ -46,10 +46,10 @@ import { App } from './containers/App';
 bootstrap(App, [ NgRedux ]);
 ```
 
-Once you've done this, you'll be able to inject 'NgRedux' into your
+Once you've done this, you'll be able to inject `NgRedux` into your
 Angular 2 components. In your top-level app component, you
-can configure your Redux store with reducers, initiali state, 
-and optionally middlewares and enhancers as you would in Redux directly.
+can configure your Redux store with reducers, initial state,
+and optionally middleware and enhancers as you would in Redux directly.
 
 ```typescript
 import { NgRedux } from 'ng2-redux';
@@ -75,23 +75,42 @@ Now your Angular 2 app has been reduxified!
 
 ## Usage
 
-`ng2-redux` has three main usage patterns: `the decorator interface`, the `select` pattern and the `connect` pattern.
+`ng2-redux` has three main usage patterns:
+
+1. The decorator interface.
+2. The `select` pattern.
+3. The `connect` pattern.
 
 ### The Decorator Interface
 
-This is the simplest and cleanest approach. It attempts to reduce boiler plate code, separates Redux concerns allowing the class's code to focus on it's business concerns and smoothens the learning curve. It also enables more modular components to be created with minimum effort, some of which can be seen in the examples below.
+This is the simplest and cleanest approach. It signigicantly reduces
+boilerplate code and separates Redux concerns from the class's business
+logic.
 
-The decorator interface currently consists of 3 decorators: 
-- `@dispatch` ( configures new methods on the class to dispatch Redux actions )
-- `@select` ( selects store slices and makes them available as properties on the class )
-- `@dispatchAll` ( just like `@dispatch`, but in batches )
+It also reduces the learning curve associated with Redux configuration.
+Finally, it reduces the effort associated with granular, modular components
+in Angular 2 as shown in the examples below.
 
-> Note: all decorators rely on NgRedux to be injected and configured in the angular app's Root Component. Aside from that, the decorators fully encapsulate the Redux connectivity and the NgRedux injectable doesn't need to be injected in any other class that needs to use the decorators, removing the need to implement a constructor and call functions within the component's lifecycle only for the purpose of NgRedux.
+The decorator interface currently consists of 3 decorators:
+- `@dispatch`: attaches redux action creators to methods in your component.
+- `@select`: selects store slices and makes them available as `Observable`
+properties on your component.
+- `@dispatchAll`: attaches a map of action creators to your component.
 
-#### The @dispatch decorator
+> Note: all decorators require that `NgRedux` be injected and configured in the
+angular app's root component. Aside from that, the decorators fully encapsulate
+the Redux connectivity and `NgRedux` doesn't need to be injected in any other
+class that needs to use the decorators. This removes the need to implement a
+constructor and call functions within the component's lifecycle simply for
+Redux connectivity.
 
-The `@dispatch` decorator can be added to the property of any angular component/injectable class to allow it to dispatch an action creator.
-It will decorate a property of a class, replacing it with a function that will dispatch the action creator it receives as a parameter. 
+#### The `@dispatch` decorator
+
+The `@dispatch` decorator can be added to the property of any angular
+component or injectable class to allow it to dispatch an action creator.
+
+It will decorate a property of a class, replacing it with a function that
+will dispatch the action creator it receives as a parameter.
 
 ```typescript
 import { Component } from '@angular2/core';
@@ -105,25 +124,35 @@ import { increment } from '../actions/CounterActions';
     template: `
     <button (click)="increment()"></button>
     `
- })
- export class IncrementButton {
+})
+export class IncrementButton {
     // decorate a function on the class called increment
-    // which will dispatch the increment action creator 
+    // which will dispatch the increment action creator
     //   imported from '../actions/CounterActions'
     @dispatch(increment) increment;
- }
-
+}
 ```
 
-#### The @select decorator
+#### The `@select` decorator
 
-The `@select` decorator can be added to the property of any class or angular component/injectable.
-It will decorate the property into an observable which observes the Redux Store Value which is selected by the decorator's parameter.
-The decorator expects to receive a `string`, a `function` or no parameter at all. 
+The `@select` decorator can be added to a property of any Angular component
+or injectable.
 
-- If a `string` is passed the `@select` decorator will attempt to observe a store property whose name matches the value represented by the `string`.
-- If a `function` is passed the `@select` decorator will attempt to use that function as a selector on the RxJs observable. 
-- If nothing is passed then the `@select` decorator will attempt to use the name of the class property to find a matching value in the Redux store. Note that a utility is in place here where any $ characters will be ignored from the class property's name.
+It will replace the property with an `Observable` which observes the specified
+slice of the Redux store.
+
+The decorator expects to receive a `string`, a `function` or no parameter at
+all.
+
+- If a `string` is passed the `@select` decorator will attempt to observe a
+store property whose name matches the value represented by the `string`.
+- If a `function` is passed the `@select` decorator will attempt to use that
+function as a selector on the RxJs observable.
+- If nothing is passed then the `@select` decorator will attempt to use the
+name of the class property to find a matching value in the Redux store. Note
+that a utility is in place here where any $ characters will be ignored from
+the class property's name; this is to respect the convention of suffixing
+`Observable` properties with `$`.
 
 ```typescript
 import { Component } from '@angular2/core';
@@ -146,30 +175,35 @@ export class CounterValue {
 
     // this selects `counter` from the store and attaches it to this property
     // it uses the property name to select, and ignores the $ from it
-    @select() counter$;
+    @select() counter$: Observable<number>;
 
     // this selects `counter` from the store and attaches it to this property
-    @select() counter;
+    @select() counter: Observable<number>;
 
     // this selects `counter` from the store and attaches it to this property
-    @select('counter') counterSelectedWithString;
+    @select('counter') counterSelectedWithString: Observable<number>;
 
     // this selects `counter` from the store and attaches it to this property
-    @select(state => state.counter) counterSelectedWithFunction;
+    @select(state => state.counter) counterSelectedWithFunction: Observable<number>;
 
     // this selects `counter` from the store and multiples it by two
-    @select(state => state.counter * 2) 
-    counterSelectedWithFuntionAndMultipliedByTwo: Observable<any>;
-
+    @select(state => state.counter * 2)
+    counterSelectedWithFuntionAndMultipliedByTwo: Observable<number>;
 }
 ```
 
 #### The @dispatchAll decorator
 
-A class decorator that does the exact same thing that the old `ngRedux.mapDispatchToThis` used to do.
-The benefit of using this decorator is that it reduces code even further ( and quite significantly, the more actions need to be added ).
-A potential caveat however could be that this decorator magically attaches functions to your class without making it very obvious in the code. Some teams could find this confusing. In that case the `@dispatch` decorator offers the perfect alternative.
+A class decorator that does the same thing that the `ngRedux.mapDispatchToThis`
+does for the `connect` pattern.
 
+The benefit of using this decorator is that it reduces code even further (and
+quite significantly, the more actions need to be added).
+
+A potential caveat however could be that this decorator magically attaches
+functions to your class without making it very obvious in the code. Some teams
+may find this confusing. In that case the `@dispatch` decorator offers a
+perfect alternative.
 
 ```typescript
 import { Component } from '@angular2/core';
@@ -192,17 +226,27 @@ import * as CounterActions from '../actions/CounterActions';
 export class CounterMenu {}
 ```
 
-> Note: Since the `@dispatchAll` decorates the class with new methods which are never declared as properties of the class, the methods will only be available within the template. In order to call the methods from the class's code, their names can be predefined in the class, otherwise typescript won't know they exist, and will not compile.
+> Note: Since `@dispatchAll` decorates the class with new methods which are
+never declared as properties of the class, the methods will only be available
+within the template. In order to call the methods from the class's code, their
+names can be predefined in the class, otherwise typescript won't know they
+exist, and will not compile.
 
 #### The decorator interface: putting it all together
 
-The decorator interface allows classes to focus on what they represent. Through this simplification it makes it easier to design better encapsulated components which can aggregate their behaviour and data internally, from multiple reducers and store slices, without complicating the code.
+The decorator interface allows classes to focus on what they represent. This
+simplification makes it easier to design better-encapsulated components which
+can aggregate their behaviour and data internally, from multiple reducers and
+store slices, without a lot of boilerplate.
 
-In the example below we can see a fully encapsulated `counter` component, which doesn't require a smart component to pass it's data, aggregates behaviour from multiple reducers using the `@dispatch` decorator to easily attach action creators imported from anywhere, and showcases some internal logic combining multiple values selected from the store using the versatile `@select` decorator.
+In the example below we can see a fully encapsulated `counter` component, which
+doesn't require a smart component to pass its data, aggregates behaviour from
+multiple reducers using the `@dispatch` decorator, and showcases some internal
+logic combining multiple values from the store using the `@select` decorator.
 
 ```typescript
 import { Component } from '@angular2/core';
-import { dispatch, 
+import { dispatch,
          dispatchAll,
          select } from 'ng2-redux';
 import { AsyncPipe } from '@angular2/common';
@@ -226,32 +270,24 @@ import 'rxjs/add/operator/combineLatest';
 @dispatchAll(CounterActions)
 export class Counter {
 
-    @select() counter;
-    @select(state => state.counter * state.counter) counterDouble;
+    @select() counter: Observable<number>;
+    @select(state => state.counter * state.counter) counterDouble: Observable<number>;
 
-    doublePlusCounter: any;
+    doublePlusCounter$: counter
+      .combineLatest(this.counterDouble,
+          (latestCounter, latestCounterDouble) => {
+              return latestCounter + latestCounterDouble;
+        });
 
     @dispatch(logout) actionFromAnotherReducer;
-		
-    ngOnInit() {
-        this.counter
-            .combineLatest(this.counterDouble, 
-                (latestCounter, latestCounterDouble) => {
-                    return latestCounter + latestCounterDouble;
-             })
-            .subscribe(n => {
-                this.doublePlusCounter = n;
-            });
-    }
 }
 ```
 
-
-
 ### The Select Pattern
 
-This is a good approach for those that don't want to use decorators yet still want to use Observables to interface
-more cleanly with common Angular 2 usage patterns.
+This is a good approach for those that don't want to use decorators yet still
+want to use `Observables` to interface more cleanly with common Angular 2 usage
+patterns.
 
 In this approach, we use `ngRedux.select()` to get observables from slices of our store
 state:
@@ -282,9 +318,7 @@ interface IAppState {
 export class Counter {
   private count$: Observable<number>;
 
-  constructor(private ngRedux: NgRedux<IAppState>) {}
-
-  ngOnInit() {
+  constructor(private ngRedux: NgRedux<IAppState>) {
     let {increment, decrement } = CounterActions;
     this.counter$ = this.ngRedux.select('counter');
   }
@@ -395,7 +429,9 @@ export class SessionActions {
   constructor(private http: Http) {}
 
   // Here's an action creator that uses HTTP.
-  loginUser(credentials) {
+  // Note the use of an arrow function to ensure that 'this'
+  // is bound correctly.
+  loginUser(credentials) = () => {
     return (dispatch, getState) => {
       dispatch({type: LOGIN_USER_PENDING});
 
@@ -408,14 +444,14 @@ export class SessionActions {
   }
 
   // Just a regular, synchronous action creator.
-  logoutUser() {
+  logoutUser = () => {
     return { type: LOGOUT_USER };
   }
 }
 ```
 
-To use these action creators, we can just go ahead an map them
-to our container component:
+To use these action creators, we can just go ahead attach them
+to our component using `@dispatch`:
 
 ```typescript
 import { Component } from '@angular/core';
@@ -424,23 +460,26 @@ import { SessionActions } from '../actions/session';
 import { IAppState } from './app-state';
 
 @Component({
+  template: `
+    <button (click)="login()">Log In</button>
+    <button (click)="logout()">Log Out</button>
+    `
   // ... etc.
 })
 export class LoginPage {
   // Here we inject the SessionActions instance into our
   // smart component.
   constructor(
-    private ngRedux: NgRedux<IAppState>,
-    private sessionActions: SessionActions) {
-  }
+    private sessionActions: SessionActions
+    private ngRedux: NgRedux) {}
 
-  login(credentials) {
-    this.ngRedux.dispatch(
-      <any>this.sessionActions.loginUser(credentials));
+  // And then hook it up to Redux and our template.
+  login() {
+    this.ngRedux.dispatch(this.sessionActions.loginUser);
   }
 
   logout() {
-    this.ngRedux.dispatch(this.sessionActions.logoutUser());
+    this.ngRedux.dispatch(this.sessionActions.logout);
   }
 };
 ```
@@ -461,6 +500,9 @@ import 'rxjs/add/operator/toPromise';
 export class LogRemoteName {
   constructor(private http: Http) {}
 
+  // Arrow functions to ensure a properly-bound 'this'.
+  // They also provide a cleaner way to express Redux's
+  // curried middleware.
   middleware = store => next => action => {
     console.log('getting user name');
     this.http.get('http://jsonplaceholder.typicode.com/users/1')
@@ -479,8 +521,8 @@ an `@Injectable` class that can itself receive services from Angular's dependenc
 injector.
 
 Note the arrow function called `middleware`: this is what we can pass to the middlewares
-parameter when we initialize ngRedux in our top-level component. We use an arrow function
-to make sure that what we pass to ngRedux has a properly-bound function context.
+parameter when we initialize `NgRedux` in our top-level component. We use an arrow function
+to make sure that what we pass to `NgRedux` has a properly-bound function context.
 
 ```typescript
 import { LogRemoteName } from './middleware/log-remote-name';
@@ -507,7 +549,8 @@ class App {
 
 ### Using DevTools
 
-Ng2Redux is fully compatible with the Chrome extension version of the Redux dev tools:
+Ng2Redux is fully compatible with the Chrome extension version of the Redux dev
+tools:
 
 https://github.com/zalmoxisus/redux-devtools-extension
 
@@ -547,24 +590,27 @@ __Arguments:__
 * `rootReducer` \(*Reducer*): Your top-level Redux reducer.
 * `initialState` \(*Object): The desired initial state of your store.
 * `middleware` \(*Middleware[]*): An optional array of Redux middleware functions.
-* `enhancers` \(*StoreEnhancer[StoreEnhancer]*): An optional array of Redux store enhancer functions.
+* `enhancers` \(*StoreEnhancer[StoreEnhancer]*): An optional array of Redux
+store enhancer functions.
 
 ### select(key | function,[comparer]) => Observable
 
-Exposes a slice of state as an observable. Accepts either a property name or a selector function.
+Exposes a slice of state as an observable. Accepts either a property name or a
+selector function.
 
-If using the async pipe, you do not need to subscribe to it explicitly, but can use the angular
-Async pipe to bind its values into your template.
+If using the async pipe, you do not need to subscribe to it explicitly, but can
+use the angular Async pipe to bind its values into your template.
 
 __Arguments:__
 
-* `key` \(*string*): A key within the state that you want to subscribe to. 
-* `selector` \(*Function*): A function that accepts the application state, and returns the slice you want subscribe to for changes. 
+* `key` \(*string*): A key within the state that you want to subscribe to.
+* `selector` \(*Function*): A function that accepts the application state, and
+returns the slice you want subscribe to for changes.
 
 e.g:
 ```typescript
 this.counter$ = this.ngRedux.select(state=>state.counter);
-// or 
+// or
 this.counterSubscription = this.ngRedux
   .select(state=>state.counter)
   .subscribe(count=>this.counter = count);
@@ -577,12 +623,14 @@ this.counter$ = this.ngRedux.select('counter');
 
 Property decorator.
 
-Attaches an observable to the property which will reflect the latest value in the Redux store.
+Attaches an observable to the property which will reflect the latest value in
+the Redux store.
 
 __Arguments:__
 
 * `key` \(*string*): A key within the state that you want to subscribe to.
-* `selector` \(*Function*): A function that accepts the application state, and returns the slice you want to subscribe to for changes.
+* `selector` \(*Function*): A function that accepts the application state, and
+returns the slice you want to subscribe to for changes.
 
 e.g. see [the @select decorator](#the-select-decorator)
 
@@ -590,7 +638,8 @@ e.g. see [the @select decorator](#the-select-decorator)
 
 Property decorator.
 
-Attaches a class instance method which will dispatch the action creator passed as the function.
+Attaches a class instance method which will dispatch the action creator passed
+as the function.
 
 __Arguments:__
 
@@ -602,13 +651,15 @@ e.g. see [the @dispatch decorator](#the-dispatch-decorator)
 
 Class decorator.
 
-Attaches class instance methods to the class which will dispatch every action creator function found on the received object. 
+Attaches class instance methods to the class which will dispatch every action
+creator function found on the received object.
 
 __Arguments:__
 
-* `obj` \(*Object*): An object containing Action Creator functions. Anything else other than a function will be ignored. 
+* `obj` \(*Object*): An object containing Action Creator functions. Anything
+else other than a function will be ignored.
 
-That is if: 
+That is if:
 
 ```typescript
 @dispatchAll({
@@ -618,7 +669,9 @@ That is if:
 class Counter {}
 ```
 
-then the counter component will have two methods: `this.increment` and `this.decrement` which will dispatch the action creators from the received object.
+then the counter component will have two methods: `this.increment` and
+`this.decrement` which will dispatch the action creators from the received
+object.
 
 e.g. see [the @dispatchAll decorator](#the-dispatchall-decorator)
 
@@ -628,24 +681,45 @@ Connects an Angular component to Redux, and maps action creators and store
 properties onto the component instance.
 
 __Arguments:__
-* `mapStateToTarget` \(*Function*): connect will subscribe to Redux store updates. Any time it updates, mapStateToTarget will be called. Its result must be a plain object, and it will be merged into `target`. If you have a component which simply triggers actions without needing any state you can pass null to `mapStateToTarget`.
-* [`mapDispatchToTarget`] \(*Object* or *Function*): Optional. If an object is passed, each function inside it will be assumed to be a Redux action creator. An object with the same function names, but bound to a Redux store, will be merged onto `target`. If a function is passed, it will be given `dispatch`. It’s up to you to return an object that somehow uses `dispatch` to bind action creators in your own way. (Tip: you may use the [`bindActionCreators()`](http://gaearon.github.io/redux/docs/api/bindActionCreators.html) helper from Redux.).
 
-*You then need to invoke the function a second time, with `target` as parameter:*
-* `target` \(*Object* or *Function*): If passed an object, the results of `mapStateToTarget` and `mapDispatchToTarget` will be merged onto it. If passed a function, the function will receive the results of `mapStateToTarget` and `mapDispatchToTarget` as parameters.
+* `mapStateToTarget` \(*Function*): connect will subscribe to Redux store
+updates. Any time it updates, mapStateToTarget will be called. Its result
+must be a plain object, and it will be merged into `target`. If you have
+a component which simply triggers actions without needing any state you
+can pass null to `mapStateToTarget`.
+* [`mapDispatchToTarget`] \(*Object* or *Function*): Optional. If an object
+is passed, each function inside it will be assumed to be a Redux action
+creator. An object with the same function names, but bound to a Redux store,
+will be merged onto `target`. If a function is passed, it will be given
+`dispatch`. It’s up to you to return an object that somehow uses `dispatch`
+to bind action creators in your own way. (Tip: you may use the
+[`bindActionCreators()`](http://gaearon.github.io/redux/docs/api/bindActionCreators.html)
+helper from Redux.).
+
+*You then need to invoke the function a second time, with `target` as
+parameter:*
+
+* `target` \(*Object* or *Function*): If passed an object, the results of
+`mapStateToTarget` and `mapDispatchToTarget` will be merged onto it. If
+passed a function, the function will receive the results of `mapStateToTarget`
+and `mapDispatchToTarget` as parameters.
 
 e.g:
 ```typescript
 connect(this.mapStateToThis, this.mapDispatchToThis)(this);
-//Or
+// or:
 connect(this.mapState, this.mapDispatch)((selectedState, actions) => {/* ... */});
 ```
 
 __Remarks:__
-* The `mapStateToTarget` function takes a single argument of the entire Redux store’s state and returns an object to be passed as props. It is often called a selector. Use reselect to efficiently compose selectors and compute derived data.
+* The `mapStateToTarget` function takes a single argument of the entire Redux
+store’s state and returns an object to be passed as props. It is often called a
+selector. Use reselect to efficiently compose selectors and compute derived
+data.
 
 ### Store API
-All of redux's store methods (i.e. `dispatch`, `subscribe` and `getState`) are exposed by $ngRedux and can be accessed directly. For example:
+All of redux's store methods (i.e. `dispatch`, `subscribe` and `getState`) are
+exposed by $ngRedux and can be accessed directly. For example:
 
 ```typescript
 ngRedux.subscribe(() => {
@@ -654,4 +728,5 @@ ngRedux.subscribe(() => {
 })
 ```
 
-This means that you are free to use Redux basic API in advanced cases where `connect`'s API would not fill your needs.
+This means that you are free to use Redux basic API in advanced cases where
+`connect`'s API doesn't fill your needs.

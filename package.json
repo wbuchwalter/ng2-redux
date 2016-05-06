@@ -14,12 +14,13 @@
   "typings": "./lib/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/wbuchwalter/ng2-redux.git"
+    "url": "git+ssh://git@github.com/angular-redux/ng2-redux.git"
   },
   "keywords": [
     "Redux",
     "Flux",
-    "Angular"
+    "Angular",
+    "Angular2"
   ],
   "author": "William Buchwalter <wbuchwalter@gmail.com> (http://github.com/wbuchwalter)",
   "contributors": [
@@ -34,7 +35,12 @@
     },
     {
       "name": "Seth Davenport",
+      "email": "seth@rangle.io",
       "url": "https://github.com/SethDavenport"
+    },
+    {
+      "name": "Cosmin Ronnin",
+      "url": "https://github.com/kosz"
     }
   ],
   "license": "MIT",
