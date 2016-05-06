@@ -1,62 +1,124 @@
+import * as invariant from 'invariant';
+import { isFunction, isObject, isPlainObject, omit, assign } from 'lodash';
+import * as Redux from 'redux';
+
+import {
+    Store,
+    Action,
+    ActionCreator,
+    Reducer,
+    createStore,
+    applyMiddleware,
+    compose
+} from 'redux';
+
+import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/distinctUntilChanged';
+import { Injectable, ApplicationRef } from '@angular/core';
+
 import shallowEqual from '../utils/shallowEqual';
 import wrapActionCreators from '../utils/wrapActionCreators';
-import * as Redux from 'redux';
-import * as invariant from 'invariant';
-import * as _ from 'lodash';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { Store, Action, ActionCreator, Reducer } from 'redux';
-import {Injectable} from '@angular/core';
 
 const VALID_SELECTORS = ['string', 'number', 'symbol', 'function'];
-const ERROR_MESSAGE = `Expected selector to be one of: 
-${VALID_SELECTORS.join(',')}. Instead recieved %s`;
+const ERROR_MESSAGE = `Expected selector to be one of:
+    ${VALID_SELECTORS.join(',')}. Instead recieved %s`;
 const checkSelector = (s) => VALID_SELECTORS.indexOf(typeof s, 0) >= 0;
 
 @Injectable()
 export class NgRedux<RootState> {
-    private _store: Redux.Store<RootState>;
+    private _store: Store<RootState>;
     private _store$: BehaviorSubject<RootState>;
     private _defaultMapStateToTarget: Function;
     private _defaultMapDispatchToTarget: Function;
 
+    static instance;
 
     /**
      * Creates an instance of NgRedux.
-     * 
-     * @param {Redux.Store<RootState>} store Redux store 
+     *
+     * @param {ApplicationRef} applicationRef Angular application ref:
+     *  lets redux dev tools refresh the Angular 2 view when it changes
+     *  the store.
      */
-    constructor(store: Redux.Store<RootState>) {
+    constructor(private _applicationRef: ApplicationRef) {
+      NgRedux.instance = this;
+    }
+
+    /**
+     * configures a Redux store and allows NgRedux to observe and dispatch
+     * to it.
+     * 
+     * This should only be called once for the lifetime of your app, for
+     * example in the constructor of your root component.
+     *
+     * @param {Redux.Reducer<RootState>} reducer Your app's root reducer
+     * @param {RootState} initState Your app's initial state
+     * @param {Redux.Middleware[]} middleware Optional Redux middlewares
+     * @param {Redux.StoreEnhancer<RootState>[]} Optional Redux store enhancers
+     */
+    configureStore(
+        reducer: Redux.Reducer<RootState>,
+        initState: RootState,
+        middleware: Redux.Middleware[] = [],
+        enhancers: Redux.StoreEnhancer<RootState>[] = []) {
+
+        invariant(!this._store, 'Store already configured!');
+
+        const finalCreateStore
+            = <Redux.StoreEnhancerStoreCreator<RootState>>compose(
+                applyMiddleware(...middleware),
+                ...enhancers
+                )(createStore);
+        const store = finalCreateStore(reducer, initState);
+
         this._store = store;
-        this._store$ = this.observableFromStore(store);
-        this._store.subscribe(() => this._store$.next(this._store.getState()));
+        this._store$ = new BehaviorSubject(store.getState());
+        this._store.subscribe(() => {
+            this._store$.next(this._store.getState());
+
+            // For devTools support.
+            this._applicationRef.tick();
+        });
+
         this._defaultMapStateToTarget = () => ({});
         this._defaultMapDispatchToTarget = dispatch => ({ dispatch });
-        const cleanedStore = _.omit(store, ['dispatch', 'getState', 'subscribe', 'replaceReducer'])
+
+        const cleanedStore = omit(store, [
+            'dispatch',
+            'getState',
+            'subscribe',
+            'replaceReducer']);
         Object.assign(this, cleanedStore);
     }
 
     /**
-     * Create an observable from a Redux store. 
-     * 
-     * @param {Store<RootState>} store Redux store to create an observable from
+     * Get an observable from the attached Redux store.
+     *
      * @returns {BehaviorSubject<RootState>}
      */
-    observableFromStore = (store: Store<RootState>) => {
-        return new BehaviorSubject(store.getState());
+    observableFromStore(): BehaviorSubject<RootState> {
+        return this._store$;
     };
-
 
     /**
      * Select a slice of state to expose as an observable. 
-     * 
+     *
      * @template S
-     * @param {(string | number | symbol | ((state: RootState) => S))} selector key or function to select a part of the state
-     * @param {(x: any, y: any) => boolean} [comparer]  optional comparison function called to test if an item is distinct from the previous item in the source.
-     * @returns {Observable<S>} an Observable that emits items from the source Observable with distinct values.
+     * @param {(string | number | symbol | ((state: RootState) => S))}
+     * selector key or function to select a part of the state
+     * @param {(x: any, y: any) => boolean} [comparer] Optional
+     * comparison function called to test if an item is distinct
+     * from the previous item in the source.
+     *
+     * @returns {Observable<S>} an Observable that emits items from the
+     * source Observable with distinct values.
      */
-    select<S>(selector: string | number | symbol | ((state: RootState) => S),
+    select<S>(
+        selector: string | number | symbol | ((state: RootState) => S),
         comparer?: (x: any, y: any) => boolean): Observable<S> {
-
 
         invariant(checkSelector(selector), ERROR_MESSAGE, selector);
 
@@ -71,8 +133,8 @@ export class NgRedux<RootState> {
             return this._store$
                 .map(selector).distinctUntilChanged(comparer);
         }
-
     }
+
     wrapActionCreators = (actions) => wrapActionCreators(actions);
 
     /**
@@ -87,9 +149,25 @@ export class NgRedux<RootState> {
     /**
      * Connect your component to your redux state. 
      * 
-     * @param {*} mapStateToTarget connect will subscribe to Redux store updates. Any time it updates, mapStateToTarget will be called. Its result must be a plain object, and it will be merged into `target`. If you have a component which simply triggers actions without needing any state you can pass null to `mapStateToTarget`.
-     * @param {*} mapDispatchToTarget  Optional. If an object is passed, each function inside it will be assumed to be a Redux action creator. An object with the same function names, but bound to a Redux store, will be merged onto `target`. If a function is passed, it will be given `dispatch`. It’s up to you to return an object that somehow uses `dispatch` to bind action creators in your own way. (Tip: you may use the [`bindActionCreators()`](http://gaearon.github.io/redux/docs/api/bindActionCreators.html) helper from Redux.).
-     * @returns a function that accepts a target object to map the state and/or dispatch onto, or a function that will recieve the result of mapStateToTarget and mapDispatchToTarget as paramaters
+     * @param {*} mapStateToTarget connect will subscribe to Redux store
+     * updates. Any time it updates, mapStateToTarget will be called. Its
+     * result must be a plain object, and it will be merged into `target`.
+     * If you have a component which simply triggers actions without needing
+     * any state you can pass null to `mapStateToTarget`.
+     * 
+     * @param {*} mapDispatchToTarget  Optional. If an object is passed,
+     * each function inside it will be assumed to be a Redux action creator.
+     * An object with the same function names, but bound to a Redux store,
+     * will be merged onto `target`. If a function is passed, it will be given
+     * `dispatch`. It’s up to you to return an object that somehow uses
+     * `dispatch` to bind action creators in your own way. (Tip: you may
+     * use the 
+     * [`bindActionCreators()`]
+     * (http://gaearon.github.io/redux/docs/api/bindActionCreators.html)
+     * helper from Redux.).
+     * @returns a function that accepts a target object to map the state
+     * and/or dispatch onto, or a function that will recieve the result of
+     * mapStateToTarget and mapDispatchToTarget as paramaters
      */
     connect = (mapStateToTarget: any, mapDispatchToTarget: any) => {
 
@@ -97,7 +175,7 @@ export class NgRedux<RootState> {
             || this._defaultMapStateToTarget;
 
         invariant(
-            _.isFunction(finalMapStateToTarget),
+            isFunction(finalMapStateToTarget),
             'mapStateToTarget must be a Function. Instead received %s.',
             finalMapStateToTarget);
 
@@ -109,7 +187,7 @@ export class NgRedux<RootState> {
         return (target) => {
 
             invariant(
-                _.isFunction(target) || _.isObject(target),
+                isFunction(target) || isObject(target),
                 'The target parameter passed to connect must be a Function or' +
                 'a plain object.'
             );
@@ -129,9 +207,7 @@ export class NgRedux<RootState> {
             });
             return unsubscribe;
         };
-
     };
-
 
 
     /**
@@ -166,7 +242,6 @@ export class NgRedux<RootState> {
         return this._store.replaceReducer(nextReducer);
     };
 
-
     /**
      * Dispatch an action to Redux 
      */
@@ -175,10 +250,10 @@ export class NgRedux<RootState> {
     };
 
     private updateTarget(target, StateSlice, dispatch) {
-        if (_.isFunction(target)) {
+        if (isFunction(target)) {
             target(StateSlice, dispatch);
         } else {
-            _.assign(target, StateSlice, dispatch);
+            assign(target, StateSlice, dispatch);
         }
     }
 
@@ -186,7 +261,7 @@ export class NgRedux<RootState> {
         const slice = mapStateToScope(state);
 
         invariant(
-            _.isPlainObject(slice),
+            isPlainObject(slice),
             '`mapStateToScope` must return an object. Instead received %s.',
             slice
         );
@@ -195,17 +270,17 @@ export class NgRedux<RootState> {
     }
 
     private getBoundActions = (actions) => {
-        const finalMapDispatchToTarget = _.isPlainObject(actions) ?
+        const finalMapDispatchToTarget = isPlainObject(actions) ?
             wrapActionCreators(actions) :
             actions || this._defaultMapDispatchToTarget;
         invariant(
-            _.isPlainObject(finalMapDispatchToTarget)
-            || _.isFunction(finalMapDispatchToTarget),
+            isPlainObject(finalMapDispatchToTarget)
+            || isFunction(finalMapDispatchToTarget),
             'mapDispatchToTarget must be a plain Object or a Function. ' +
             'Instead received % s.',
             finalMapDispatchToTarget);
 
         return finalMapDispatchToTarget(this._store.dispatch);
     };
-
 }
+

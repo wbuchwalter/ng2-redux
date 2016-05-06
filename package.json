@@ -6,18 +6,21 @@
   "scripts": {
     "build": "rimraf ./lib; tsc; rimraf ./lib/___tests___",
     "postinstall": "typings install",
-    "test": "ts-node ./node_modules/mocha/bin/_mocha  --opts ./src/___tests___/mocha.opts",
-    "typings": "rimraf ./typings && typings install"
+    "test": "npm run lint && npm run mocha",
+    "typings": "rimraf ./typings && typings install",
+    "mocha": "ts-node ./node_modules/mocha/bin/_mocha  --opts ./src/___tests___/mocha.opts",
+    "lint": "tslint 'src/**/*.ts' 'examples/counter/**.ts --exclude 'examples/counter/node_modules"
   },
   "typings": "./lib/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/wbuchwalter/ng2-redux.git"
+    "url": "git+ssh://git@github.com/angular-redux/ng2-redux.git"
   },
   "keywords": [
     "Redux",
     "Flux",
-    "Angular"
+    "Angular",
+    "Angular2"
   ],
   "author": "William Buchwalter <wbuchwalter@gmail.com> (http://github.com/wbuchwalter)",
   "contributors": [
@@ -32,7 +35,12 @@
     },
     {
       "name": "Seth Davenport",
+      "email": "seth@rangle.io",
       "url": "https://github.com/SethDavenport"
+    },
+    {
+      "name": "Cosmin Ronnin",
+      "url": "https://github.com/kosz"
     }
   ],
   "license": "MIT",
@@ -55,6 +63,7 @@
     "redux": "^3.4.0",
     "reflect-metadata": "0.1.3",
     "rxjs": "5.0.0-beta.6",
+    "tslint": "^3.9.0",
     "zone.js": "0.6.12"
   },
   "dependencies": {
