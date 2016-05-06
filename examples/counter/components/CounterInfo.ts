@@ -10,24 +10,27 @@ import 'rxjs/add/operator/combineLatest';
      <li>{{ funcCounter$ | async }}</li>
      <li>{{ stringKey$ | async }}</li>
      <li>{{ counterX2$ | async }}</li>
-     <li>{{ foo?.x }} - {{ foo?.y }}</li>
+     <li>{{ reactiveExample$ | async | json }}</li>
+     <li>{{ subscribedValue?.x }} - {{ subscribedValue?.y }}</li>
   <ul>
   `
 })
 export class CounterInfo {
 
-    @select(state => state.counter) funcCounter$;
-    @select('counter') stringKey$;
+    @select(state => state.counter) funcCounter$: Observable<number>;
+    @select('counter') stringKey$: Observable<number>;
     @select(state => state.counter * 2) counterX2$: Observable<any>;
-    foo: any;
 
-    ngOnInit() {
-        this.counterX2$.combineLatest(this.stringKey$, (x, y) => {
-            return { x: x * 2, y: y * 3 };
-        }).subscribe(n => {
-            this.foo = n;
-        })
+    reactiveExample$ = this.counterX2$.combineLatest(this.stringKey$, (x, y) => {
+        return { x: x * 2, y: y * 3 };
+    });
+
+    subscribedValue: any;
+
+    constructor() {
+        this.reactiveExample$.subscribe(n => {
+            this.subscribedValue = n;
+        });
     }
-
 }
     

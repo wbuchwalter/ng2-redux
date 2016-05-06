@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 import { NgRedux,
          dispatchAll,
          select } from 'ng2-redux';
@@ -18,5 +19,5 @@ import * as CounterActions from '../actions/CounterActions';
 })
 @dispatchAll(CounterActions)
 export class Counter {
-    @select() counter$: any;
+    @select() counter$: Observable<number>;
 }
