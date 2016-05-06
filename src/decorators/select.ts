@@ -7,8 +7,12 @@ import { NgRedux } from '../components/ng-redux';
  * @param {string | function} stateKeyOrFunc 
  * An Rxjs selector function or a string indicating the name of the store
  * property to be selected.
- * */
-export const select = <T>(stateKeyOrFunc?) => (target, key) => {
+ * @param {(x: any, y: any) => boolean} [comparer] Optional
+ * comparison function called to test if an item is distinct
+ * from the previous item in the source.
+ **/
+export const select = <T>(stateKeyOrFunc?,
+    comparer?: (x: any, y: any) => boolean) => (target, key) => {
     let bindingKey = (key.lastIndexOf('$') === key.length - 1) ?
         key.substring(0, key.length - 1) : key;
 
@@ -19,7 +23,7 @@ export const select = <T>(stateKeyOrFunc?) => (target, key) => {
     function getter() {
         return NgRedux.instance
             .select(typeof stateKeyOrFunc === 'function' ?
-                    stateKeyOrFunc : bindingKey);
+                    stateKeyOrFunc : bindingKey, comparer);
     }
 
     // Delete property.
