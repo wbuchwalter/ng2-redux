@@ -6,7 +6,48 @@ For Angular 1 see [ng-redux](https://github.com/wbuchwalter/ng-redux)
 [![Circle CI](https://circleci.com/gh/angular-redux/ng2-redux/tree/master.svg?style=svg)](https://circleci.com/gh/angular-redux/ng2-redux/tree/master)
 [![npm version](https://img.shields.io/npm/v/ng2-redux.svg?style=flat-square)](https://www.npmjs.com/package/ng2-redux)
 
-`ng2-redux` lets you easily connect your Angular 2 components with Redux.
+## Why use Redux?
+
+Redux is a predictable state container for complex
+web applications. It uses one-way data-flow and global
+immutable state to make your application easier to reason
+about.
+
+As a mature and established library, Redux also has a
+large community of developer tools and middleware that can help simplify your application
+even further.
+
+## Why use Ng2-Redux?
+
+Redux itself is framework-agnostic, so you need a small extra layer (a
+'binding') to integrate it with a particular framework.
+[react-redux](https://npmjs.com/package/react-redux) fullfils this role for React.
+Ng2-Redux makes Redux work with Angular 2.
+
+Ng2-Redux provides several advantages to the Angular 2 developer:
+
+1. It helps you to use Redux in your Angular 2 application!
+2. It plays well with the Angular 2 dependency injector.
+3. It has first-class support for a TypeScript-based workflow, using
+  the official Redux typings.
+4. It exposes state as RxJS Observables for
+  better integration with Angular 2's API.
+5. It cuts down the boilerplate often associated
+  with Redux using TypeScript decorators for a simple,
+  declarative experience.
+
+Note that this is not a reimplementation of the Redux
+pattern. _Ng2-Redux helps you to use the actual
+Redux in an Angular 2 application_. This means
+that it's completely compatible with the tools provided
+by the vibrant Redux community, including:
+
+* Middleware like [redux-saga](https://npmjs.com/package/redux-saga),
+[redux-thunk](https://npmjs.com/package/redux-thunk),
+and [redux-logger](https://npmjs.com/package/redux-logger).
+* The official Chrome extension Redux dev tools.
+(https://github.com/zalmoxisus/redux-devtools-extension)
+* Community store enhancers.
 
 ## Table of Contents
 
@@ -14,16 +55,17 @@ For Angular 1 see [ng-redux](https://github.com/wbuchwalter/ng-redux)
 - [Quick Start](#quick-start)
 - [Usage](#usage)
   - [The decorator interface](#the-decorator-interface)
-    - [The @dispatch decorator](#the-dispatch-decorator)
     - [The @select decorator](#the-select-decorator)
+    - [The @dispatch decorator](#the-dispatch-decorator)
     - [The @dispatchAll decorator](#the-dispatchall-decorator)
     - [The decorator interface: putting it all together](#the-decorator-interface-putting-it-all-together)
   - [The select pattern](#the-select-pattern)
   - [The connect pattern](#the-connect-pattern)
 - [Cookbooks](#cookbooks)
+  - [Using Redux DevTools](#using-devtools)
+  - [State Segmentation with TypeScript](#state-segmentation-with-typescript)
   - [Using Angular 2 Services in your Action Creators](#using-angular-2-services-in-your-action-creators)
   - [Using Angular 2 Services in your Middleware](#using-angular-2-services-in-your-middleware)
-  - [Using Redux DevTools](#using-devtools)
 - [API](#api)
 
 ## Installation
@@ -64,7 +106,8 @@ interface IAppState {
 })
 class App {
   constructor(private ngRedux: NgRedux) {
-    this.ngRedux.configureSture(rootReducer, {}, [ thunk ]);
+    // Do this once in your top-level component.
+    this.ngRedux.configureStore(rootReducer, {}, [ thunk ]);
   }
 
   // ...
@@ -75,7 +118,7 @@ Now your Angular 2 app has been reduxified!
 
 ## Usage
 
-`ng2-redux` has three main usage patterns:
+Ng2-Redux has three main usage patterns:
 
 1. The decorator interface.
 2. The `select` pattern.
@@ -83,13 +126,9 @@ Now your Angular 2 app has been reduxified!
 
 ### The Decorator Interface
 
-This is the simplest and cleanest approach. It signigicantly reduces
-boilerplate code and separates Redux concerns from the class's business
-logic.
-
-It also reduces the learning curve associated with Redux configuration.
-Finally, it reduces the effort associated with granular, modular components
-in Angular 2 as shown in the examples below.
+This is the simplest and cleanest approach. It significantly reduces
+boilerplate code and separates Redux concerns from your components'
+business logic.
 
 The decorator interface currently consists of 3 decorators:
 - `@dispatch`: attaches redux action creators to methods in your component.
@@ -121,9 +160,7 @@ import { increment } from '../actions/CounterActions';
 
 @Component({
     selector: 'increment-button',
-    template: `
-    <button (click)="increment()"></button>
-    `
+    template: '<button (click)="increment()"></button>'
 })
 export class IncrementButton {
     // decorate a function on the class called increment
@@ -192,7 +229,40 @@ export class CounterValue {
 }
 ```
 
-#### The @dispatchAll decorator
+Since `@select` produces properties which are observables,
+they can also be transformed in component code using RxJS
+operators such as `map`/`filter` etc.
+
+#### The `@dispatch` decorator
+
+The `@dispatch` decorator can be added to the property of any Angular 2
+component or injectable to allow it to dispatch an action creator.
+
+It will decorate a property of a class, replacing it with a function that
+will dispatch the action creator it receives as a parameter.
+
+```typescript
+import { Component } from '@angular2/core';
+import { dispatch } from 'ng2-redux';
+
+// import the action creator function
+import { increment } from '../actions/CounterActions';
+
+@Component({
+    selector: 'increment-button',
+    template: `
+    <button (click)="increment()"></button>
+    `
+})
+export class IncrementButton {
+    // decorate a function on the class called increment
+    // which will dispatch the increment action creator
+    //   imported from '../actions/CounterActions'
+    @dispatch(increment) increment;
+}
+```
+
+#### The `@dispatchAll` decorator
 
 A class decorator that does the same thing that the `ngRedux.mapDispatchToThis`
 does for the `connect` pattern.
@@ -203,7 +273,7 @@ quite significantly, the more actions need to be added).
 A potential caveat however could be that this decorator magically attaches
 functions to your class without making it very obvious in the code. Some teams
 may find this confusing. In that case the `@dispatch` decorator offers a
-perfect alternative.
+better alternative.
 
 ```typescript
 import { Component } from '@angular2/core';
@@ -395,6 +465,149 @@ export class Counter {
 
 ## Cookbooks
 
+### State Segmentation with TypeScript
+
+One question I often get is "how do you segment your
+state across large applications with different functional
+areas?".
+
+The short answer is not to segment state, but to segment
+reducers. Redux's view of your application as a global
+immutable store is a powerful pattern for understanding
+your code as a whole.
+
+However it can be cumbersome to remember all the different
+parts of a large, deeply-nested state tree.
+
+TypeScript helps with this quite a bit.  A common pattern
+is to define TypeScript interfaces for each reducer
+and then compose them into an `IAppState` interface.
+This gives you the ability to use small, strongly
+type-checked objects at the reducer level, but still
+combine everything into a global store.
+
+Consider an application which deals with tasks and users.
+You might have a reducer for task operations and a separate
+reducer for user operations; additionally you might have
+a third reducer for authenticated session state.
+
+In such an application, I'd be inclined to type my
+reducers as follows:
+
+`task-reducer.ts`:
+```typescript
+import { Action } from 'redux';
+
+export type ITask {
+  title: string;
+  done: boolean;
+  description?: string;
+}
+
+export type TaskList = ITask[];
+
+export const INITIAL_TASK_STATE: TaskList = [];
+
+export function taskReducer(
+  state: TaskList = INITIAL_TASK_STATE,
+  action: Action): TaskList {
+  // ... reducer logic
+}
+```
+
+`user-reducer.ts`:
+```typescript
+import { Action } from 'redux';
+
+export type IUser {
+  givenName: string;
+  familyName: string;
+  tagline?: string;
+}
+
+export type UserList = IUser[];
+
+export const INITIAL_USER_STATE: UserList = [];
+
+export function userReducer(
+  state: UserList = INITIAL_USER_STATE,
+  action: Action): UserList {
+  // ... reducer logic
+}
+```
+
+`session-reducer.ts`:
+```typescript
+import { Action } from 'redux';
+
+export enum LoginStatus { PENDING, IN, OUT };
+
+export type IAuthSession {
+  status: LoginStatus;
+  token?: string;
+}
+
+export const INITIAL_SESSION_STATE = {
+  status: LoginStatus.OUT
+};
+
+export function sessionReducer(
+  state: IAuthSession = INITIAL_SESSION_STATE,
+  action: Redux.Action): IAuthSession {
+  // ... reducer logic
+}
+```
+
+The store is then composed out of these strongly-typed
+reducers:
+
+`store.ts`:
+
+```typescript
+import { combineReducers } from 'redux';
+import { TaskList, taskReducer, INITIAL_TASK_STATE } from  './task-reducer';
+import { UserList, userReducer, INITIAL_USER_STATE } from  './user-reducer';
+import {
+  IAuthSession,
+  sessionReduce,
+  INITIAL_SESSION_STATE
+} from  './session-reducer';
+
+export interface IAppState {
+  tasks: TaskList,
+  users: UserList,
+  session: IAuthSession
+};
+
+export const INITIAL_APP_STATE {
+  tasks: INITIAL_TASK_STATE,
+  users: INITIAL_USER_STATE,
+  session: INITIAL_SESSION_STATE
+};
+
+export rootReducer = combineReducers<IAppState>(
+  taskReducer,
+  userReducer,
+  sessionReducer);
+```
+
+Finally, Ng2-Redux is initialized with the global app
+state type and initial value:
+
+```typescript
+import { IAppState, rootReducer, INITIAL_APP_STATE } from './store';
+
+@Component({
+  // ... template etc.
+})
+export class MyComplicatedReduxApp {
+
+  constructor(private ngRedux: NgRedux<IAppState>) {
+    ngRedux.configureStore(rootReducer, INITIAL_APP_STATE);
+  }
+}
+```
+
 ### Using Angular 2 Services in your Action Creators
 
 In order to use services in your action creators, you need to integrate
@@ -549,7 +762,7 @@ class App {
 
 ### Using DevTools
 
-Ng2Redux is fully compatible with the Chrome extension version of the Redux dev
+Ng2-Redux is fully compatible with the Chrome extension version of the Redux dev
 tools:
 
 https://github.com/zalmoxisus/redux-devtools-extension
