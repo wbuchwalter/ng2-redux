@@ -1,9 +1,13 @@
 export function invariant(condition: boolean, message: string, context?: any) {
-    if (!condition) {
-        if (context) {
-          throw new Error(`${message}: ${context}`);
-        }
+  if (!condition) {
+    let errorMessage = message;
 
-        throw new Error(message);
+    if (context) {
+      errorMessage = (message.indexOf('%s') != -1) ?
+        message.replace('%s', context) :
+        errorMessage = `${message}: ${context}`;
     }
+
+    throw new Error(errorMessage);
+  }
 }
