@@ -1,5 +1,4 @@
-import * as Redux from 'redux';
-const { combineReducers } = Redux;
+import { combineReducers } from 'redux';
 import { RootState } from '../store/configureStore';
 import counter from './counter';
 
