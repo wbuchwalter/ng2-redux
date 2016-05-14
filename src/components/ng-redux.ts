@@ -1,4 +1,3 @@
-import * as invariant from 'invariant';
 import { isFunction, isObject, isPlainObject, omit, assign } from 'lodash';
 import * as Redux from 'redux';
 
@@ -14,13 +13,12 @@ import {
 
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/distinctUntilChanged';
 import { Injectable, ApplicationRef } from '@angular/core';
-
 import shallowEqual from '../utils/shallowEqual';
 import wrapActionCreators from '../utils/wrapActionCreators';
+import { invariant } from '../utils/invariant';
 
 const VALID_SELECTORS = ['string', 'number', 'symbol', 'function'];
 const ERROR_MESSAGE = `Expected selector to be one of:
