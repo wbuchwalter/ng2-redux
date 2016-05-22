@@ -1,7 +1,10 @@
 import shallowEqual from '../utils/shallowEqual';
 import wrapActionCreators from '../utils/wrapActionCreators';
 import * as Redux from 'redux';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/distinctUntilChanged';
 import { Store, Action, ActionCreator, Reducer } from 'redux';
 import { Injectable } from '@angular/core';
 import { invariant } from '../utils/invariant';
