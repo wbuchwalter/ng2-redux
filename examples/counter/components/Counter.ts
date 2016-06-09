@@ -14,11 +14,17 @@ import { RandomNumberService } from '../services/random-number';
     <button (click)="actions.incrementIfOdd()">Increment if odd</button>
     <button (click)="actions.incrementAsync(2222)">Increment async</button>
     <button (click)="actions.randomize()">Set to random number</button>
+
+    <br>
+    foo$: {{ foo$ | async | json }}
+    bar$: {{ bar$ | async}}
   </p>
   `
 })
 export class Counter {
   @select('counter') counter$: any;
+  @select([ 'pathDemo', 'foo' ]) foo$;
+  @select([ 'pathDemo', 'foo', 'bar' ]) bar$: number;
 
   constructor(private actions: CounterActions) {}
 }
