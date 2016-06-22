@@ -1,7 +1,7 @@
 import { getIn } from '../../utils/get-in';
 import { expect } from 'chai';
 
-describe.only('getIn', () => {
+describe('getIn', () => {
 
   it('should select a first-level prop', () => {
     const test = { foo: 1 };
@@ -71,5 +71,25 @@ describe.only('getIn', () => {
   it('should return undefined for a nested nonexistent prop', () => {
     const test = { foo: 1 };
     expect(getIn(test, [ 'foo', 'bar' ])).to.be.undefined;
+  });
+
+  it('should select array elements properly', () => {
+    const test = [ 'foo', 'bar' ];
+    expect(getIn(test, [0])).to.equal('foo');
+    expect(getIn(test, ['0'])).to.equal('foo');
+    expect(getIn(test, [1])).to.equal('bar');
+    expect(getIn(test, ['1'])).to.equal('bar');
+    expect(getIn(test, [2])).to.be.undefined;
+    expect(getIn(test, ['2'])).to.be.undefined;
+  });
+
+  it('should select nested array elements properly', () => {
+    const test = { 'quux': [ 'foo', 'bar' ] };
+    expect(getIn(test, ['quux', 0])).to.equal('foo');
+    expect(getIn(test, ['quux', '0'])).to.equal('foo');
+    expect(getIn(test, ['quux', 1])).to.equal('bar');
+    expect(getIn(test, ['quux', '1'])).to.equal('bar');
+    expect(getIn(test, ['quux', 2])).to.be.undefined;
+    expect(getIn(test, ['quux', '2'])).to.be.undefined;
   });
 });

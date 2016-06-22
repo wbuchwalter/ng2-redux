@@ -6,12 +6,15 @@ import { NgRedux } from '../components/ng-redux';
  *
  * @param {string | string[] | function} statePathOrFunc 
  * An Rxjs selector function, property name string, or property name path
- * (array of strings) that locates the store data to be selected
- * 
+ * (array of strings/array indices) that locates the store data to be 
+ * selected
+ *
  * @param {function} comparer function for this selector
  */
 export const select = <T>(
-    statePathOrFunc?: string | string[] | Function,
+    statePathOrFunc?: string |
+        (string | number)[] |
+        Function,
     comparer?: (x: any, y: any) => boolean) => (target, key) => {
 
     let bindingKey = statePathOrFunc;

@@ -1,10 +1,10 @@
 /*
  * Gets a deeply-nested property value from an object, given a 'path'
- * of property names.
+ * of property names or array indices.
  */
 export function getIn(
   v: Object,
-  pathElems: string[]): any {
+  pathElems: (string | number)[]): any {
     const [ firstElem, ...restElems] = pathElems;
     if (!v) {
       return v;

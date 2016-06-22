@@ -116,7 +116,11 @@ export class NgRedux<RootState> {
      * source Observable with distinct values.
      */
     select<S>(
-        selector: string | number | symbol | string[] | ((s: RootState) => S),
+        selector: string |
+            number |
+            symbol |
+            (string | number)[] |
+            ((s: RootState) => S),
         comparer?: (x: any, y: any) => boolean): Observable<S> {
 
         invariant(checkSelector(selector), ERROR_MESSAGE, selector);

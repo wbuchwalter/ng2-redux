@@ -17,6 +17,7 @@ import { RandomNumberService } from '../services/random-number';
 
     <br>
     foo$: {{ foo$ | async | json }}
+    <br>
     bar$: {{ bar$ | async}}
   </p>
   `
@@ -24,7 +25,7 @@ import { RandomNumberService } from '../services/random-number';
 export class Counter {
   @select('counter') counter$: any;
   @select([ 'pathDemo', 'foo' ]) foo$;
-  @select([ 'pathDemo', 'foo', 'bar' ]) bar$: number;
+  @select([ 'pathDemo', 'foo', 'bar', 0 ]) bar$: number;
 
   constructor(private actions: CounterActions) {}
 }
