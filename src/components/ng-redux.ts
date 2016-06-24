@@ -13,6 +13,7 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/filter';
 import { Injectable, Optional, ApplicationRef } from '@angular/core';
 
 import shallowEqual from '../utils/shallow-equal';
@@ -31,7 +32,7 @@ const checkSelector = (s) => VALID_SELECTORS.indexOf(typeof s, 0) >= 0 ||
 @Injectable()
 export class NgRedux<RootState> {
     private _store: Store<RootState>;
-    private _store$: BehaviorSubject<RootState>;
+    private _store$: BehaviorSubject<RootState> = new BehaviorSubject(null);
     private _defaultMapStateToTarget: Function;
     private _defaultMapDispatchToTarget: Function;
 
@@ -43,8 +44,8 @@ export class NgRedux<RootState> {
      * The parameter is deprecated and left for backwards compatibility.
      * It doesn't do anything. It will be removed in a future major version.
      */
-    constructor(@Optional() deprecated?: ApplicationRef) {
-      NgRedux.instance = this;
+    constructor( @Optional() deprecated?: ApplicationRef) {
+        NgRedux.instance = this;
     }
 
     /**
@@ -71,7 +72,7 @@ export class NgRedux<RootState> {
             = <Redux.StoreEnhancerStoreCreator<RootState>>compose(
                 applyMiddleware(...middleware),
                 ...enhancers
-                )(createStore);
+            )(createStore);
         const store = finalCreateStore(reducer, initState);
 
         this.setStore(store);
@@ -124,20 +125,20 @@ export class NgRedux<RootState> {
         comparer?: (x: any, y: any) => boolean): Observable<S> {
 
         invariant(checkSelector(selector), ERROR_MESSAGE, selector);
-
+        const store$ = this._store$.filter(n => n != null);
         if (
             typeof selector === 'string' ||
             typeof selector === 'number' ||
             typeof selector === 'symbol') {
-            return this._store$
+            return store$
                 .map(state => state[selector])
                 .distinctUntilChanged(comparer);
         } else if (Array.isArray(selector)) {
-            return this._store$
+            return store$
                 .map(state => getIn(state, selector))
                 .distinctUntilChanged(comparer);
         } else if (typeof selector === 'function') {
-            return this._store$
+            return store$
                 .map(selector).distinctUntilChanged(comparer);
         }
     }
@@ -298,7 +299,7 @@ export class NgRedux<RootState> {
      */
     private setStore(store: Store<RootState>) {
         this._store = store;
-        this._store$ = new BehaviorSubject(store.getState());
+        
         this._store.subscribe(() => this._store$.next(this._store.getState()));
 
         this._defaultMapStateToTarget = () => ({});
