@@ -87,7 +87,7 @@ import {
 import thunk from 'redux-thunk';
 import reduxLogger from 'redux-logger';
 
-import {myReducer} from './reducers/my-reducer';
+import { myReducer } from './reducers/my-reducer';
 
 const rootReducer = combineReducers({
   myReducer,
@@ -104,7 +104,7 @@ export const store = createStore(
 ) as Store
 ```
 
-Create your App and call `provideStore` with your newly store:
+Create your App and call `provideStore` with your newly created store:
 ```typescript
 // app.ts
 
