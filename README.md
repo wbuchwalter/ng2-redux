@@ -424,7 +424,7 @@ Here's how to enable them in your app (you probably only want to do
 this in development mode):
 
 ```typescript
-const enhancers = [];
+let enhancers = [];
 
 // Add Whatever other enhancers you want.
 
