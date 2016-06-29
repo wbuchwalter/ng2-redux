@@ -546,7 +546,7 @@ has been used this cannot be used.
 
 __Arguments:__
 
-* `rootReducer` \(*Store*): Your app's store.
+* `store` \(*Store*): Your app's store.
 
 ### select(key | function,[comparer]) => Observable
 
