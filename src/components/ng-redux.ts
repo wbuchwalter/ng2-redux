@@ -44,7 +44,7 @@ export class NgRedux<RootState> {
     }
 
     /**
-     * configures a Redux store and allows NgRedux to observe and dispatch
+     * Configures a Redux store and allows NgRedux to observe and dispatch
      * to it.
      * 
      * This should only be called once for the lifetime of your app, for
@@ -60,20 +60,25 @@ export class NgRedux<RootState> {
         initState: RootState,
         middleware: Redux.Middleware[] = [],
         enhancers: Redux.StoreEnhancer<RootState>[] = []) {
-
-        invariant(!this._store, 'Store already configured!');
-
         const finalCreateStore
             = <Redux.StoreEnhancerStoreCreator<RootState>>compose(
                 applyMiddleware(...middleware),
                 ...enhancers
                 )(createStore);
-        const store = finalCreateStore(reducer, initState);
+        this.provideStore(finalCreateStore(reducer, initState));
+    }
 
+    /**
+     * Allows NgRedux to observe and dispatch actions to the provided store.
+     * Use this function when you want to initialize NgRedux with a custom and
+     * already existing store.
+     * @param store {Store<RootState>}
+     */
+    provideStore(store: Store<RootState>) {
+        invariant(!this._store, 'Store already configured!');
         this._store = store;
         this._store$ = new BehaviorSubject(store.getState());
         this._store.subscribe(() => this._store$.next(this._store.getState()));
-
         this._defaultMapStateToTarget = () => ({});
         this._defaultMapDispatchToTarget = dispatch => ({ dispatch });
         const cleanedStore = omit(store, [
@@ -125,11 +130,12 @@ export class NgRedux<RootState> {
                 .distinctUntilChanged(comparer);
         } else if (Array.isArray(selector)) {
             return this._store$
-                .map(state => getIn(state, selector))
+                .map(state => getIn(state, <(string|number)[]> selector))
                 .distinctUntilChanged(comparer);
         } else if (typeof selector === 'function') {
             return this._store$
-                .map(selector).distinctUntilChanged(comparer);
+                .map(<(value: RootState, index: number) => {}> selector)
+                .distinctUntilChanged(comparer);
         }
     }
 
