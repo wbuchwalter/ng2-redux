@@ -13,7 +13,8 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/distinctUntilChanged';
-import { Injectable } from '@angular/core';
+import { Injectable, Optional, ApplicationRef } from '@angular/core';
+
 import shallowEqual from '../utils/shallow-equal';
 import wrapActionCreators from '../utils/wrap-action-creators';
 import { isObject, isFunction, isPlainObject} from '../utils/type-checks';
@@ -38,8 +39,11 @@ export class NgRedux<RootState> {
 
     /**
      * Creates an instance of NgRedux.
+     *
+     * The parameter is deprecated and left for backwards compatibility.
+     * It doesn't do anything. It will be removed in a future major version.
      */
-    constructor() {
+    constructor(@Optional() deprecated?: ApplicationRef) {
       NgRedux.instance = this;
     }
 
