@@ -6,7 +6,7 @@ import { NgRedux } from '../../components/ng-redux';
 import { select } from '../../decorators/select';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
-
+import 'rxjs/add/operator/combineLatest';
 use(sinonChai);
 
 function returnPojo() {
@@ -277,30 +277,78 @@ describe('NgRedux Observable Store', () => {
 
   it('should throw when the store is provided after it has been configured',
     () => {
-    // Configured once in beforeEach, now we try to provide a store when
-    // we already have configured one.
+      // Configured once in beforeEach, now we try to provide a store when
+      // we already have configured one.
 
-    expect(ngRedux.provideStore.bind(store))
-      .to.throw(Error);
-  });
+      expect(ngRedux.provideStore.bind(store))
+        .to.throw(Error);
+    });
 
   it('should set the store when a store is provided',
     () => {
 
-    delete ngRedux._store;
-    delete ngRedux._$store;
+      delete ngRedux._store;
+      delete ngRedux._$store;
 
-    expect(ngRedux._store).to.be.undefined;
-    expect(ngRedux._$store).to.be.undefined;
+      expect(ngRedux._store).to.be.undefined;
+      expect(ngRedux._$store).to.be.undefined;
 
-    expect(ngRedux.provideStore.bind(ngRedux, store))
-      .to.not.throw(Error);
+      expect(ngRedux.provideStore.bind(ngRedux, store))
+        .to.not.throw(Error);
 
-    expect(ngRedux._store).to.have.all.keys(
-      'dispatch',
-      'subscribe',
-      'getState',
-      'replaceReducer'
-    );
-  });
+      expect(ngRedux._store).to.have.all.keys(
+        'dispatch',
+        'subscribe',
+        'getState',
+        'replaceReducer'
+      );
+    });
+
+  it('should wait until store is configured before emitting values',
+    () => {
+      class SomeService {
+        foo: string;
+        bar: string;
+        baz: number;
+
+        constructor(private _ngRedux: NgRedux<any>) {
+          _ngRedux.select(n => n.foo).subscribe(foo => this.foo = foo);
+          _ngRedux.select(n => n.bar).subscribe(bar => this.bar = bar);
+          _ngRedux.select(n => n.baz).subscribe(baz => this.baz = baz);
+        }
+      }
+      ngRedux = new NgRedux<IAppState>(mockAppRef);
+
+      let someService = new SomeService(ngRedux);
+      ngRedux.configureStore(rootReducer, defaultState);
+      expect(someService.foo).to.be.equal('bar');
+      expect(someService.bar).to.be.equal('foo');
+      expect(someService.baz).to.be.equal(-1);
+
+    });
+
+  it('should have select decorators work before store is configured',
+    (done) => {
+      class SomeService {
+        @select() foo$: any;
+        @select() bar$: any;
+        @select() baz$: any;
+
+      }
+      ngRedux = new NgRedux<IAppState>(mockAppRef);
+
+      let someService = new SomeService();
+      someService
+        .foo$
+        .combineLatest(someService.bar$, someService.baz$)
+        .subscribe(([foo, bar, baz]) => {
+          expect(foo).to.be.equal('bar');
+          expect(bar).to.be.equal('foo');
+          expect(baz).to.be.equal(-1);
+          done();
+        });
+
+      ngRedux.configureStore(rootReducer, defaultState);
+
+    });
 });

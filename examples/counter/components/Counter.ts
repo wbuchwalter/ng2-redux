@@ -27,5 +27,11 @@ export class Counter {
   @select([ 'pathDemo', 'foo' ]) foo$;
   @select([ 'pathDemo', 'foo', 'bar', 0 ]) bar$: number;
 
-  constructor(private actions: CounterActions) {}
+  constructor(private actions: CounterActions, private random: RandomNumberService) { }
+  ngOnInit() {
+    this.random.counter$.subscribe(n => {
+      console.log('Helllo', n);
+    })
+  }
+  
 }
