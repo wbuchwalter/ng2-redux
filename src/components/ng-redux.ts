@@ -299,7 +299,7 @@ export class NgRedux<RootState> {
      */
     private setStore(store: Store<RootState>) {
         this._store = store;
-        
+        this._store$.next(this._store.getState());
         this._store.subscribe(() => this._store$.next(this._store.getState()));
 
         this._defaultMapStateToTarget = () => ({});

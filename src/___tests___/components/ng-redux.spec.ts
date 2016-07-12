@@ -6,7 +6,7 @@ import { NgRedux } from '../../components/ng-redux';
 import { select } from '../../decorators/select';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
-
+import 'rxjs/add/operator/combineLatest';
 use(sinonChai);
 
 function returnPojo() {
