@@ -431,8 +431,7 @@ export class LogRemoteName {
   middleware = store => next => action => {
     console.log('getting user name');
     this.http.get('http://jsonplaceholder.typicode.com/users/1')
-      .toPromise()
-      .then(response => {
+      .map(response => {
         console.log('got name:', response.json().name);
         return next(action);
       })
@@ -562,7 +561,7 @@ import rootReducer from './reducers';
 import { SessionEpics } from './epics';
 
 @Component({
-  /* ... */,
+  /* ... */
   providers: [ NgRedux, SessionEpics ]
 })
 export class App {
@@ -570,7 +569,7 @@ export class App {
     private ngRedux: NgRedux<IAppState>,
     private epics: SessionEpics) {
 
-      const middleware. = [
+      const middleware = [
         createEpicMiddleware(this.epics.login)
       ];
       ngRedux.configureStore(rootReducer, {}, middleware);
