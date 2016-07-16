@@ -500,7 +500,7 @@ class App {
     private devTools: DevToolsExtension) {
 
     let enhancers = [];
-    // ... add Whatever other enhancers you want.
+    // ... add whatever other enhancers you want.
 
     // You probably only want to expose this tool in devMode.
     if (__DEVMODE__ && devTools.isEnabled()) {
