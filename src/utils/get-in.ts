@@ -1,3 +1,6 @@
+// This may look suspicious, but the point is to add ImmutableJS integration
+// only if the project itself already has a dependency on immutable. If not,
+// then this variable is left null and no integration is attempted.
 let immutable;
 try {
   immutable = require('immutable');
