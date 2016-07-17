@@ -1,14 +1,21 @@
+import * as immutable from 'immutable';
+
 /*
  * Gets a deeply-nested property value from an object, given a 'path'
  * of property names or array indices.
  */
 export function getIn(
-  v: Object,
+  v: Object | immutable.Iterable<string, any>,
   pathElems: (string | number)[]): any {
-    const [ firstElem, ...restElems] = pathElems;
     if (!v) {
       return v;
     }
+
+    if (immutable.Iterable.isIterable(v)) {
+      return (<immutable.Iterable<string, any>>v).getIn(pathElems);
+    }
+
+    const [ firstElem, ...restElems] = pathElems;
 
     if (undefined === v[firstElem]) {
       return undefined;
@@ -20,3 +27,4 @@ export function getIn(
 
     return getIn(v[firstElem], restElems);
 }
+
