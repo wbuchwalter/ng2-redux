@@ -18,7 +18,7 @@ export function getIn(
     }
 
     if (immutable && immutable.Iterable.isIterable(v)) {
-      return (<any>v).getIn(pathElems);
+      return (<{getIn: (path: (string | number)[]) => any}>v).getIn(pathElems);
     }
 
     const [ firstElem, ...restElems] = pathElems;
