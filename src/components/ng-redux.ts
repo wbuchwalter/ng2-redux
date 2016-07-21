@@ -310,4 +310,5 @@ export class NgRedux<RootState> {
             'replaceReducer']);
         Object.assign(this, cleanedStore);
     }
-}
+};
+
