@@ -299,8 +299,6 @@ export class NgRedux<RootState> {
     private setStore(store: Store<RootState>) {
         this._store = store;
         this._store$.next(store as any);
-        // this._store$ = Observable.from(store as any);
-
         this._defaultMapStateToTarget = () => ({});
         this._defaultMapDispatchToTarget = dispatch => ({ dispatch });
         const cleanedStore = omit(store, [
