@@ -9,7 +9,15 @@ For Angular 1 see [ng-redux](https://github.com/wbuchwalter/ng-redux)
 [![npm version](https://img.shields.io/npm/v/ng2-redux.svg)](https://www.npmjs.com/package/ng2-redux)
 [![npm downloads](https://img.shields.io/npm/dt/ng2-redux.svg)](https://www.npmjs.com/package/ng2-redux)
 
-Ng2Redux lets you easily connect your Angular 2 components with Redux.
+Ng2Redux lets you easily connect your Angular 2 components with Redux, while still respecting the Angular 2 idiom.
+
+Features include:
+* The ability to access slices of store state as `Observables`
+* Compatibility with existing Redux middleware and enhancers
+* Compatibility with the existing Redux devtools Chrome extension
+* A rich, declarative selection syntax using the `@select` decorator
+
+In addition, we are committed to providing insight on clean strategies for integrating with Angular 2's change detection and other framework features.
 
 ## Table of Contents
 
