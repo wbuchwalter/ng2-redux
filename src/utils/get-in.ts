@@ -9,10 +9,7 @@ export function getIn(v, pathElems: (string | number)[]): any {
 
     // If this is an ImmutableJS structure, use existing getIn function
     if (typeof v.getIn === 'function') {
-      const result = v.getIn(pathElems);
-      if (result != null) {
-        return result;
-      }
+      return v.getIn(pathElems);
     }
 
     const [ firstElem, ...restElems] = pathElems;
