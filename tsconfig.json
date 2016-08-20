@@ -18,10 +18,6 @@
     "node_modules",
     "dist",
     "lib",
-    "examples",
-    "tmp",
-    "test",
-    "src/tests.entry.ts",
-    "src/test"
+    "examples"
   ]
 }
