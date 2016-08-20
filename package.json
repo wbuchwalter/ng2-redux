@@ -4,9 +4,9 @@
   "description": "Angular 2 bindings for Redux",
   "main": "./lib/index.js",
   "scripts": {
-    "build": "rimraf ./lib; tsc; rimraf ./lib/___tests___",
+    "build": "rimraf ./lib; tsc",
     "test": "npm run lint && npm run mocha",
-    "mocha": "mocha  --opts ./src/___tests___/mocha.opts",
+    "mocha": "mocha --opts ./mocha.opts",
     "lint": "tslint 'src/**/*.ts' 'examples/counter/**.ts --exclude 'examples/counter/node_modules"
   },
   "typings": "./lib/index.d.ts",
@@ -55,7 +55,6 @@
     "@types/sinon-chai": "^2.7.26",
     "chai": "^3.5.0",
     "es6-shim": "^0.35.0",
-    "expect": "^1.8.0",
     "mocha": "^2.4.5",
     "proxyquire": "^1.7.10",
     "redux": "^3.4.0",
@@ -65,7 +64,6 @@
     "sinon": "^1.16.1",
     "sinon-chai": "^2.8.0",
     "symbol-observable": "^1.0.1",
-    "ts-loader": "^0.8.2",
     "ts-node": "^1.2.3",
     "tslint": "^3.11.0",
     "typescript": "^2.0.0",

@@ -16,8 +16,8 @@
   "buildOnSave": false,
   "exclude": [
     "node_modules",
-    "dist",
     "lib",
-    "examples"
+    "examples",
+    "**/*.spec.ts"
   ]
 }
