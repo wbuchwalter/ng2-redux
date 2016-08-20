@@ -53,6 +53,7 @@
     "@types/node": "^6.0.36",
     "@types/sinon": "^1.16.28",
     "@types/sinon-chai": "^2.7.26",
+    "awesome-typescript-loader": "^2.2.1",
     "chai": "^3.5.0",
     "es6-shim": "^0.35.0",
     "mocha": "^2.4.5",
