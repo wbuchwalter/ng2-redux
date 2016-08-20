@@ -36,11 +36,7 @@
     "redux-localstorage": "^0.4.0",
     "reflect-metadata": "0.1.3",
     "rxjs": "5.0.0-beta.6",
-<<<<<<< 03baa0bc1e7b8ea9f949eb39c6040d3c81dd90cc
-    "zone.js": "^0.6.12"
-=======
     "zone.js": "^0.6.15"
->>>>>>> npm start works, no dice for npm run dev
   },
   "devDependencies": {
     "@types/es6-shim": "0.0.30",
