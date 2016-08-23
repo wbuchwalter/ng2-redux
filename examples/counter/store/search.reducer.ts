@@ -18,18 +18,20 @@ export function searchReducer(
 
   switch (action.type) {
     case SEARCH_ACTIONS.SEARCH:
-      return Object.assign({}, state, {
+      return {
+        ...state,
         onSearch: true,
         keyword: action.payload,
         total: state.total
-      });
+      };
     case SEARCH_ACTIONS.SEARCH_RESULT:
       let total = action.payload.total;
-      return Object.assign({}, state, {
+      return {
+        ...state,
         onSearch: state.onSearch,
         keyword: state.keyword,
         total
-      });
+      };
     default:
       return state;
   }
