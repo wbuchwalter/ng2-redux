@@ -3,6 +3,7 @@ import { NgRedux, select } from 'ng2-redux';
 import { Observable } from 'rxjs/Rx';
 import { SearchActions } from '../actions/search.actions';
 import { IAppState } from '../store';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'search',

@@ -6,11 +6,12 @@ import { Counter } from '../components/counter.component';
 import { CounterInfo } from '../components/counter-info.component';
 import { Search } from '../components/search.component';
 import { IAppState, rootReducer, enhancers } from '../store/index';
+import { ItemMapDisplay } from '../components/item-map.component';
 const createLogger = require('redux-logger');
 
 @Component({
   selector: 'root',
-  directives: [ Counter, CounterInfo, Search ],
+  directives: [ Counter, CounterInfo, Search, ItemMapDisplay ],
   pipes: [ AsyncPipe ],
   providers: [ DevToolsExtension ],
   template: `
@@ -21,6 +22,8 @@ const createLogger = require('redux-logger');
   <h3>String length example</h3>
   <search></search>
   <search-info></search-info>
+
+  <item-map-display></item-map-display>
   `
 })
 export class App {

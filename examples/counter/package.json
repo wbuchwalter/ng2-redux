@@ -43,6 +43,7 @@
     "@types/node": "^6.0.36",
     "awesome-typescript-loader": "^2.2.1",
     "cross-env": "^1.0.7",
+    "immutable": "^3.8.1",
     "node-libs-browser": "^0.5.2",
     "typescript": "^2.0.0",
     "webpack": "^1.9.11",
