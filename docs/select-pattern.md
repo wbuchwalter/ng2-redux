@@ -21,6 +21,7 @@ through the store (similar to `immutableJS`'s `getIn`).
 - If a `function` is passed the `@select` decorator will attempt to use that function
 as a selector on the RxJs observable.
 - If nothing is passed then the `@select` decorator will attempt to use the name of the class property to find a matching value in the Redux store. Note that a utility is in place here where any $ characters will be ignored from the class property's name.
+- When using with NgIf, use parenthesis to to wrap the observable result before negating the value, e.g. `*ngIf="!(isAuthenticated$ | async)"`.
 
 ```typescript
 import { Component } from '@angular2/core';
@@ -37,6 +38,8 @@ import { select } from 'ng2-redux';
     <p>{counterSelectedWithString | async}</p>
     <p>{counterSelectedWithFunction | async}</p>
     <p>{counterSelectedWithFunctionAndMultipliedByTwo | async}</p>
+    <p *ngIf="!(isAuthenticated$ | async)">you are guest, please login</p>
+    <p *ngIf="isAuthenticated$ | async">Hi user</p>
     `
 })
 export class CounterValue {
@@ -61,6 +64,10 @@ export class CounterValue {
     // this selects `counter` from the store and multiples it by two
     @select(state => state.counter * 2)
     counterSelectedWithFuntionAndMultipliedByTwo: Observable<any>;
+    
+    // this selects `isAuthenticated<boolean>` from the store and attaches it to
+    // this property.
+    @select(['session', 'isAuthenticated']) isAuthenticated$: Observable<boolean>;
 }
 ```
 
