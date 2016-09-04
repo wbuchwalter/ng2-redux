@@ -9,7 +9,6 @@ import { Component } from '@angular/core';
 
   <h3>String length example</h3>
   <search></search>
-  <search-info></search-info>
   `
 })
 export class App {}
