@@ -61,10 +61,10 @@ export class MyActionService {
 }
 ```
 
-### Consider Using types from `redux`
+### Consider Using Built-In Types from Redux
 
 Redux ships with a good set of official typings; consider using them. In
-particular, be aware of the 'Action' and 'Reducer' types:
+particular, consider importing and using the `Action` and `Reducer` types:
 
 ```typescript
 import { Action, Reducer } from 'redux';
@@ -74,7 +74,7 @@ export const fooReducer: Reducer<TFoo> = (state: TFoo, action: Action): TFoo => 
 };
 ```
 
-Note that we supply the state type as a generic type parameter to `Reducer`.
+Note that we supply this reducer's state type as a generic type parameter to `Reducer<T>`.
 
 ### Consider using 'Flux Standard Actions' (FSAs)
 
@@ -94,13 +94,32 @@ further:
 import { Reducer } from 'redux';
 import { Action } from 'flux-standard-action';
 
-// Here we're saying that the action's payload must have type TFoo.
-// If you need more flexibility in payload types, you can use a union and
-// typeguards: Action<TFoo : IBar> etc.
 export const fooReducer: Reducer<TFoo> = (state: TFoo, action: Action<TFoo>): TFoo => {
   // ...
 };
 ```
+
+Here we're saying that the action's payload must have type TFoo.
+If you need more flexibility in payload types, you can use a union and
+[type assertions](https://www.typescriptlang.org/docs/handbook/advanced-types.html):
+
+```typescript
+export const barReducer: Reducer<IBar> = (state: IBar, action: Action<number | string>): IBar => {
+  switch(action.type) {
+    case A_HAS_CHANGED:
+      return Object.assign({}, state, {
+        a: <number>action.payload
+      });
+    case B_HAS_CHANGED:
+      return Object.assign({}, state, {
+        b: <string>action.payload
+      });
+    // ...
+  }
+};
+```
+
+For more complex union-payload scenarios, Typescript's [type-guards](https://www.typescriptlang.org/docs/handbook/advanced-types.html) may also be helpful.
 
 ### Use a Typed Wrapper around Object.assign
 
