@@ -127,12 +127,12 @@ In the Babel world, reducers often use `Object.assign` or property spread to
 maintain immutability. This works in Typescript too, but it's not typesafe:
 
 ```typescript
-export const barReducer: Reducer<IBar> = (state: IBar, action: Action<number>): IBar => {
+export const barReducer: Reducer<IBar> = (state: IBar, action: Action<number | string>): IBar => {
   switch(action.type) {
     case A_HAS_CHANGED:
       return Object.assign({}, state, {
-        a: action.payload,
-        zzz: 'test'
+        a: <number>action.payload,
+        zzz: 'test' // We'd like this to generate a compile error, but it doesn't
       });
     // ...
   }
@@ -150,11 +150,11 @@ that will catch this type of error:
 ```typescript
 import { tassign } from 'ng2-redux';
 
-export const barReducer: Reducer<IBar> = (state: IBar, action: Action<number>): IBar => {
+export const barReducer: Reducer<IBar> = (state: IBar, action: Action<number | string>): IBar => {
   switch(action.type) {
     case A_HAS_CHANGED:
       return tassign(state, {
-        a: action.payload,
+        a: <number>action.payload,
         zzz: 'test' // Error: zzz is not a property of IBar
       });
     // ...
