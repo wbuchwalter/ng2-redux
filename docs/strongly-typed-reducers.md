@@ -1,7 +1,7 @@
 # Strongly Typed Reducers
 
 It's good practice in typescript to be as specific about your types as possible.
-This helps you catch errors at compile-time instead of run time.
+This helps you catch errors at compile-time instead of run-time.
 
 Reducers are no exception to this rule. However it's not always obvious how to
 make this happen in practice.
@@ -11,12 +11,12 @@ make this happen in practice.
 ### Define an Interface for your State
 
 It's important to strongly type the data in your store, and this is done by
-defining types for the `state` arguments to your reducers`:
+defining types for the `state` arguments to your reducers:
 
 ```typescript
 export type TFoo: string;
 
-// Being explicit about the state argument and type ensures that all your
+// Being explicit about the state argument and return types ensures that all your
 // reducer's cases return the correct type. 
 export const fooReducer = (state: TFoo, action): TFoo => {
   // ...
@@ -45,6 +45,20 @@ export const rootReducer = combineReducers({
   foo: fooReducer,
   bar: barReducer
 });
+```
+
+This 'app state' is what you should use when injecting `NgRedux`:
+
+```typescript
+import { Injectable } from 'ng2-redux';
+import { IAppState } from './store';
+
+@Injectable()
+export class MyActionService {
+  constructor(private ngRedux: NgRedux<IAppState>) {}
+
+  // ...
+}
 ```
 
 ### Consider Using types from `redux`
