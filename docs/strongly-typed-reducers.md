@@ -1,7 +1,7 @@
 # Strongly Typed Reducers
 
 It's good practice in typescript to be as specific about your types as possible.
-This helps you catch errors at compile-time instead of build time.
+This helps you catch errors at compile-time instead of run time.
 
 Reducers are no exception to this rule. However it's not always obvious how to
 make this happen in practice.
