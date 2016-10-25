@@ -10,4 +10,4 @@ export class NgReduxModule {
       providers: [NgRedux]
     };
   }
-}
+};
