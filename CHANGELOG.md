@@ -58,7 +58,7 @@ export class AppModule {
 
 If using the angular-cli with the --aot option - `@select` decorators will not work. The build process will work, but decorators will silently stop working. 
 
-If you need decorations and AoT, you'll need to use the raw ngc compiler directly from the command line.
+If you need decorators and AoT, you'll need to use the raw ngc compiler directly from the command line.
 
 **before**
 
