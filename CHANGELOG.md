@@ -54,7 +54,7 @@ export class AppModule {
 }
 ```
 
-**IMPORTANT NOTE ABOUT AOT and Angular-CLI**
+**IMPORTANT NOTE ABOUT AOT AND ANGULAR-CLI**
 
 If using the angular-cli with the --aot option - `@select` decorators will not work. The build process will work, but decorators will silently stop working. 
 
