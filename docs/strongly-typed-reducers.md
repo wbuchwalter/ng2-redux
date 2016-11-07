@@ -148,7 +148,7 @@ Instead, we've provided a type-corrected immutable assignment function, `tassign
 that will catch this type of error:
 
 ```typescript
-import { tassign } from 'ng2-redux';
+import { tassign } from 'tassign';
 
 export const barReducer: Reducer<IBar> = (state: IBar, action: Action<number | string>): IBar => {
   switch(action.type) {
