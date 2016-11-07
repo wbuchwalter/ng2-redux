@@ -37,8 +37,8 @@ a global 'AppState' by composing the reducer types:
 
 ```typescript
 export interface IAppState {
-  foo: TFoo;
-  bar: IBar;
+  foo?: TFoo;
+  bar?: IBar;
 }
 
 export const rootReducer = combineReducers({
@@ -144,7 +144,7 @@ However, the built-in type definitions for `Object.assign` return an intersectio
 type, making this legal. This makes sense for general usage of `Object.assign`,
 but it's not what we want in a reducer.
 
-Instead, we've provided a type-corrected immutable assignment function, `tassign`,
+Instead, we've provided a type-corrected immutable assignment function, [`tassign`](https://npmjs.com/package/tassign),
 that will catch this type of error:
 
 ```typescript
