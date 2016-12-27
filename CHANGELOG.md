@@ -2,10 +2,10 @@
 
 * Fix for the `ERROR in NgReduxModule is not an NgModule` error thrown by Angular CLI.
 * Remove deprecations.
-* Breaking changes associated with Angular 2.4+.
 * Removed support for the `connect` pattern: it's simply not a good fit for Angular.
 You should be using the `select` pattern now.
 * Remove deprecated constructor arg for `NgRedux`.
+* Minimum Angular peer dependency is now 2.4.0
 * `NgReduxModule.forRoot` is no more. Now just import `NgReduxModule` directly.
 
 #### Old Way:
