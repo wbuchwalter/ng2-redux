@@ -2,6 +2,11 @@
 
 * Fix for the `ERROR in NgReduxModule is not an NgModule` error thrown by Angular CLI.
 * Remove deprecations.
+* Breaking changes associated with Angular 2.4+.
+
+### Breaking Changes
+
+* Minimum Angular peer dependency is now 2.4.0
 * Removed support for the `connect` pattern: it's simply not a good fit for Angular.
 You should be using the `select` pattern now.
 * Remove deprecated constructor arg for `NgRedux`.
@@ -185,8 +190,6 @@ export class MyComponent {
 
 * Upgrade to TypeScript 2 - #189, #190
 * Add Code Coverage - #193, #206, #207
-
-
 
 # 3.3.5
 
