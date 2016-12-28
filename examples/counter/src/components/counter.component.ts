@@ -14,7 +14,6 @@ import { IAppState } from '../store';
     <button (click)="actions.increment()">+</button>
     <button (click)="actions.decrement()">-</button>
     <button (click)="actions.incrementIfOdd()">Increment if odd</button>
-    <button (click)="onClickThunkyButton()">Increment if odd using thunk</button>
     <button (click)="actions.incrementAsync(2222)">Increment async</button>
     <button (click)="actions.randomize()">Set to random number</button>
   </p>
@@ -30,9 +29,4 @@ export class Counter {
   constructor(
     public actions: CounterActions,
     private ngRedux: NgRedux<IAppState>) {}
-
-  onClickThunkyButton() {
-    this.ngRedux.dispatch(
-      this.actions.incrementIfOddUsingThunk());
-  }
 }
