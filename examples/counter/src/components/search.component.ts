@@ -6,7 +6,6 @@ import { IAppState } from '../store';
 
 @Component({
   selector: 'search',
-  providers: [ SearchActions ],
   template: `
   <input
     id='search-input'
@@ -18,7 +17,7 @@ import { IAppState } from '../store';
   <p>You entered: {{ search$ | async }}<p>
   `
 })
-export class Search {
+export class SearchComponent {
   // Selected observables to test async pipe model.
   @select(['search', 'total']) numChars$: Observable<number>;
   @select(['search', 'keyword']) search$: Observable<string>;

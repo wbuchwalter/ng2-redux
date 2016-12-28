@@ -27,7 +27,7 @@ interface ICoord {
   <ul>
   `
 })
-export class CounterInfo {
+export class CounterInfoComponent {
 
   @select(x) funcCounter$: Observable<number>;
   @select('counter') stringKey$: Observable<number>;

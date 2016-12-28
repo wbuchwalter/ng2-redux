@@ -7,7 +7,6 @@ import { IAppState } from '../store';
 
 @Component({
   selector: 'counter',
-  providers: [ CounterActions, RandomNumberService ],
   template: `
   <p>
     Clicked: {{ counter$ | async }} times
@@ -21,7 +20,7 @@ import { IAppState } from '../store';
   <p>bar$: {{ bar$ | async }}</p>
   `
 })
-export class Counter {
+export class CounterComponent {
   @select('counter') counter$: Observable<number>;
   @select([ 'pathDemo', 'foo' ]) foo$: Observable<Object>;
   @select([ 'pathDemo', 'foo', 'bar', 0 ]) bar$: Observable<number>;

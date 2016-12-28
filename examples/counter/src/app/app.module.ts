@@ -4,10 +4,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgReduxModule, DevToolsExtension } from 'ng2-redux';
 import { CounterActions } from '../actions/counter.actions';
 import { SearchActions } from '../actions/search.actions';
-import { App } from './app.component';
-import { CounterInfo } from '../components/counter-info.component';
-import { Counter } from '../components/counter.component';
-import { Search } from '../components/search.component';
+import { AppComponent } from './app.component';
+import { CounterInfoComponent } from '../components/counter-info.component';
+import { CounterComponent } from '../components/counter.component';
+import { SearchComponent } from '../components/search.component';
+import { RandomNumberService } from '../services/random-number.service';
 
 @NgModule({
   imports: [
@@ -16,16 +17,16 @@ import { Search } from '../components/search.component';
     NgReduxModule,
   ],
   declarations: [
-    App,
-    CounterInfo,
-    Counter,
-    Search,
+    AppComponent,
+    CounterInfoComponent,
+    CounterComponent,
+    SearchComponent,
   ],
-  bootstrap: [ App ],
+  bootstrap: [ AppComponent ],
   providers: [
     CounterActions,
     SearchActions,
-    DevToolsExtension,
+    RandomNumberService,
   ]
 })
 export class AppModule {}

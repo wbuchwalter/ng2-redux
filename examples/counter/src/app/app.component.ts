@@ -8,7 +8,7 @@ const createLogger = require('redux-logger');
   styleUrls: [ './app.component.css' ],
   templateUrl: './app.component.html',
 })
-export class App {
+export class AppComponent {
   constructor(
     private ngRedux: NgRedux<IAppState>,
     private devTool: DevToolsExtension) {
