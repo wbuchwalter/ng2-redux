@@ -18,14 +18,7 @@ interface ICoord {
 
 @Component({
   selector: 'counter-info',
-  template: `
-  <ul>
-    <li>{{ funcCounter$ | async }}</li>
-    <li>{{ stringKey$ | async }}</li>
-    <li>{{ counterX2$ | async }}</li>
-    <li>{{ foo?.x }} - {{ foo?.y }}</li>
-  <ul>
-  `
+  templateUrl: './counter-info.component.html', 
 })
 export class CounterInfoComponent {
 

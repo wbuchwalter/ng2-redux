@@ -1,21 +1,12 @@
 import { Component } from '@angular/core';
 import { NgRedux, select } from 'ng2-redux';
 import { Observable } from 'rxjs/Rx';
-import { SearchActions } from '../actions/search.actions';
+import { SearchActions } from './search.actions';
 import { IAppState } from '../store';
 
 @Component({
   selector: 'search',
-  template: `
-  <input
-    id='search-input'
-    type="text"
-    class="search"
-    #field (keyup)="handleKeyUp(field.value)"/>
-  <p>Number of characters (from subscription): {{ numChars }}</p>
-  <p>Number of characters (from async pipe): {{ numChars$ | async }}</p>
-  <p>You entered: {{ search$ | async }}<p>
-  `
+  templateUrl: './search.component.html',
 })
 export class SearchComponent {
   // Selected observables to test async pipe model.

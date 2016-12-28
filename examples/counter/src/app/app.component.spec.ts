@@ -2,13 +2,13 @@
 
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { CounterInfoComponent } from '../components/counter-info.component';
-import { CounterComponent } from '../components/counter.component';
-import { SearchComponent } from '../components/search.component';
+import { CounterInfoComponent } from '../counter/counter-info.component';
+import { CounterComponent } from '../counter/counter.component';
+import { SearchComponent } from '../search/search.component';
 import { NgRedux, DevToolsExtension } from 'ng2-redux';
-import { CounterActions } from '../actions/counter.actions';
-import { SearchActions } from '../actions/search.actions';
-import { RandomNumberService } from '../services/random-number.service';
+import { CounterActions } from '../counter/counter.actions';
+import { SearchActions } from '../search/search.actions';
+import { RandomNumberService } from '../common/random-number.service';
 
 describe('AppComponent', () => {
   beforeEach(() => {

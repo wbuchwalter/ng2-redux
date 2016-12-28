@@ -5,7 +5,6 @@ const createLogger = require('redux-logger');
 
 @Component({
   selector: 'app-root',
-  styleUrls: [ './app.component.css' ],
   templateUrl: './app.component.html',
 })
 export class AppComponent {
