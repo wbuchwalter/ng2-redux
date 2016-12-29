@@ -131,7 +131,7 @@ export class NgRedux<RootState> {
 
         invariant(checkSelector(selector), ERROR_MESSAGE, selector);
 
-        let result: Observable<S>;
+        let result: Observable<S> = this._store$;
 
         if (typeof selector === 'string' ||
             typeof selector === 'number' ||
