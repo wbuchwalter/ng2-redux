@@ -121,8 +121,9 @@ class App {
 
 ## Examples
 
-Here are some examples of Ng2Redux in action:
+Here are some examples of the `angular-redux` family of packages in action:
 
+* [Zoo Animals Combined Example App](https://github.com/angular-redux/example-app)
 * [Counter: basic select pattern example](examples/counter)
 * [Trendy Brunch: multi-reducer example with redux-localstorage](https://github.com/e-schultz/ng2-camp-example)
 * [Plnkr: smart & presentational components example](https://plnkr.co/edit/XCGzzxoinM8cRAKp2huU?p=preview)
@@ -131,8 +132,8 @@ Here are some examples of Ng2Redux in action:
 
 ## Companion Packages
 
-* [Reduxify your Routing with @angular-redux/router](https://github.com/dagstuan/@angular-redux/router)
-* [Reduxify your Forms with @angular-redux/form](https://github.com/clbond/@angular-redux/form)
+* [Reduxify your Routing with @angular-redux/router](https://github.com/@angular-redux/router)
+* [Reduxify your Forms with @angular-redux/form](https://github.com/@angular-redux/form)
 
 ## Resources
 
