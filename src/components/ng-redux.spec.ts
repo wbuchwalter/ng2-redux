@@ -179,8 +179,8 @@ describe('NgRedux Observable Store', () => {
     expect(spy).to.have.been.calledThrice;
   });
 
-  it(`should only call provided select function if state changed`,()=> {
-    let selectSpy = sinon.spy((state)=>state.foo);
+  it(`should only call provided select function if state changed`, () => {
+    let selectSpy = sinon.spy((state) => state.foo);
     let results = [];
     ngRedux.select(selectSpy).subscribe(result => {
       results.push(result);
