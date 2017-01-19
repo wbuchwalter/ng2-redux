@@ -137,6 +137,7 @@ export class NgRedux<RootState> {
 
         invariant(checkSelector(selector), ERROR_MESSAGE, selector);
 
+                
         let result: Observable<S>;
         if (typeof selector === 'string' ||
             typeof selector === 'number' ||
@@ -148,7 +149,10 @@ export class NgRedux<RootState> {
             result = this._store$
                 .map(state => getIn(state, selector as PathSelector));
         } else {
-            result = this._store$
+            result = this._store$.distinctUntilChanged((a, b) => {
+                console.log(a, b);
+                return a === b;
+            })
                 .map(selector as FunctionSelector<RootState, S>);
         }
 
