@@ -31,7 +31,7 @@ with some of Angular's advanced features, including:
 ## Getting Started
 
 * I already know what Redux and RxJS are. [Give me the TL;DR](docs/quickstart.md).
-* I'm just learning about Redux. [Break it down for me!](docs/intro-tutorial.md).
+* I'm just learning about Redux. [Break it down for me](docs/intro-tutorial.md)!
 * Talk is cheap. [Show me a complete code example](https://github.com/angular-redux/example-app).
 * Take me to the [API docs](docs/api.md).
 
