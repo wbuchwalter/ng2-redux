@@ -106,7 +106,7 @@ export class AppComponent {
 ## Modeling the App
 
 Right now, our counter UI does nothing; it's not hooked up to any state or
-logic. Let's step back a bit and think about what we need to mak this simple
+logic. Let's step back a bit and think about what we need to make this simple
 counter work.
 
 ### Application State
@@ -114,7 +114,7 @@ counter work.
 In order to do its job, the counter component needs to maintain some state:
 the current value of the counter. In Redux, we try to avoid keeping application
 state in the UI component itself; instead we can keep it in our store. That
-way it's easy to find, and protected by the immutability guarantees of the
+way it's easy to find, and it's protected by the immutability guarantees of the
 Redux architecture.
 
 So we can define the type of our state as follows:
@@ -127,7 +127,7 @@ interface IAppState {
 
 ### Actions
 
-There are two events to which we want our application to respond: Clicking the
+There are two events to which we want our application to respond: clicking the
 increment and decrement buttons. We will model these as Redux `action`s.
 
 At any given time, the current value of the count will be modelled as the `reduction`
@@ -140,7 +140,7 @@ So we can think of our application conceptually like this:
 const nextValueOfCount = streamOfActions.reduce(
   (currentValueOfCount, action) => {
     switch(action.type) {
-      case 'NCREMENT': return state + 1;
+      case 'INCREMENT': return state + 1;
       case 'DECREMENT': return state - 1;
     }
 
@@ -252,7 +252,7 @@ that makes it impossible to simply set fields on it like you would normally do.
 Instead, all changes to an application's state are made using one or more 'reducer'
 functions.
 
-In effect, we're modeling our applications behavior as a collection of events
+In effect, we're modeling our application's behaviour as a collection of events
 (or `Actions`) over time, combined with an initial state.
 
 Actions typically represent things a user has done; however they can also represent
@@ -396,7 +396,7 @@ export class AppComponent {
 ```
 
 Here, we're saving a reference to the observable itself (`count$: Observable<number>`) instead of to the values it's
-being pushed (`count: number`). That `$` on the end is just a convention to lead people reading your
+being pushed (`count: number`). That `$` on the end is just a convention to let people reading your
 code know that this value is an Observable of something, rather than a static value.
 
 We can now throw a `| async` in our template, and Angular will take care of subscribing to `count$` and
@@ -527,4 +527,4 @@ displays your current state, and even allows you to rewind or play forward your 
 Take a look at https://github.com/angular-redux/example-app for a more complex example, including
 redux integration with Angular's router and forms APIs.
 
-Also check out the [docs] folder for deep-dives into specific subjects peopel have asked about.
+Also check out the [docs](docs) folder for deep-dives into specific subjects people have asked about.
