@@ -12,8 +12,8 @@ For Angular 1 see [ng-redux](https://github.com/wbuchwalter/ng-redux)
 
 Redux is a popular approach to managing state in applications. It emphasises:
 
-* A single, immutable data store
-* One-way data flow
+* A single, immutable data store.
+* One-way data flow.
 * An approach to change based on pure functions and a stream of actions.
 
 You can find lots of excellent documentation here: [Redux](http://redux.js.org/).
@@ -24,8 +24,8 @@ We provide a set of npm packages that help you integrate your redux store
 into your Angular 2+ applications. Our approach helps you by bridging the gap
 with some of Angular's advanced features, including:
 
-* Change processing with RxJS observables
-* Compile time optimizations with `NgModule` and Ahead-of-Time compilation
+* Change processing with RxJS observables.
+* Compile time optimizations with `NgModule` and Ahead-of-Time compilation.
 * Integration with the Angular change detector.
 
 ## Getting Started

@@ -30,7 +30,7 @@ npm install redux @angular-redux/store
 
 This installs Redux, and @angular-redux/store, the Redux bindings for Angular.
 
-## Importing @angular-redux/store into your app.
+## Importing @angular-redux/store into your App.
 
 The first thing we need to do is tell Angular about the new redux functionality
 we just installed. We do that by importing the `NgReduxModule` into our application.
@@ -125,6 +125,10 @@ interface IAppState {
 }
 ```
 
+Defining an interface for your store may be overkill for this simple example,
+but in larger apps you'll be using `combineReducers` to split your store state
+into manageable parts; strong typings will help you keep it all organized.
+
 ### Actions
 
 There are two events to which we want our application to respond: clicking the
@@ -133,7 +137,7 @@ increment and decrement buttons. We will model these as Redux `action`s.
 At any given time, the current value of the count will be modelled as the `reduction`
 over the sequence of `INCREMENT` and `DECREMENT` actions that have been triggered.
 
-So we can think of our application conceptually like this: 
+So we can think of our application conceptually like this:
 
 ```js
 // Pseudocode
@@ -246,7 +250,7 @@ it with NgRedux using `ngRedux.provideStore` instead of `ngRedux.configureStore`
 ## What's a Reducer Anyway?
 
 At its heart, a store in Redux is simply a JavaScript object with some data
-in it. However, it is immutable. That means it gets wrapped in an interface 
+in it. However, it is immutable. That means it gets wrapped in an interface
 that makes it impossible to simply set fields on it like you would normally do.
 
 Instead, all changes to an application's state are made using one or more 'reducer'
@@ -264,7 +268,7 @@ application, considers information provided by the action, and computes the next
 state of the store. Once this is done, that new state is broadcasted to the UI,
 which recomputes itself from the new state.
 
-If you're familiar with `Array.prototype.reduce`, you application basically
+If you're familiar with `Array.prototype.reduce`, your application basically
 ends up looking conceptually a bit like this:
 
 ```typescript
@@ -362,7 +366,7 @@ number update accordingly.
 
 ![](images/counter-hooked.png)
 
-## But wait... there's more!
+## But wait... There's More!
 
 This is the essence of using `NgRedux`. However, one of the benefits of using Observables with Angular
 is that Angular has first-class, optimized support for rendering them via a construct called
@@ -411,7 +415,7 @@ unpacking its values as they come in:
 <!-- As before -->
 ```
 
-## But wait... there's even more!
+## But wait... There's Even More!
 
 `ngRedux.select` is a powerful way to get unfettered access to store Observables; allowing you
 to do lots of transformations with RxJS operators to massage the store data in to what more complex
@@ -473,6 +477,7 @@ enhance it in different ways. Libraries that let you
 
 * [persist parts of your store to localStorage](https://www.npmjs.com/package/redux-localstorage)
 * [handle side-effects and business logic in clean ways](https://www.npmjs.com/package/redux-observable)
+* [collect analytics data](https://www.npmjs.com/package/redux-beacon)
 * and many more...
 
 These libraries are implemented as [Redux Middleware](http://redux.js.org/docs/advanced/Middleware.html)
@@ -495,7 +500,7 @@ import { NgReduxModule, NgRedux, DevToolsExtension } from '@angular-redux/store'
 @NgModule({
   // Decorator as before
 })
-export class AppModule { 
+export class AppModule {
   constructor(
     ngRedux: NgRedux<IAppState>,
     devTools: DevToolsExtension) {
