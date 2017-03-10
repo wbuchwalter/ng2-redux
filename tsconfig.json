@@ -1,26 +1,16 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
-    "target": "ES5",
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "outDir": "./dist/out-tsc",
     "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "removeComments": false,
-    "rootDir": "src",
-    "outDir": "lib/",
-    "noImplicitAny": false,
-    "declaration": true
-  },
-  "compileOnSave": false,
-  "buildOnSave": false,
-  "exclude": [
-    "node_modules",
-    "lib",
-    "examples",
-    "**/*.spec.ts"
-  ],
-  "angularCompilerOptions": {
-    "strictMetadataEmit": true
+    "target": "es5",
+    "lib": [
+      "es2016",
+      "dom"
+    ]
   }
 }

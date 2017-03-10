@@ -1,18 +1,12 @@
 import 'reflect-metadata';
-import { expect, use } from 'chai';
 import { NgZone } from '@angular/core';
-
 import { NgRedux } from '../components/ng-redux';
 import { select } from './select';
-import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
-
-use(sinonChai);
 
 class MockNgZone {
-    run(fn) {
-        return fn();
-    }
+  run(fn) {
+    return fn();
+  }
 }
 
 describe('@select', () => {
@@ -38,66 +32,66 @@ describe('@select', () => {
 
   describe('when passed no arguments', () => {
     it('automatically attempts to bind to a store property that matches the' +
-       ' name of the class property', () => {
+      ' name of the class property', () => {
 
-      class MockClass {
-        @select() baz: any;
-      }
+        class MockClass {
+          @select() baz: any;
+        }
 
-      let mockInstance = new MockClass();
-      let value;
-      let expectedValue = 1;
+        let mockInstance = new MockClass();
+        let value;
+        let expectedValue = 1;
 
-      mockInstance.baz.subscribe((val) => {
-        value = val;
+        mockInstance.baz.subscribe((val) => {
+          value = val;
+        });
+
+        ngRedux.dispatch({ type: 'nvm', payload: expectedValue });
+
+        expect(value).toEqual(expectedValue);
       });
-
-      ngRedux.dispatch({type: 'nvm', payload: expectedValue});
-
-      expect(value).to.equal(expectedValue);
-    });
 
     it('attempts to bind by name ignoring any $ characters in the class ' +
-       'property name', () => {
+      'property name', () => {
 
-      class MockClass {
-        @select() baz$: any;
-      }
+        class MockClass {
+          @select() baz$: any;
+        }
 
-      let mockInstance = new MockClass();
-      let value;
-      let expectedValue = 2;
+        let mockInstance = new MockClass();
+        let value;
+        let expectedValue = 2;
 
-      mockInstance.baz$.subscribe((val) => {
-        value = val;
+        mockInstance.baz$.subscribe((val) => {
+          value = val;
+        });
+
+        ngRedux.dispatch({ type: 'nvm', payload: expectedValue });
+
+        expect(value).toEqual(expectedValue);
       });
-
-      ngRedux.dispatch({type: 'nvm', payload: expectedValue});
-
-      expect(value).to.equal(expectedValue);
-    });
   });
 
   describe('when passed a string', () => {
     it('attempts to bind to the store property whose name matches the ' +
-       'string value', () => {
+      'string value', () => {
 
-      class MockClass {
-        @select('baz') asdf: any;
-      }
+        class MockClass {
+          @select('baz') asdf: any;
+        }
 
-      let mockInstance = new MockClass();
-      let value;
-      let expectedValue = 3;
+        let mockInstance = new MockClass();
+        let value;
+        let expectedValue = 3;
 
-      mockInstance.asdf.subscribe((val) => {
-        value = val;
+        mockInstance.asdf.subscribe((val) => {
+          value = val;
+        });
+
+        ngRedux.dispatch({ type: 'nvm', payload: expectedValue });
+
+        expect(value).toEqual(expectedValue);
       });
-
-      ngRedux.dispatch({type: 'nvm', payload: expectedValue});
-
-      expect(value).to.equal(expectedValue);
-    });
   });
 
   describe('when passed a function', () => {
@@ -116,9 +110,9 @@ describe('@select', () => {
         value = val;
       });
 
-      ngRedux.dispatch({type: 'nvm', payload: expectedValue / 2});
+      ngRedux.dispatch({ type: 'nvm', payload: expectedValue / 2 });
 
-      expect(value).to.equal(expectedValue);
+      expect(value).toEqual(expectedValue);
     });
   });
 
@@ -137,9 +131,9 @@ describe('@select', () => {
       const mockInstance = new MockClass();
 
       mockInstance.asdf.subscribe(val => {
-        expect(val).to.not.equal(1);
+        expect(val).not.toEqual(1);
       });
-      ngRedux.dispatch({type: 'nvm', payload: 1});
+      ngRedux.dispatch({ type: 'nvm', payload: 1 });
     });
 
     it('should trigger next when comparer returns false', () => {
@@ -154,13 +148,13 @@ describe('@select', () => {
       mockInstance.asdf.subscribe(val => {
         value = val;
       });
-      ngRedux.dispatch({type: 'nvm', payload: 2});
-      expect(value).to.equal(2);
+      ngRedux.dispatch({ type: 'nvm', payload: 2 });
+      expect(value).toEqual(2);
     });
 
     it('should receive previous and next value for comparison', () => {
 
-      const spy = sinon.spy();
+      const spy = jasmine.createSpy('spy');
 
       class MockClass {
         @select(state => state.baz, spy) asdf: any;
@@ -169,14 +163,13 @@ describe('@select', () => {
       const mockInstance = new MockClass();
       mockInstance.asdf.subscribe(val => null);
 
-      ngRedux.dispatch({type: 'nvm', payload: 1});
-      ngRedux.dispatch({type: 'nvm', payload: 2});
+      ngRedux.dispatch({ type: 'nvm', payload: 1 });
+      ngRedux.dispatch({ type: 'nvm', payload: 2 });
 
-      expect(spy.getCall(0).args[0]).to.equal(undefined);
-      expect(spy.getCall(0).args[1]).to.equal(1);
+      expect(spy.calls.argsFor(0)).toEqual([undefined, 1]);
+      expect(spy.calls.argsFor(1)).toEqual([1, 2]);
 
-      expect(spy.getCall(1).args[0]).to.equal(1);
-      expect(spy.getCall(1).args[1]).to.equal(2);
+
     });
   });
 });

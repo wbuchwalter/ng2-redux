@@ -1,3 +1,4 @@
+/*
 const proxyquire = require('proxyquire');
 
 const { getIn: getInWithImmutable } = proxyquire('./get-in', {
@@ -39,3 +40,4 @@ describe('getIn', () => {
     expect(getInWithNoImmutable(test, [ 'foo' ])).to.equal(1);
   });
 });
+*/
