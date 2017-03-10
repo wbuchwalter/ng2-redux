@@ -1,7 +1,6 @@
-/*
-import {expect} from 'chai';
+
 import wrapActionCreators from './wrap-action-creators';
-import {ActionCreator, ActionCreatorsMapObject}  from 'redux';
+import { ActionCreator, ActionCreatorsMapObject } from 'redux';
 
 
 interface ITest extends ActionCreatorsMapObject {
@@ -21,19 +20,12 @@ describe('wrapActionCreators', () => {
 
       const wrappedAction = wrapActionCreators<ActionCreator<any>>(action);
       const boundActionResult = wrappedAction(dispatch)('payload');
-      expect(boundActionResult.dispatched)
-        .to
-        .deep
-        .equal({ type: 'TYPE', payload: 'payload' });
+      expect(boundActionResult.dispatched).toEqual({ type: 'TYPE', payload: 'payload' });
 
       const wrappedActionObj = wrapActionCreators<ITest>(actionCreatorObj);
       const boundActionObjResult = wrappedActionObj(dispatch).action('payload');
 
-      expect(boundActionObjResult.dispatched)
-        .to
-        .deep
-        .equal({ type: 'TYPE', payload: 'payload' });
+      expect(boundActionObjResult.dispatched).toEqual({ type: 'TYPE', payload: 'payload' });
     });
 });
 
-*/
