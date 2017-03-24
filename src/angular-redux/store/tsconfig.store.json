@@ -1,0 +1,23 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+  "declaration": true,
+  "lib": [
+    "es2016",
+    "dom"
+  ],
+    "outDir": "../../../lib",
+    "target": "es5",
+    "module": "commonjs",
+    "baseUrl": "",
+    "types": []
+  },
+  "exclude": [
+    "node_modules",
+    "test.ts",
+    "**/*.spec.ts"
+  ],
+  "angularCompilerOptions": {
+      "genDir": "../../../out-tsc/store-gen"
+  }
+}
