@@ -301,6 +301,7 @@ they are dispatched when the user clicks the buttons:
 
 import { NgRedux } from '@angular-redux/store'; // <- New
 import { CounterActions } from './app.actions'; // <- New
+import {IAppState} from "../store"; // <- New
 
 @Component({
   selector: 'app-root',
@@ -343,7 +344,7 @@ export class AppComponent {
   subscription; // <- New;
 
   constructor(
-    private ngRedux: NgRedux
+    private ngRedux: NgRedux<IAppState>,
     private actions: CounterActions) {
       this.subscription = ngRedux.select<number>('count') // <- New
         .subscribe(newCount => this.count = newCount);    // <- New
