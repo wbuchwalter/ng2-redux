@@ -50,7 +50,6 @@ Here are some examples of the `angular-redux` family of packages in action:
 ## Resources
 
 * [Using Redux with Angular - JS Toronto Meetup 2016-07-12](https://www.youtube.com/watch?v=s4xr2avwv3s)
-* [Angular and Redux from Rangle.io](http://ngcourse.rangle.io/handout/redux/)
 * [Getting started with Redux](https://egghead.io/courses/getting-started-with-redux)
 * [Awesome Redux: Community Resources](https://github.com/xgrommx/awesome-redux)
 
