@@ -90,4 +90,14 @@ describe('getIn', () => {
     expect(getIn(test, ['quux', 2])).toBe(undefined);
     expect(getIn(test, ['quux', '2'])).toBe(undefined);
   });
+
+  it('should defer to a native getIn function if it exists on the data', () => {
+    const testPath = [ 'foo', 'bar' ];
+    const test = {
+      getIn: path => path === testPath ? 42 : undefined,
+    };
+
+    expect(getIn(test, testPath)).toEqual(42);
+    expect(getIn(test, [ 'some', 'path' ])).toBe(undefined);
+  });
 });
