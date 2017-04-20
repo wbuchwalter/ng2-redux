@@ -11,16 +11,23 @@ module.exports = function(config) {
     karmaTypescriptConfig: {
       bundlerOptions: {
         entrypoints: /\.spec\.ts$/,
-        transforms: [
-          require('karma-typescript-angular2-transform'),
-        ],
+        transforms: [ require('karma-typescript-angular2-transform') ],
       },
       compilerOptions: {
         lib: ['ES2015', 'DOM'],
       },
       coverageOptions: {
-        instrumentation: true
-      }
+        instrumentation: true,
+        threshold: {
+          global: {
+            statements: 70,
+            branches: 70,
+            functions: 60,
+            lines: 70,
+            excludes: [ 'src/**/*.js' ],
+          },
+        },
+      },
     },
     reporters: ['progress', 'karma-typescript'],
     browsers: ['Chrome'],

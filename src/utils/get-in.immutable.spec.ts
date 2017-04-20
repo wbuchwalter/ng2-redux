@@ -1,4 +1,5 @@
-/*const proxyquire = require('proxyquire');
+/*
+const proxyquire = require('proxyquire');
 
 const { getIn: getInWithImmutable } = proxyquire('./get-in', {
   immutable: {
