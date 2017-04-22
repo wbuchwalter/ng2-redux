@@ -9,8 +9,8 @@
 import * as import0 from '@angular/core';
 import * as import1 from './ng-redux-testing.module';
 import * as import2 from './dev-tools.mock';
-import * as import3 from '../../src/components/ng-redux';
-import * as import4 from '../../src/components/dev-tools';
+import * as import3 from '../../lib/src/components/ng-redux';
+import * as import4 from '../../lib/src/components/dev-tools';
 class NgReduxTestingModuleInjector extends import0.ɵNgModuleInjector<import1.NgReduxTestingModule> {
   _NgReduxTestingModule_0:import1.NgReduxTestingModule;
   __NgRedux_1:any;

@@ -1,18 +1,20 @@
 {
   "name": "@angular-redux/store",
-  "version": "6.1.0",
+  "version": "6.2.0-alpha.5",
   "description": "Angular 2 bindings for Redux",
-  "main": "./lib/index.js",
+  "main": "./lib/src/index.js",
   "scripts": {
     "prebuild": "rimraf ./lib",
     "postbuild": "rimraf \"src/**/*.ngfactory.ts\"",
-    "build": "ngc -p tsconfig.json;",
+    "build": "npm run build:src && npm run build:testing",
+    "build:src": "ngc -p tsconfig.json",
+    "build:testing": "ngc -p tsconfig.testing.json",
     "lint": "tslint 'src/**/*.ts'",
     "prepublish": "npm test && npm run build",
     "test": "npm run lint && karma start ./karma.conf.js --single-run",
     "test:watch": "karma start ./karma.conf.js"
   },
-  "typings": "./lib/index.d.ts",
+  "typings": "./lib/src/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/angular-redux/store.git"

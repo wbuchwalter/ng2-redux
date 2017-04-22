@@ -1,4 +1,4 @@
-import { NgRedux } from '../../src';
+import { NgRedux } from '@angular-redux/store';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/from';
 

@@ -1,5 +1,5 @@
 import { NgModule, ClassProvider } from '@angular/core';
-import { NgRedux, DevToolsExtension } from '../../src';
+import { NgRedux, DevToolsExtension } from '@angular-redux/store';
 import { MockNgRedux } from './ng-redux.mock';
 import { MockDevToolsExtension } from './dev-tools.mock';
 
