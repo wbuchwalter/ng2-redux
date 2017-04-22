@@ -1,11 +1,11 @@
 {
   "name": "@angular-redux/store",
-  "version": "6.2.0-alpha.6",
+  "version": "6.2.0-alpha.7",
   "description": "Angular 2 bindings for Redux",
   "main": "./lib/src/index.js",
   "scripts": {
     "prebuild": "rimraf ./lib",
-    "postbuild": "rimraf \"src/**/*.ngfactory.ts\"",
+    "postbuild": "rimraf \"**/*.ngfactory.ts\"",
     "build": "npm run build:src && npm run build:testing",
     "build:src": "ngc -p tsconfig.json",
     "build:testing": "ngc -p tsconfig.testing.json",
