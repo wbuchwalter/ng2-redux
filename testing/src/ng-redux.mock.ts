@@ -10,9 +10,6 @@ import { ReplaySubject } from 'rxjs/ReplaySubject';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/operator/distinctUntilChanged';
 
-// TODO: documentation
-// TODO: unit tests.
-
 interface SelectorStubRecord {
   subject: Subject<any>;
   comparator: Comparator;
