@@ -10,3 +10,4 @@ docs/
 yarn.lock
 circle.yml
 npm-debug.log
+.compiled

@@ -21,6 +21,7 @@
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "lib", "**/*.spec.ts"],
   "angularCompilerOptions": {
-    "strictMetadataEmit": true
+    "strictMetadataEmit": true,
+    "genDir": ".compiled"
   }
 }

@@ -474,7 +474,7 @@ class MyComponent {
 > There's actually quite a lot more you can do with `@select` and `ngRedux.select`. Check out the
 > [API docs](https://github.com/angular-redux/store/blob/master/docs/api.md#selectkey--path--function) for more info.
 
-## Unit Testing `.select` and `@select`
+## Unit Testing Selections
 
 Suppose you wanted your unit test your component above. We
 expose a mock class that can help you. Just pull
