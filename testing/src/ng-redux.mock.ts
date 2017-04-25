@@ -19,16 +19,30 @@ interface SelectorStubMap {
   [selector: string]: SelectorStubRecord;
 }
 
+/**
+ * Convenience mock to make it easier to control selector
+ * behaviour in unit tests.
+ */
 export class MockNgRedux<RootState> extends NgRedux<RootState> {
   public static mockInstance: MockNgRedux<any> = null;
   private static selections: SelectorStubMap = {};
 
+  /**
+   * Returns a subject that's connected to any observable returned by the
+   * given selector. You can use this subject to pump values into your
+   * components or services under test; when they call .select or @select
+   * in the context of a unit test, MockNgRedux will give them the values
+   * you pushed onto your stub.
+   */
   public static getSelectorStub<R, S>(
     selector?: Selector<R, S>,
     comparator?: Comparator): Subject<S> {
     return MockNgRedux.initSelectorStub<R, S>(selector, comparator).subject;
   }
 
+  /**
+   * Reset all previously configured stubs.
+   */
   public static reset(): void {
     MockNgRedux.selections = {};
   }
