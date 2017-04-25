@@ -23,6 +23,7 @@ export class LogRemoteName {
       })
       .catch(err => console.log('get name failed:', err));
     }
+    return next(action);
 }
 ```
 
