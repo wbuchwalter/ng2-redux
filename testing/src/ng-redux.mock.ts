@@ -23,14 +23,16 @@ interface SelectorStubMap {
 }
 
 export class MockNgRedux<RootState> extends NgRedux<RootState> {
-  private static mockInstance: MockNgRedux<any> = null;
+  public static mockInstance: MockNgRedux<any> = null;
   private static selections: SelectorStubMap = {};
 
-  static getSelectorStub<R, S>(selector?: Selector<R, S>, comparator?: Comparator): Subject<S> {
+  public static getSelectorStub<R, S>(
+    selector?: Selector<R, S>,
+    comparator?: Comparator): Subject<S> {
     return MockNgRedux.initSelectorStub<R, S>(selector, comparator).subject;
   }
 
-  static reset(): void {
+  public static reset(): void {
     MockNgRedux.selections = {};
   }
 
@@ -48,16 +50,16 @@ export class MockNgRedux<RootState> extends NgRedux<RootState> {
     return record;
   }
 
-  constructor() {
+  public constructor() {
     super(null);
 
     NgRedux.instance = this; // This hooks the mock up to @select.
     MockNgRedux.mockInstance = this;
   }
 
-  dispatch = () => null;
+  public dispatch = () => null;
 
-  select<S>(selector?: Selector<RootState, S>, comparator?: Comparator): Observable<any> {
+  public select<S>(selector?: Selector<RootState, S>, comparator?: Comparator): Observable<any> {
     const stub = MockNgRedux.initSelectorStub<RootState, S>(selector, comparator);
     return stub.comparator ?
       stub.subject.distinctUntilChanged(stub.comparator) :
