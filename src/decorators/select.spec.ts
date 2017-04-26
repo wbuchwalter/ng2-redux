@@ -12,7 +12,7 @@ class MockNgZone {
 
 describe('@select', () => {
   let ngRedux;
-  let mockNgZone = new MockNgZone() as NgZone;
+  const mockNgZone = new MockNgZone() as NgZone;
   let targetObj;
   let defaultState;
   let rootReducer;
@@ -39,9 +39,9 @@ describe('@select', () => {
         @select() baz: any;
       }
 
-      let mockInstance = new MockClass();
+      const mockInstance = new MockClass();
       let value;
-      let expectedValue = 1;
+      const expectedValue = 1;
 
       mockInstance.baz.subscribe((val) => {
         value = val;
@@ -59,9 +59,9 @@ describe('@select', () => {
         @select() baz$: any;
       }
 
-      let mockInstance = new MockClass();
+      const mockInstance = new MockClass();
       let value;
-      let expectedValue = 2;
+      const expectedValue = 2;
 
       mockInstance.baz$.subscribe((val) => {
         value = val;
@@ -81,9 +81,9 @@ describe('@select', () => {
         @select('baz') asdf: any;
       }
 
-      let mockInstance = new MockClass();
+      const mockInstance = new MockClass();
       let value;
-      let expectedValue = 3;
+      const expectedValue = 3;
 
       mockInstance.asdf.subscribe((val) => {
         value = val;
@@ -103,9 +103,9 @@ describe('@select', () => {
         @select(state => state.baz * 2) asdf: any;
       }
 
-      let mockInstance = new MockClass();
+      const mockInstance = new MockClass();
       let value;
-      let expectedValue = 10;
+      const expectedValue = 10;
 
       mockInstance.asdf.subscribe((val) => {
         value = val;

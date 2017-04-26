@@ -24,12 +24,11 @@ describe('NgRedux Observable Store', () => {
     baz: number;
   };
 
-  let targetObj;
   let defaultState;
   let rootReducer;
   let store;
   let ngRedux;
-  let mockNgZone = new MockNgZone() as NgZone;
+  const mockNgZone = new MockNgZone() as NgZone;
 
   beforeEach(() => {
     defaultState = {
@@ -64,7 +63,7 @@ describe('NgRedux Observable Store', () => {
   });
 
   it('should get the initial state', (done) => {
-    let state$ = ngRedux
+    ngRedux
       .select()
       .subscribe(state => {
         expect(state.foo).toEqual('bar');
@@ -74,7 +73,7 @@ describe('NgRedux Observable Store', () => {
   });
 
   it('should accept a keyname for a selector', (done) => {
-    let foo$ = ngRedux
+    ngRedux
       .select('foo')
       .subscribe(stateSlice => {
         expect(stateSlice).toEqual('bar');
@@ -185,14 +184,14 @@ describe('NgRedux Observable Store', () => {
         .createSpy('selectSpy')
         .and.callFake(state => state.foo);
 
-    let results = [];
+    const results = [];
     ngRedux.select(selectSpy).subscribe(result => {
       results.push(result);
     });
 
-    // called once to get the initial value 
+    // called once to get the initial value
     expect(selectSpy.calls.count()).toEqual(1);
-    // not called since no state was updated 
+    // not called since no state was updated
     ngRedux.dispatch({ type: 'NOT_A_STATE_CHANGE' });
     expect(selectSpy.calls.count()).toEqual(1);
     ngRedux.dispatch({ type: 'UPDATE_FOO', payload: 'update' });
@@ -241,12 +240,11 @@ describe('NgRedux Observable Store', () => {
       }
       ngRedux = new NgRedux<IAppState>(mockNgZone);
 
-      let someService = new SomeService(ngRedux);
+      const someService = new SomeService(ngRedux);
       ngRedux.configureStore(rootReducer, defaultState);
       expect(someService.foo).toEqual('bar');
       expect(someService.bar).toEqual('foo');
       expect(someService.baz).toEqual(-1);
-
     });
 
   it('should have select decorators work before store is configured',
@@ -259,7 +257,7 @@ describe('NgRedux Observable Store', () => {
 
       ngRedux = new NgRedux<IAppState>(mockNgZone);
 
-      let someService = new SomeService();
+      const someService = new SomeService();
       someService
         .foo$
         .combineLatest(someService.bar$, someService.baz$)
@@ -283,13 +281,13 @@ describe('Chained actions in subscriptions', () => {
   let defaultState: IAppState;
   let rootReducer;
   let ngRedux;
-  let mockNgZone = new MockNgZone() as NgZone;
+  const mockNgZone = new MockNgZone() as NgZone;
 
-  let doSearch = (word) => {
+  const doSearch = (word) => {
     ngRedux.dispatch({ type: 'SEARCH', payload: word });
   };
 
-  let doFetch = (word) => {
+  const doFetch = (word) => {
     ngRedux.dispatch({ type: 'SEARCH_RESULT', payload: word.length });
   };
 
@@ -326,7 +324,7 @@ describe('Chained actions in subscriptions', () => {
         .and.callFake(n => length = n);
       let lenSub;
       let keywordSub;
-      
+
       keywordSub = keyword$.
         filter(n => n !== '')
         .subscribe(n => {
@@ -361,7 +359,7 @@ describe('Chained actions in subscriptions', () => {
         .and.callFake(n => length = n);
       let lenSub;
       let keywordSub;
-      
+
       keywordSub = keyword$.
         filter(n => n !== '')
         .subscribe(n => {

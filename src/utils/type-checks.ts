@@ -1,5 +1,5 @@
 export function isFunction(thing: any): boolean {
-  return !!(thing && 
+  return !!(thing &&
     thing.constructor &&
     thing.call &&
     thing.apply);

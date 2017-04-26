@@ -19,7 +19,6 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/switchMap';
 
 import shallowEqual from '../utils/shallow-equal';
-import wrapActionCreators from '../utils/wrap-action-creators';
 import { isObject, isFunction, isPlainObject } from '../utils/type-checks';
 import { omit } from '../utils/omit';
 import { invariant } from '../utils/invariant';
@@ -45,12 +44,12 @@ export type Comparator = (x: any, y: any) => boolean;
 type RetypedCompose = (func: Function, ...funcs: Function[]) => Function;
 
 export class NgRedux<RootState> {
+    static instance: NgRedux<any> = undefined;
+
     private _store: Store<RootState> = null;
     private _store$: BehaviorSubject<RootState> = null;
     private _defaultMapStateToTarget: Function;
     private _defaultMapDispatchToTarget: Function;
-
-    static instance: NgRedux<any> = undefined;
 
     /**
      * Creates an instance of NgRedux.
@@ -143,7 +142,7 @@ export class NgRedux<RootState> {
 
 
         let result: Observable<S>;
-        let changedStore = this._store$.distinctUntilChanged();
+        const changedStore = this._store$.distinctUntilChanged();
         if (typeof selector === 'string' ||
             typeof selector === 'number' ||
             typeof selector === 'symbol') {

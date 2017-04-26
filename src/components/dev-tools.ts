@@ -18,7 +18,7 @@ export class DevToolsExtension {
    * trigger Angular2's change detector.
    *
    * @argument { Object } options: dev tool options; same
-   * format as described here: 
+   * format as described here:
    * [zalmoxisus/redux-devtools-extension/blob/master/docs/API/Arguments.md]
    */
   enhancer = (options?: Object) => {
