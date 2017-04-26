@@ -72,7 +72,9 @@ export class NgRedux<RootState> {
     middleware: Redux.Middleware[] = [],
     enhancers: Redux.StoreEnhancer<RootState>[] = []) {
 
-    if (this._store) throw new Error('Store already configured!');
+    if (this._store) {
+      throw new Error('Store already configured!');
+    }
 
     const reTypedCompose = compose as RetypedCompose;
     const finalCreateStore = <Redux.StoreEnhancerStoreCreator<RootState>>reTypedCompose(
@@ -95,7 +97,10 @@ export class NgRedux<RootState> {
    * @param {Redux.Store} store Your app's store
    */
   provideStore(store: Store<RootState>) {
-    if (this._store) throw new Error('Store already configured!');
+    if (this._store) {
+      throw new Error('Store already configured!');
+    }
+
     this.setStore(store);
   };
 
