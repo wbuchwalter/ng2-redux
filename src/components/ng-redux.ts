@@ -19,7 +19,6 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/switchMap';
 
 import shallowEqual from '../utils/shallow-equal';
-import { isObject, isFunction, isPlainObject } from '../utils/type-checks';
 import { omit } from '../utils/omit';
 import { getIn } from '../utils/get-in';
 
@@ -119,14 +118,13 @@ export class NgRedux<RootState> {
     selector?: Selector<RootState, S>,
     comparator?: Comparator): Observable<S> {
 
-    if (!selector) {
-      return this._store$.distinctUntilChanged(comparator);
-    }
-
     let result: Observable<S>;
     const changedStore = this._store$.distinctUntilChanged();
 
-    if (typeof selector === 'string' ||
+    if (!selector) {
+      return this._store$.distinctUntilChanged(comparator);
+    } else if (
+      typeof selector === 'string' ||
       typeof selector === 'number' ||
       typeof selector === 'symbol') {
 

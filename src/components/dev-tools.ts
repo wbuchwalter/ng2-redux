@@ -9,7 +9,8 @@ const environment: any = typeof window !== 'undefined' ? window : this;
  */
 @Injectable()
 export class DevToolsExtension {
-  constructor(private appRef: ApplicationRef,
+  constructor(
+    private appRef: ApplicationRef,
     private ngRedux: NgRedux<any>) { }
 
   /**
@@ -46,7 +47,5 @@ export class DevToolsExtension {
   /**
    * Returns true if the extension is installed and enabled.
    */
-  isEnabled() {
-    return environment && environment.devToolsExtension;
-  }
+  isEnabled = () => environment && environment.devToolsExtension
 }
