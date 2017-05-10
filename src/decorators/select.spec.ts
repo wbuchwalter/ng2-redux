@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import { NgZone } from '@angular/core';
-
 import { NgRedux } from '../components/ng-redux';
 import { select } from './select';
 
@@ -31,51 +30,51 @@ describe('@select', () => {
 
   describe('when passed no arguments', () => {
     it('automatically attempts to bind to a store property that matches the' +
-       ' name of the class property', () => {
-      class MockClass {
-        @select() baz: any;
-      }
+      ' name of the class property', () => {
+        class MockClass {
+          @select() baz: any;
+        }
 
-      const mockInstance = new MockClass();
-      let value;
-      const expectedValue = 1;
+        const mockInstance = new MockClass();
+        let value;
+        const expectedValue = 1;
 
-      mockInstance.baz.subscribe((val) => value = val);
-      ngRedux.dispatch({type: 'nvm', payload: expectedValue});
-      expect(value).toEqual(expectedValue);
-    });
+        mockInstance.baz.subscribe((val) => value = val);
+        ngRedux.dispatch({ type: 'nvm', payload: expectedValue });
+        expect(value).toEqual(expectedValue);
+      });
 
     it('attempts to bind by name ignoring any $ characters in the class ' +
-       'property name', () => {
-      class MockClass {
-        @select() baz$: any;
-      }
+      'property name', () => {
+        class MockClass {
+          @select() baz$: any;
+        }
 
-      const mockInstance = new MockClass();
-      let value;
-      const expectedValue = 2;
+        const mockInstance = new MockClass();
+        let value;
+        const expectedValue = 2;
 
-      mockInstance.baz$.subscribe(val => value = val);
-      ngRedux.dispatch({type: 'nvm', payload: expectedValue});
-      expect(value).toEqual(expectedValue);
-    });
+        mockInstance.baz$.subscribe(val => value = val);
+        ngRedux.dispatch({ type: 'nvm', payload: expectedValue });
+        expect(value).toEqual(expectedValue);
+      });
   });
 
   describe('when passed a string', () => {
     it('attempts to bind to the store property whose name matches the ' +
-       'string value', () => {
-      class MockClass {
-        @select('baz') asdf: any;
-      }
+      'string value', () => {
+        class MockClass {
+          @select('baz') asdf: any;
+        }
 
-      const mockInstance = new MockClass();
-      let value;
-      const expectedValue = 3;
+        const mockInstance = new MockClass();
+        let value;
+        const expectedValue = 3;
 
-      mockInstance.asdf.subscribe(val => value = val);
-      ngRedux.dispatch({type: 'nvm', payload: expectedValue});
-      expect(value).toEqual(expectedValue);
-    });
+        mockInstance.asdf.subscribe(val => value = val);
+        ngRedux.dispatch({ type: 'nvm', payload: expectedValue });
+        expect(value).toEqual(expectedValue);
+      });
   });
 
   describe('when passed a function', () => {
@@ -90,7 +89,7 @@ describe('@select', () => {
       const expectedValue = 10;
 
       mockInstance.asdf.subscribe(val => value = val);
-      ngRedux.dispatch({type: 'nvm', payload: expectedValue / 2});
+      ngRedux.dispatch({ type: 'nvm', payload: expectedValue / 2 });
       expect(value).toEqual(expectedValue);
     });
   });
@@ -108,7 +107,7 @@ describe('@select', () => {
 
       const mockInstance = new MockClass();
       mockInstance.asdf.subscribe(val => expect(val).not.toEqual(1));
-      ngRedux.dispatch({type: 'nvm', payload: 1});
+      ngRedux.dispatch({ type: 'nvm', payload: 1 });
     });
 
     it('should trigger next when comparer returns false', () => {
@@ -120,7 +119,7 @@ describe('@select', () => {
       let value;
 
       mockInstance.asdf.subscribe(val => value = val);
-      ngRedux.dispatch({type: 'nvm', payload: 2});
+      ngRedux.dispatch({ type: 'nvm', payload: 2 });
       expect(value).toEqual(2);
     });
 
@@ -134,8 +133,8 @@ describe('@select', () => {
       const mockInstance = new MockClass();
       mockInstance.asdf.subscribe(val => null);
 
-      ngRedux.dispatch({type: 'nvm', payload: 1});
-      ngRedux.dispatch({type: 'nvm', payload: 2});
+      ngRedux.dispatch({ type: 'nvm', payload: 1 });
+      ngRedux.dispatch({ type: 'nvm', payload: 2 });
 
       expect(spy).toHaveBeenCalledWith(undefined, 1);
       expect(spy).toHaveBeenCalledWith(1, 2);
