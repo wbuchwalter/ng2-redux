@@ -42,7 +42,7 @@ export function select<T>(
 export type Transformer<RootState, V> = (store$: Observable<RootState>) => Observable<V>
 
 /**
- * Selects an obsersable of the entire store, and runs it through the given transformer
+ * Selects an observable of the entire store, and runs it through the given transformer
  * function. A transformer function takes the store observable as an input and returns
  * a derived observable from it. That derived observable is run through distinctUntilChanges
  * with the given optional comparator and attached to the store property.
