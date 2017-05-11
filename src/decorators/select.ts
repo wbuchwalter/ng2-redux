@@ -1,5 +1,6 @@
 import { Selector, Comparator, NgRedux } from '../components/ng-redux';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/let'
 
 /**
  * Selects an observable from the store, and attaches it to the decorated
@@ -56,7 +57,8 @@ export function select$<T>(
 
   return function decorate(target: any, key: string): void {
     function getter() {
-      return transformer(NgRedux.instance.select())
+      return NgRedux.instance.select()
+          .let(transformer)
           .distinctUntilChanged(comparator);
     }
 
