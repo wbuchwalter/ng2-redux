@@ -46,7 +46,7 @@ export type Transformer<RootState, V> = (store$: Observable<RootState>) => Obser
  * function. A transformer function takes the store observable as an input and returns
  * a derived observable from it. That derived observable is run through distinctUntilChanges
  * with the given optional comparator and attached to the store property.
- * 
+ *
  * Think of a Transformer as a FunctionSelector that operates on observables instead of
  * values.
  */
