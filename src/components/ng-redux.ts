@@ -8,7 +8,8 @@ import {
   Unsubscribe,
   createStore,
   applyMiddleware,
-  compose
+  compose,
+  Dispatch,
 } from 'redux';
 
 import { NgZone } from '@angular/core';
@@ -79,7 +80,6 @@ export class NgRedux<RootState> {
         ...enhancers
     )(createStore);
     const store = finalCreateStore(reducer, initState);
-
     this.setStore(store);
   }
 
@@ -166,7 +166,7 @@ export class NgRedux<RootState> {
   /**
    * Dispatch an action to Redux
    */
-  dispatch = <A extends Action>(action: A): any => {
+  dispatch: Dispatch<RootState> = action => {
     if (!this._store) {
       throw new Error('Dispatch failed: did you forget to configure your store? ' +
         'https://github.com/angular-redux/@angular-redux/core/blob/master/' +

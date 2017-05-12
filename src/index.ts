@@ -7,7 +7,7 @@ import {
   Comparator,
 } from './components/ng-redux';
 import { DevToolsExtension } from './components/dev-tools';
-import { select } from './decorators/select';
+import { select, select$ } from './decorators/select';
 import { dispatch } from './decorators/dispatch';
 import { NgReduxModule } from './ng-redux.module';
 
@@ -25,5 +25,6 @@ export {
   NgReduxModule,
   DevToolsExtension,
   select,
-  dispatch
+  select$,
+  dispatch,
 };
