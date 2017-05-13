@@ -2,7 +2,7 @@
 
 Angular bindings for [Redux](https://github.com/reactjs/redux).
 
-For Angular 1 see [ng-redux](https://github.com/wbuchwalter/ng-redux)
+For Angular 1 see [ng-redux](https://github.com/wbuchwalter/ng-redux).
 
 [![Join the chat at https://gitter.im/angular-redux/ng2-redux](https://badges.gitter.im/angular-redux/ng2-redux.svg)](https://gitter.im/angular-redux/ng2-redux?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![CircleCI](https://img.shields.io/circleci/project/github/angular-redux/store.svg)](https://github.com/angular-redux/store)
