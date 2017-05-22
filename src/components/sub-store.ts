@@ -11,45 +11,15 @@ import {
 } from './selectors';
 import { NgRedux } from './ng-redux';
 import { ObservableStore, Comparator } from './observable-store';
-
-const f = (rootReducer, rootFractalReducer) =>
-  (state, action) => {
-    rootReducer(state, action)
-    rootFractalReducer(state, action);
-  }
-
-// TODO: hook this up to rootReducer in configureStore, provideStore
-// (using composeReducer, replaceReducer respectively).
-export const rootFractalReducer = (
-  state: {} = {},
-  action: Action & { '@angular-redux::fractalkey': string }) => {
-    const fractalKey = action['@angular-redux::fractalkey'];
-    const fractalPath = fractalKey ? JSON.parse(fractalKey) : [];
-    const localReducer = SubStore.reducerMap[fractalKey];
-    return fractalKey && localReducer ?
-      setIn(
-        state,
-        fractalPath,
-        localReducer(
-          getIn(state, fractalPath),
-          action)) :
-      state;
-  }
+import { registerFractalReducer, replaceLocalReducer } from './fractal-reducer-map';
 
 // TODO: unit tests.
 export class SubStore<State> implements ObservableStore<State> {
-  static reducerMap: { [id: string]: Reducer<any> } = {};
-
   constructor(
     private rootStore: NgRedux<any>,
     private basePath: PathSelector,
     localReducer: Reducer<State>) {
-      const existingFractalReducer = SubStore.reducerMap[JSON.stringify(basePath)];
-      if (existingFractalReducer && existingFractalReducer !== localReducer) {
-        throw new Error(`attempt to overwrite fractal reducer for basePath ${basePath}`);
-      }
-
-      SubStore.reducerMap[JSON.stringify(basePath)] = localReducer;
+      registerFractalReducer(basePath, localReducer);
   }
 
   dispatch: Dispatch<State> = (action: Action) =>
@@ -83,5 +53,5 @@ export class SubStore<State> implements ObservableStore<State> {
   }
 
   replaceReducer = (nextLocalReducer: Reducer<State>) =>
-    SubStore.reducerMap[JSON.stringify(this.basePath)] = nextLocalReducer;
+    replaceLocalReducer(this.basePath, nextLocalReducer);
 }

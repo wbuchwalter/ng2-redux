@@ -8,7 +8,7 @@ export type Comparator = (x: any, y: any) => boolean;
  * This interface represents the glue that connects the
  * subscription-oriented Redux Store with the RXJS Observable-oriented
  * Angular component world.
- * 
+ *
  * Augments the basic Redux store interface with methods to
  * enable selection and fractalization.
  */

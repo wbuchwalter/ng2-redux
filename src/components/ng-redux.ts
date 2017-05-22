@@ -21,6 +21,7 @@ import 'rxjs/add/operator/switchMap';
 import { Selector, PathSelector, resolveToFunctionSelector } from './selectors';
 import { assert } from '../utils/assert';
 import { SubStore } from './sub-store';
+import { enableFractalReducers } from './fractal-reducer-map';
 import { ObservableStore, Comparator } from './observable-store';
 
 export class NgRedux<RootState> implements ObservableStore<RootState> {
@@ -61,7 +62,7 @@ export class NgRedux<RootState> implements ObservableStore<RootState> {
     this.setStore(
       compose.apply(null,
         [ applyMiddleware(...middleware), ...enhancers ])(createStore)
-        (rootReducer, initState));
+        (enableFractalReducers(rootReducer), initState));
   }
 
   /**
