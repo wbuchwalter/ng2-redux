@@ -9,7 +9,14 @@ import {
   FunctionSelector,
   resolveToFunctionSelector,
 } from './selectors';
-import { NgRedux, Comparator } from './ng-redux';
+import { NgRedux } from './ng-redux';
+import { ObservableStore, Comparator } from './observable-store';
+
+const f = (rootReducer, rootFractalReducer) =>
+  (state, action) => {
+    rootReducer(state, action)
+    rootFractalReducer(state, action);
+  }
 
 // TODO: hook this up to rootReducer in configureStore, provideStore
 // (using composeReducer, replaceReducer respectively).
@@ -29,15 +36,14 @@ export const rootFractalReducer = (
       state;
   }
 
-// TODO: sort out store interface.
 // TODO: unit tests.
-export class SubStore<S> {
-  static reducerMap = {};
+export class SubStore<State> implements ObservableStore<State> {
+  static reducerMap: { [id: string]: Reducer<any> } = {};
 
   constructor(
     private rootStore: NgRedux<any>,
     private basePath: PathSelector,
-    localReducer: Reducer<S>) {
+    localReducer: Reducer<State>) {
       const existingFractalReducer = SubStore.reducerMap[JSON.stringify(basePath)];
       if (existingFractalReducer && existingFractalReducer !== localReducer) {
         throw new Error(`attempt to overwrite fractal reducer for basePath ${basePath}`);
@@ -46,23 +52,36 @@ export class SubStore<S> {
       SubStore.reducerMap[JSON.stringify(basePath)] = localReducer;
   }
 
-  dispatch: Dispatch<S> = (action: Action) =>
+  dispatch: Dispatch<State> = (action: Action) =>
     this.rootStore.dispatch(
       Object.assign({},
       action,
       { '@angular-redux::fractalkey': JSON.stringify(this.basePath) }))
 
-  getState = (): S => getIn(this.rootStore.getState(), this.basePath)
+  getState = (): State =>
+    getIn(this.rootStore.getState(), this.basePath)
 
-  configureSubStore = <T>(basePath: PathSelector, localReducer: Reducer<T>) =>
-    new SubStore<T>(
-      this.rootStore,
-      [ ...this.basePath, ...basePath],
-      localReducer)
+  configureSubStore = <SubState>(
+    basePath: PathSelector,
+    localReducer: Reducer<SubState>): ObservableStore<SubState> =>
+      new SubStore<SubState>(
+        this.rootStore,
+        [ ...this.basePath, ...basePath],
+        localReducer)
 
-  select = <T>(selector: Selector<S, T>, comparator?: Comparator): Observable<T> =>
-    this.rootStore
-      .select(this.basePath)
-      .map(resolveToFunctionSelector(selector))
-      .distinctUntilChanged(comparator)
+  select = <SelectedState>(
+    selector?: Selector<State, SelectedState>,
+    comparator?: Comparator): Observable<SelectedState> =>
+      this.rootStore
+        .select(this.basePath)
+        .map(resolveToFunctionSelector(selector))
+        .distinctUntilChanged(comparator)
+
+  subscribe = (listener): () => void => {
+    const subscription = this.select().subscribe(listener);
+    return () => subscription.unsubscribe();
+  }
+
+  replaceReducer = (nextLocalReducer: Reducer<State>) =>
+    SubStore.reducerMap[JSON.stringify(this.basePath)] = nextLocalReducer;
 }

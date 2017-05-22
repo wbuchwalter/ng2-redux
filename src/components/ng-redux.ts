@@ -21,10 +21,9 @@ import 'rxjs/add/operator/switchMap';
 import { Selector, PathSelector, resolveToFunctionSelector } from './selectors';
 import { assert } from '../utils/assert';
 import { SubStore } from './sub-store';
+import { ObservableStore, Comparator } from './observable-store';
 
-export type Comparator = (x: any, y: any) => boolean;
-
-export class NgRedux<RootState> {
+export class NgRedux<RootState> implements ObservableStore<RootState> {
   /** @hidden */
   static instance: NgRedux<any> = undefined;
 
@@ -40,7 +39,7 @@ export class NgRedux<RootState> {
   }
 
   /**
-   * configures a Redux store and allows NgRedux to observe and dispatch
+   * Configures a Redux store and allows NgRedux to observe and dispatch
    * to it.
    *
    * This should only be called once for the lifetime of your app, for
@@ -65,11 +64,6 @@ export class NgRedux<RootState> {
         (rootReducer, initState));
   }
 
-  configureSubStore = <T>(
-    basePath: PathSelector,
-    localReducer: Reducer<T>) =>
-    new SubStore<T>(this, basePath, localReducer)
-
   /**
    * Accepts a Redux store, then sets it in NgRedux and
    * allows NgRedux to observe and dispatch to it.
@@ -85,58 +79,17 @@ export class NgRedux<RootState> {
     this.setStore(store);
   };
 
-  /**
-   * Select a slice of state to expose as an observable.
-   *
-   * @typeparam S
-   * @param selector key or function to select a part of the state
-   * @param [comparator] Optional
-   * comparison function called to test if an item is distinct
-   * from the previous item in the source.
-   *
-   * @returns An Observable that emits items from the
-   * source Observable with distinct values.
-   */
-  select = <S>(
-    selector?: Selector<RootState, S>,
-    comparator?: Comparator): Observable<S> =>
-      this._store$
-        .distinctUntilChanged()
-        .map(resolveToFunctionSelector(selector))
-        .distinctUntilChanged(comparator);
+  // Redux Store methods.
 
-  /**
-   * Get the current state of the application
-   * @returns The application state
-   */
-  getState = (): RootState => this._store.getState()
+  getState = (): RootState =>
+    this._store.getState()
 
-  /**
-   * Subscribe to the Redux store changes
-   *
-   * @param listener A callback to invoke when the state is updated
-   * @returns A function to unsubscribe
-   */
   subscribe = (listener: () => void): Unsubscribe =>
     this._store.subscribe(listener)
 
-  /**
-   * Replaces the reducer currently used by the store to calculate the state.
-   *
-   * You might need this if your app implements code splitting and you want to
-   * load some of the reducers dynamically. You might also need this if you
-   * implement a hot reloading mechanism for Redux.
-   *
-   * @param nextReducer The reducer for the store to use instead.
-   */
   replaceReducer = (nextReducer: Reducer<RootState>) =>
     this._store.replaceReducer(nextReducer)
 
-  /**
-   * Dispatch an action to Redux.
-   *
-   * Ensures that dispatch happens inside the Angular Zone.
-   */
   dispatch: Dispatch<RootState> = action => {
     assert(
       !!this._store,
@@ -146,6 +99,21 @@ export class NgRedux<RootState> {
 
     return this.ngZone.run(() => this._store.dispatch(action));
   };
+
+  // ObservableStore methods
+
+  select = <S>(
+    selector?: Selector<RootState, S>,
+    comparator?: Comparator): Observable<S> =>
+      this._store$
+        .distinctUntilChanged()
+        .map(resolveToFunctionSelector(selector))
+        .distinctUntilChanged(comparator);
+
+  configureSubStore = <SubState>(
+    basePath: PathSelector,
+    localReducer: Reducer<SubState>) =>
+    new SubStore<SubState>(this, basePath, localReducer)
 
   private setStore(store: Store<RootState>) {
     this._store = store;
