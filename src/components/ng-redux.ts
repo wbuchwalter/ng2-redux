@@ -18,8 +18,9 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/switchMap';
-import { Selector, resolveToFunctionSelector } from './selectors';
+import { Selector, PathSelector, resolveToFunctionSelector } from './selectors';
 import { assert } from '../utils/assert';
+import { SubStore } from './sub-store';
 
 export type Comparator = (x: any, y: any) => boolean;
 
@@ -63,6 +64,11 @@ export class NgRedux<RootState> {
         [ applyMiddleware(...middleware), ...enhancers ])(createStore)
         (rootReducer, initState));
   }
+
+  configureSubStore = <T>(
+    basePath: PathSelector,
+    localReducer: Reducer<T>) =>
+    new SubStore<T>(this, basePath, localReducer)
 
   /**
    * Accepts a Redux store, then sets it in NgRedux and
