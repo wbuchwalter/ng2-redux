@@ -2,30 +2,23 @@ import {
   NgRedux,
   Selector,
   Comparator,
+  ObservableStore,
+  PathSelector,
 } from '@angular-redux/store';
+import { Reducer, Action } from 'redux';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
-
 import 'rxjs/add/observable/from';
 import 'rxjs/add/operator/distinctUntilChanged';
-
-interface SelectorStubRecord {
-  subject: Subject<any>;
-  comparator: Comparator;
-}
-
-interface SelectorStubMap {
-  [selector: string]: SelectorStubRecord;
-}
+import { MockObservableStore } from './observable-store.mock';
 
 /**
  * Convenience mock to make it easier to control selector
  * behaviour in unit tests.
  */
 export class MockNgRedux<RootState> extends NgRedux<RootState> {
-  public static mockInstance: MockNgRedux<any> = null;
-  private static selections: SelectorStubMap = {};
+  static mockInstance: MockObservableStore<any> = null;
 
   /**
    * Returns a subject that's connected to any observable returned by the
@@ -34,47 +27,39 @@ export class MockNgRedux<RootState> extends NgRedux<RootState> {
    * in the context of a unit test, MockNgRedux will give them the values
    * you pushed onto your stub.
    */
-  public static getSelectorStub<R, S>(
+  static getSelectorStub<R, S>(
     selector?: Selector<R, S>,
     comparator?: Comparator): Subject<S> {
-    return MockNgRedux.initSelectorStub<R, S>(selector, comparator).subject;
+    return MockNgRedux.mockInstance.getSelectorStub<S>(selector, comparator);
   }
 
   /**
    * Reset all previously configured stubs.
    */
-  public static reset(): void {
-    MockNgRedux.selections = {};
+  static reset(): void {
+    MockNgRedux.mockInstance.reset();
   }
 
-  private static initSelectorStub<R, S>(
-    selector?: Selector<R, S>,
-    comparator?: Comparator): SelectorStubRecord {
+  dispatch = (action: Action) => MockNgRedux.mockInstance.dispatch();
+  replaceReducer = () => MockNgRedux.mockInstance.replaceReducer();
+  getState = () => MockNgRedux.mockInstance.getState();
+  subscribe = () => () => MockNgRedux.mockInstance.subscribe();
 
-    const key = selector.toString();
-    const record = MockNgRedux.selections[key] || {
-      subject: new ReplaySubject<S>(),
-      comparator,
-    };
+  select = <SelectedState>(
+    selector?: Selector<RootState, SelectedState>,
+    comparator?: Comparator): Observable<any> =>
+      MockNgRedux.mockInstance.select(selector, comparator);
 
-    MockNgRedux.selections[key] = record;
-    return record;
-  }
+  configureSubStore = <SubState>(
+    basePath: PathSelector,
+    localReducer: Reducer<SubState>): ObservableStore<SubState> =>
+      MockNgRedux.mockInstance.configureSubStore(basePath, localReducer);
 
   /** @hidden */
   constructor() {
     super(null);
 
-    NgRedux.instance = this; // This hooks the mock up to @select.
-    MockNgRedux.mockInstance = this;
-  }
-
-  public dispatch = () => null;
-
-  public select = <S>(selector?: Selector<RootState, S>, comparator?: Comparator): Observable<any> => {
-    const stub = MockNgRedux.initSelectorStub<RootState, S>(selector, comparator);
-    return stub.comparator ?
-      stub.subject.distinctUntilChanged(stub.comparator) :
-      stub.subject;
+    NgRedux.instance = this as NgRedux<any>; // This hooks the mock up to @select.
+    MockNgRedux.mockInstance = new MockObservableStore<RootState>();
   }
 }
