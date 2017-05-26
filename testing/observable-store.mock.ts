@@ -7,7 +7,7 @@ import {
 } from '@angular-redux/store';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
-import { Reducer } from 'redux';
+import { Reducer, Action } from 'redux';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/operator/distinctUntilChanged';
@@ -32,7 +32,7 @@ interface SubStoreStubMap {
 export class MockObservableStore<State> implements ObservableStore<State> {
   selections: SelectorStubMap = {};
   subStores: SubStoreStubMap = {};
-  
+
   getSelectorStub = <SelectedState>(
     selector?: Selector<State, SelectedState>,
     comparator?: Comparator): Subject<SelectedState> =>
@@ -44,7 +44,7 @@ export class MockObservableStore<State> implements ObservableStore<State> {
     this.subStores = {};
   }
 
-  dispatch = () => null;
+  dispatch = (action) => null;
   replaceReducer = () => null;
   getState = () => null;
   subscribe = () => () => null;
@@ -60,12 +60,23 @@ export class MockObservableStore<State> implements ObservableStore<State> {
 
   configureSubStore = <SubState>(
     basePath: PathSelector,
-    localReducer: Reducer<SubState>): ObservableStore<SubState> => {
-      const result = new MockObservableStore<SubState>();
-      this.subStores[JSON.stringify(basePath)] = result;
-      return result;      
-    }
+    localReducer: Reducer<SubState>): ObservableStore<SubState> =>
+      this.initSubStore(basePath)
   
+  getSubStore = <SubState>(...pathSelectors: PathSelector[]): MockObservableStore<SubState> => {
+    const [ first, ...rest ] = pathSelectors;
+    return first ?
+      this.initSubStore(first).getSubStore(...rest) :
+      this;
+  }
+
+  private initSubStore(basePath: PathSelector) {
+    const result = this.subStores[JSON.stringify(basePath)] ||
+      new MockObservableStore<any>();
+    this.subStores[JSON.stringify(basePath)] = result;
+    return result;
+  }
+
   private initSelectorStub<SelectedState>(
     selector?: Selector<State, SelectedState>,
     comparator?: Comparator): SelectorStubRecord {

@@ -26,7 +26,7 @@ import { ObservableStore, Comparator } from './observable-store';
 
 export class NgRedux<RootState> implements ObservableStore<RootState> {
   /** @hidden */
-  static instance: NgRedux<any> = undefined;
+  static instance: ObservableStore<any> = undefined;
 
   private _store: Store<RootState> = null;
   private _store$: BehaviorSubject<RootState> = null;
@@ -114,7 +114,7 @@ export class NgRedux<RootState> implements ObservableStore<RootState> {
   configureSubStore = <SubState>(
     basePath: PathSelector,
     localReducer: Reducer<SubState>): ObservableStore<SubState> =>
-    new SubStore<SubState>(this, basePath, localReducer)
+      new SubStore<SubState>(this, basePath, localReducer)
 
   private setStore(store: Store<RootState>) {
     this._store = store;

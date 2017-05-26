@@ -17,8 +17,8 @@ import { MockObservableStore } from './observable-store.mock';
  * Convenience mock to make it easier to control selector
  * behaviour in unit tests.
  */
-export class MockNgRedux<RootState> extends NgRedux<RootState> {
-  static mockInstance: MockObservableStore<any> = null;
+export class MockNgRedux<RootState> extends MockObservableStore<RootState> {
+  static mockInstance: MockNgRedux<any> = null;
 
   /**
    * Returns a subject that's connected to any observable returned by the
@@ -30,7 +30,22 @@ export class MockNgRedux<RootState> extends NgRedux<RootState> {
   static getSelectorStub<R, S>(
     selector?: Selector<R, S>,
     comparator?: Comparator): Subject<S> {
-    return MockNgRedux.mockInstance.getSelectorStub<S>(selector, comparator);
+      return MockNgRedux.mockInstance.getSelectorStub<S>(selector, comparator);
+    }
+
+  /**
+   * Returns a mock substore that allows you to set up selectorStubs for
+   * any 'fractal' stores your app creates with NgRedux.configureSubStore.
+   *
+   * If your app creates deeply nested substores from other substores,
+   * pass the chain of pathSelectors in as ordered arguments to mock
+   * the nested substores out.
+   * @param pathSelectors
+   */
+  static getSubStore<S>(...pathSelectors: PathSelector[]): MockObservableStore<S> {
+    return pathSelectors.length ?
+      MockNgRedux.mockInstance.getSubStore(...pathSelectors) :
+      MockNgRedux.mockInstance;
   }
 
   /**
@@ -40,26 +55,11 @@ export class MockNgRedux<RootState> extends NgRedux<RootState> {
     MockNgRedux.mockInstance.reset();
   }
 
-  dispatch = (action: Action) => MockNgRedux.mockInstance.dispatch();
-  replaceReducer = () => MockNgRedux.mockInstance.replaceReducer();
-  getState = () => MockNgRedux.mockInstance.getState();
-  subscribe = () => () => MockNgRedux.mockInstance.subscribe();
-
-  select = <SelectedState>(
-    selector?: Selector<RootState, SelectedState>,
-    comparator?: Comparator): Observable<any> =>
-      MockNgRedux.mockInstance.select(selector, comparator);
-
-  configureSubStore = <SubState>(
-    basePath: PathSelector,
-    localReducer: Reducer<SubState>): ObservableStore<SubState> =>
-      MockNgRedux.mockInstance.configureSubStore(basePath, localReducer);
-
   /** @hidden */
   constructor() {
-    super(null);
+    super();
 
-    NgRedux.instance = this as NgRedux<any>; // This hooks the mock up to @select.
-    MockNgRedux.mockInstance = new MockObservableStore<RootState>();
+    NgRedux.instance = this; // This hooks the mock up to @select.
+    MockNgRedux.mockInstance = this;
   }
 }
