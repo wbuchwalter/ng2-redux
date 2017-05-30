@@ -11,6 +11,7 @@ import { ObservableStore } from './components/observable-store';
 import { DevToolsExtension } from './components/dev-tools';
 import { select, select$ } from './decorators/select';
 import { dispatch } from './decorators/dispatch';
+import { SubStore } from './decorators/sub-store';
 import { NgReduxModule } from './ng-redux.module';
 import { selectionMap } from './utils/selection-map';
 
@@ -31,6 +32,7 @@ export {
   select,
   select$,
   dispatch,
+  SubStore,
   ObservableStore,
   selectionMap,
 };

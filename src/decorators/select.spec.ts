@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/toArray';
 import 'rxjs/add/operator/take';
 
+import { NgRedux } from '../components/ng-redux';
 import { RootStore } from '../components/root-store';
 import { select, select$ } from './select';
 import { selectionMap } from '../utils/selection-map';
@@ -27,6 +28,7 @@ describe('Select decorators', () => {
     targetObj = {};
     selectionMap.reset();
     ngRedux = new RootStore(mockNgZone);
+    NgRedux.instance = ngRedux;
     ngRedux.configureStore(rootReducer, defaultState);
   });
 
