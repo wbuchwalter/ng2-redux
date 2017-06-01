@@ -12,6 +12,7 @@ import { ReplaySubject } from 'rxjs/ReplaySubject';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/operator/distinctUntilChanged';
 import { MockObservableStore } from './observable-store.mock';
+import { selectionMap } from '../src/utils/selection-map';
 
 /**
  * Convenience mock to make it easier to control selector
@@ -53,6 +54,7 @@ export class MockNgRedux<RootState> extends MockObservableStore<RootState> {
    */
   static reset(): void {
     MockNgRedux.mockInstance.reset();
+    selectionMap.reset();
   }
 
   /** @hidden */

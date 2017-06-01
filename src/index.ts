@@ -4,8 +4,10 @@ import {
   PathSelector,
   PropertySelector,
   FunctionSelector,
+  Comparator,
+  Transformer,
 } from './components/selectors';
-import { ObservableStore, Comparator } from './components/observable-store';
+import { ObservableStore } from './components/observable-store';
 import { DevToolsExtension } from './components/dev-tools';
 import { select, select$ } from './decorators/select';
 import { dispatch } from './decorators/dispatch';
@@ -22,6 +24,7 @@ export {
   PropertySelector,
   FunctionSelector,
   Comparator,
+  Transformer,
   NgReduxModule,
   DevToolsExtension,
   select,
