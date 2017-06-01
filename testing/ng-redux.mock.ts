@@ -4,6 +4,7 @@ import {
   Comparator,
   ObservableStore,
   PathSelector,
+  selectionMap,
 } from '@angular-redux/store';
 import { Reducer, Action } from 'redux';
 import { Observable } from 'rxjs/Observable';
@@ -12,7 +13,6 @@ import { ReplaySubject } from 'rxjs/ReplaySubject';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/operator/distinctUntilChanged';
 import { MockObservableStore } from './observable-store.mock';
-import { selectionMap } from '../src/utils/selection-map';
 
 /**
  * Convenience mock to make it easier to control selector
