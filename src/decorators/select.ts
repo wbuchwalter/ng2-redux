@@ -3,48 +3,9 @@ import { ReplaySubject } from 'rxjs/ReplaySubject';
 import 'rxjs/add/operator/let'
 import { NgRedux } from '../components/ng-redux';
 import { ObservableStore } from '../components/observable-store';
-import { Selector, Comparator } from '../components/selectors';
+import { Selector, Comparator, Transformer } from '../components/selectors';
 import { IFractalStoreOptions } from './sub-store';
-import { getBaseStore } from './helpers';
-
-export type Transformer<RootState, V> = (store$: Observable<RootState>) => Observable<V>
-
-// TODO: run memory tests.
-// TODO: reflect-metadata?
-// TODO: fix MockNgRedux.reset().
-  // Keep selection map in testing module instead?
-// TODO: blog post.
-// TODO: friendly errors for misconfigs.
-// TODO: constantify caching prop names.
-// TODO: docs.
-// TODO: dispatch unit tests.
-
-// Creates an Observable from the given selection parameters,
-// rooted at decoratedInstance's store, and caches it on the
-// instance for future use.
-const getSelection = <T>(
-  decoratedInstance: Object,
-  key: string | symbol,
-  selector: Selector<any, T>,
-  transformer?: Transformer<any, T>,
-  comparator?: Comparator) => {
-  const store = getBaseStore(decoratedInstance);
-
-  if (store) {
-    const selections = decoratedInstance['@angular-redux::decorator::selections'] || {};
-
-    selections[key] = !transformer ?
-      store.select(selector, comparator) :
-      store.select(selector)
-        .let(transformer)
-        .distinctUntilChanged(comparator);
-    decoratedInstance['@angular-redux::decorator::selections'] = selections;
-
-    return selections[key];
-  }
-
-  return undefined;
-}
+import { getInstanceSelection } from './helpers';
 
 const decorate = (
   selector: Selector<any, any>,
@@ -52,13 +13,12 @@ const decorate = (
   comparator?: Comparator): PropertyDecorator =>
   (target: object, key): void => {
     function getter(this: any) {
-      const selection = getSelection(
+      return getInstanceSelection(
         this,
         key,
         selector,
         transformer,
         comparator);
-      return selection;
     }
 
     // Replace decorated property with a getter that returns the observable.
