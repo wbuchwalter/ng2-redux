@@ -10,7 +10,7 @@
     "build:testing": "ngc -p tsconfig.testing.json",
     "lint": "tslint 'src/**/*.ts'",
     "prepublish": "npm run lint && npm test && npm run build",
-    "test": "nyc node tests.js",
+    "test": "nyc ts-node tests.ts",
     "ci": "npm run lint && npm test",
     "predoc": "rm -rf docs",
     "doc": "typedoc --out docs --excludeExternals --excludePrivate --excludeNotExported -theme minimal --name @angular-redux/store --mode file --module commonjs --tsconfig tsconfig.docs.json"
@@ -86,10 +86,11 @@
       ".ts"
     ],
     "exclude": [
-      "spec/**/*.spec"
+      "**/*.spec.ts"
     ],
     "include": [
-      "src/**/*.ts"
+      "src/**/*.ts",
+      "testing/**/*.ts"
     ]
   }
 }

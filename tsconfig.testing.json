@@ -13,7 +13,7 @@
     "declaration": true,
     "lib" : ["es2015", "es2015.iterable", "dom"],
     "paths": {
-      "@angular-redux/store": ["./lib/src"]
+      "@angular-redux/store": ["./src"]
     },
     "strict": true
   },

@@ -5,17 +5,25 @@ require('zone.js/dist/proxy.js');
 require('zone.js/dist/sync-test.js');
 require('zone.js/dist/async-test.js');
 require('zone.js/dist/fake-async-test.js');
+
 // require('./src/index');
 // require('./testing/index');
-var Jasmine = require('jasmine');
-var runner = new Jasmine();
-global.jasmine = runner.jasmine;
+const Jasmine = require('jasmine');
+
+const runner = new Jasmine();
+
+(global as any).jasmine = runner.jasmine;
+
 require('zone.js/dist/jasmine-patch.js');
-var getTestBed = require('@angular/core/testing').getTestBed;
-var _a = require('@angular/platform-server/testing'), ServerTestingModule = _a.ServerTestingModule, platformServerTesting = _a.platformServerTesting;
+
+const { getTestBed } = require('@angular/core/testing');
+const { ServerTestingModule, platformServerTesting } = require('@angular/platform-server/testing');
+
 getTestBed().initTestEnvironment(ServerTestingModule, platformServerTesting());
+
 runner.loadConfig({
-    spec_dir: '.',
-    spec_files: ['**/*.spec.ts']
+  spec_dir: '.',
+  spec_files: [ '**/*.spec.ts' ]
 });
+
 runner.execute();

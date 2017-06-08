@@ -16,12 +16,11 @@
       "es2015.iterable",
       "dom"
     ],
+    "strict": true,
     "paths": {
-      "@angular-redux/store": [
-        "./src"
-      ]
+      "@angular-redux/store" : ["./lib"]
     },
-    "strict": true
+    "traceResolution": true
   },
   "compileOnSave": false,
   "buildOnSave": false,
