@@ -14,7 +14,7 @@ export const dispatch = () => (
 
   let originalMethod: Function;
 
-  const wrapped = function (this: any, ...args) {
+  const wrapped = function (this: any, ...args: any[]) {
     const result = originalMethod.apply(this, args);
     const store = getBaseStore(this) || NgRedux.instance;
     store.dispatch(result);

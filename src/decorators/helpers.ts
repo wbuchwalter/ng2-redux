@@ -1,17 +1,32 @@
+import { Reducer } from 'redux';
 import { NgRedux } from '../components/ng-redux';
 import { ObservableStore } from '../components/observable-store';
 import { Selector, Comparator, Transformer } from '../components/selectors';
 
+import 'rxjs/add/operator/let';
+import 'rxjs/add/operator/distinctUntilChanged';
+
+export interface IFractalStoreOptions {
+  basePathMethodName: string
+  localReducer: Reducer<any>;
+}
+
 const SUBSTORE_OPTIONS_KEY = '@angular-redux::fractal-store::options';
 const SUBSTORE_INSTANCE_KEY = '@angular-redux::decorator::store';
 
-const getClassOptions = (decoratedInstance: Object) =>
+const getClassOptions = (decoratedInstance: any): IFractalStoreOptions =>
   decoratedInstance.constructor[SUBSTORE_OPTIONS_KEY];
 
-const setInstanceStore = (decoratedInstance: Object, store?: ObservableStore<any>) =>
+export const setClassOptions = (
+  decoratedClassConstructor: any,
+  options: IFractalStoreOptions): void => {
+    decoratedClassConstructor[SUBSTORE_OPTIONS_KEY] = options;
+  }
+
+const setInstanceStore = (decoratedInstance: any, store?: ObservableStore<any>) =>
   decoratedInstance[SUBSTORE_INSTANCE_KEY] = store;
 
-const getInstanceStore = (decoratedInstance: Object) =>
+const getInstanceStore = (decoratedInstance: any): ObservableStore<any> =>
   decoratedInstance[SUBSTORE_INSTANCE_KEY];
 
 // TODO: run memory tests.
@@ -29,7 +44,7 @@ const getInstanceStore = (decoratedInstance: Object) =>
  * component or service)
  * @hidden
  */
-export const getBaseStore = (decoratedInstance: Object) => {
+export const getBaseStore = (decoratedInstance: any) => {
   const store = getInstanceStore(decoratedInstance);
   if (!store) {
     const options = getClassOptions(decoratedInstance);
@@ -50,7 +65,6 @@ export const getBaseStore = (decoratedInstance: Object) => {
   return getInstanceStore(decoratedInstance);
 };
 
-
 /**
  * Creates an Observable from the given selection parameters,
  * rooted at decoratedInstance's store, and caches it on the
@@ -58,7 +72,7 @@ export const getBaseStore = (decoratedInstance: Object) => {
  * @hidden
  */
 export const getInstanceSelection = <T>(
-  decoratedInstance: Object,
+  decoratedInstance: any,
   key: string | symbol,
   selector: Selector<any, T>,
   transformer?: Transformer<any, T>,

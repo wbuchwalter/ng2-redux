@@ -1,25 +1,33 @@
 import 'reflect-metadata';
+import { Reducer, Action } from 'redux';
 import { NgZone } from '@angular/core';
 import { NgRedux } from '../components/ng-redux';
 import { RootStore } from '../components/root-store';
 import { dispatch } from './dispatch';
 
 class MockNgZone {
-  run = fn => fn()
+  run = (fn: Function) => fn()
 }
+
+interface IAppState {
+  value: string;
+  instanceProperty: string;
+}
+
+type PayloadAction = Action & { payload: IAppState };
 
 describe('@dispatch', () => {
   let ngRedux;
   const mockNgZone = new MockNgZone() as NgZone;
-  let defaultState;
-  let rootReducer;
+  let defaultState: IAppState;
+  let rootReducer: Reducer<IAppState>;
 
   beforeEach(() => {
     defaultState = {
       value: 'init-value',
       instanceProperty: 'init-instanceProperty'
     };
-    rootReducer = (state = defaultState, action) => {
+    rootReducer = (state = defaultState, action: PayloadAction) => {
       switch (action.type) {
         case 'TEST':
           const { value, instanceProperty } = action.payload;
@@ -27,7 +35,6 @@ describe('@dispatch', () => {
         default:
           return state;
       }
-
     };
     ngRedux = new RootStore(mockNgZone);
     ngRedux.configureStore(rootReducer, defaultState);
@@ -75,7 +82,7 @@ describe('@dispatch', () => {
   it('work with properties bound to function defined outside of the class', () => {
     spyOn(NgRedux.instance, 'dispatch');
     const instanceProperty = 'test';
-    function externalFunction(value) {
+    function externalFunction(value: string) {
       return {
         type: 'TEST',
         payload: {
@@ -105,9 +112,9 @@ describe('@dispatch', () => {
   class TestClass {
     instanceProperty = 'test'
     @dispatch()
-    externalFunction;
+    externalFunction: (value: string) => PayloadAction;
     @dispatch()
-    classMethod(value) {
+    classMethod(value: string): PayloadAction {
       return {
         type: 'TEST',
         payload: {
@@ -118,14 +125,12 @@ describe('@dispatch', () => {
     }
 
     @dispatch()
-    boundProperty = (value) => {
-      return {
-        type: 'TEST',
-        payload: {
-          value,
-          instanceProperty: this.instanceProperty
-        }
+    boundProperty = (value: string): PayloadAction => ({
+      type: 'TEST',
+      payload: {
+        value,
+        instanceProperty: this.instanceProperty
       }
-    }
+    })
   }
 });

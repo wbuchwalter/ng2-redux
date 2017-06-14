@@ -5,17 +5,33 @@ require('zone.js/dist/proxy.js');
 require('zone.js/dist/sync-test.js');
 require('zone.js/dist/async-test.js');
 require('zone.js/dist/fake-async-test.js');
-// require('./src/index');
-// require('./testing/index');
-var Jasmine = require('jasmine');
-var runner = new Jasmine();
+
+require('ts-node/register');
+
+const Jasmine = require('jasmine');
+const runner = new Jasmine();
 global.jasmine = runner.jasmine;
+
 require('zone.js/dist/jasmine-patch.js');
-var getTestBed = require('@angular/core/testing').getTestBed;
-var _a = require('@angular/platform-server/testing'), ServerTestingModule = _a.ServerTestingModule, platformServerTesting = _a.platformServerTesting;
-getTestBed().initTestEnvironment(ServerTestingModule, platformServerTesting());
-runner.loadConfig({
-    spec_dir: '.',
-    spec_files: ['**/*.spec.ts']
+
+// Stuff in the `testing` folder needs to import stuff from @angular-redux instead of '../src'
+// or bad things happen when users of this package try to use MockNgRedux etc. This bit of code
+// gets the unit test process to alias `import '@angular-redux/store'` to `import `../src` during
+// our unit test execution.
+const tsconfigPaths = require('tsconfig-paths');
+tsconfigPaths.register({
+  baseUrl: '.',
+  paths: { '@angular-redux/store': [''] },
 });
+
+const { getTestBed } = require('@angular/core/testing');
+const { ServerTestingModule, platformServerTesting } = require('@angular/platform-server/testing');
+
+getTestBed().initTestEnvironment(ServerTestingModule, platformServerTesting());
+
+runner.loadConfig({
+  spec_dir: '.',
+  spec_files: [ '**/*.spec.ts' ]
+});
+
 runner.execute();

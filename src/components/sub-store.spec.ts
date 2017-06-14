@@ -1,26 +1,40 @@
 import { NgZone } from '@angular/core';
 import { async } from '@angular/core/testing'
+import { Action } from 'redux';
 import { RootStore } from './root-store';
 import { NgRedux } from './ng-redux';
+import { ObservableStore } from './observable-store';
 
-class MockNgZone { run = fn => fn() }
+class MockNgZone { run = (fn: Function) => fn() }
+
+interface ISubState {
+  wat: {
+    quux: number;
+  };
+}
+
+interface IAppState {
+  foo: {
+    bar: ISubState;
+  };
+}
 
 describe('Substore', () => {
-  const defaultReducer = (state, action) => state;
+  const defaultReducer = (state: any, action: Action) => state;
 
   const basePath = ['foo', 'bar'];
-  let ngRedux: NgRedux<any>;
-  let subStore;
+  let ngRedux: NgRedux<IAppState>;
+  let subStore: ObservableStore<ISubState>;
 
   beforeEach(() => {
-    ngRedux = new RootStore(new MockNgZone() as NgZone);
+    ngRedux = new RootStore<IAppState>(new MockNgZone() as NgZone);
     ngRedux.configureStore(defaultReducer, {
       foo: {
         bar: { wat: { quux: 3 } },
       }
     });
 
-    subStore = ngRedux.configureSubStore(basePath, defaultReducer);
+    subStore = ngRedux.configureSubStore<ISubState>(basePath, defaultReducer);
   });
 
   it('adds a key to actions it dispatches', () =>

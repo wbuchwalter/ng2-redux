@@ -13,7 +13,6 @@ import { select, select$ } from './decorators/select';
 import { dispatch } from './decorators/dispatch';
 import { SubStore } from './decorators/sub-store';
 import { NgReduxModule } from './ng-redux.module';
-import { selectionMap } from './utils/selection-map';
 
 // Warning: don't do this:
 //  export * from './foo'
@@ -34,5 +33,4 @@ export {
   dispatch,
   SubStore,
   ObservableStore,
-  selectionMap,
 };

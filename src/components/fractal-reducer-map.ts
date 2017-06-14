@@ -6,7 +6,7 @@ import { getIn } from '../utils/get-in';
 const reducerMap: { [id: string]: Reducer<any> } = {};
 
 const composeReducers = (...reducers: Reducer<any>[]): Reducer<any> =>
-  (state, action) =>
+  (state: any, action: Action) =>
     reducers.reduce((subState, reducer) => reducer(subState, action), state);
 
 /** @hidden */

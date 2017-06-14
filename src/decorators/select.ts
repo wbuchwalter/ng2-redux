@@ -4,14 +4,14 @@ import 'rxjs/add/operator/let'
 import { NgRedux } from '../components/ng-redux';
 import { ObservableStore } from '../components/observable-store';
 import { Selector, Comparator, Transformer } from '../components/selectors';
-import { IFractalStoreOptions } from './sub-store';
-import { getInstanceSelection } from './helpers';
+import { IFractalStoreOptions, getInstanceSelection } from './helpers';
 
-const decorate = (
+/** @hidden - only exported to keep AoT happy. */
+export const decorate = (
   selector: Selector<any, any>,
   transformer?: Transformer<any, any>,
   comparator?: Comparator): PropertyDecorator =>
-  (target: object, key): void => {
+  (target: any, key): void => {
     function getter(this: any) {
       return getInstanceSelection(
         this,
@@ -46,7 +46,7 @@ export const select = <T>(
   selector?: Selector<any, T>,
   comparator?: Comparator): PropertyDecorator =>
 
-  (target: object, key: string): void => {
+  (target: any, key: string): void => {
     const adjustedSelector = selector ?
       selector :
       (key.lastIndexOf('$') === key.length - 1) ?

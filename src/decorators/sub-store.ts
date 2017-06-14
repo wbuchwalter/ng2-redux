@@ -1,17 +1,12 @@
 import { Reducer } from 'redux';
-
-export interface IFractalStoreOptions {
-  basePathMethodName: string
-  localReducer: Reducer<any>;
-}
+import { IFractalStoreOptions, setClassOptions } from './helpers';
 
 export const SubStore = ({
   basePathMethodName,
   localReducer
 }: IFractalStoreOptions) =>
-  (constructor: Function): void => {
-    constructor['@angular-redux::fractal-store::options'] = {
+  (constructor: Function): void =>
+    setClassOptions(constructor, {
       basePathMethodName,
       localReducer,
-    };
-  };
+    });
