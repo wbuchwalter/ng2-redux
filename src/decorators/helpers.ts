@@ -30,14 +30,12 @@ const getInstanceStore = (decoratedInstance: any): ObservableStore<any> =>
   decoratedInstance[SUBSTORE_INSTANCE_KEY];
 
 // TODO: run memory tests.
-// TODO: test AOT.
-// TODO: fix MockNgRedux.reset().
-  // Keep selection map in testing module instead?
 // TODO: blog post.
 // TODO: friendly errors for misconfigs.
 // TODO: constantify caching prop names.
 // TODO: docs.
 // TODO: dispatch unit tests.
+// TODO: use reflect-metadata.
 
 /**
  * Gets the store associated with a decorated instance (e.g. a
