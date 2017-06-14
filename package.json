@@ -11,6 +11,7 @@
     "lint": "tslint 'src/**/*.ts'",
     "prepublish": "npm run lint && npm test && npm run build",
     "test": "nyc node tests.js",
+    "test:watch": "nodemon tests.js -w src -w testing -e ts",
     "ci": "npm run lint && npm test",
     "predoc": "rm -rf docs",
     "doc": "typedoc --out docs --excludeExternals --excludePrivate --excludeNotExported -theme minimal --name @angular-redux/store --mode file --module commonjs --tsconfig tsconfig.docs.json"
@@ -65,6 +66,7 @@
     "@types/node": "^6.0.36",
     "core-js": "^2.4.1",
     "jasmine": "^2.5.3",
+    "nodemon": "^1.11.0",
     "nyc": "^10.2.0",
     "redux": "^3.5.0",
     "reflect-metadata": "0.1.3",

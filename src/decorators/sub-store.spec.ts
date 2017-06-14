@@ -20,6 +20,7 @@ describe('@SubStore', () => {
 
   beforeEach(() => {
     const defaultState = {
+      foo: 'Root Foo!',
       a: {
         b: { foo: 'Foo!' }
       }
@@ -32,7 +33,7 @@ describe('@SubStore', () => {
       defaultState);
   });
 
-  describe('Adding @SubStore to the class causes @select to', () => {
+  describe('on the class causes @select to', () => {
     it('use a substore for inferred-name selections', () => {
       @SubStore({ basePathMethodName, localReducer })
       class TestClass {
@@ -112,7 +113,7 @@ describe('@SubStore', () => {
     });
   });
 
-  describe('Adding @SubStore to the class causes @select$ to', () => {
+  describe('on the class causes @select$ to', () => {
     it('use a substore for a property selector', () => {
       @SubStore({ basePathMethodName, localReducer })
       class TestClass {
@@ -169,7 +170,7 @@ describe('@SubStore', () => {
     });
   });
 
-  describe('Adding @SubStore to the class causes @dispatch to', () => {
+  describe('on the class causes @dispatch to', () => {
     it('scope dispatches to substore', () => {
       spyOn(NgRedux.instance, 'dispatch');
 
@@ -187,7 +188,7 @@ describe('@SubStore', () => {
     });
   });
 
-  describe('@SubStore coexists with', () => {
+  describe('coexists with', () => {
     it('@Component', () => {
       @Component({ template: '<p>Wat</p>' })
       @SubStore({ basePathMethodName, localReducer })
@@ -242,6 +243,61 @@ describe('@SubStore', () => {
       testInstance.foo$
         .take(1)
         .subscribe(v => expect(v).toEqual('Foo!'));
+    });
+  });
+
+  describe('with inheritance', () => {
+    it('lets you select in a super class against a path from the sub class', () => {
+      @SubStore({ basePathMethodName, localReducer })
+      class SuperClass {
+        @select() foo$: Observable<string>;
+      }
+
+      class SubClass extends SuperClass {
+        getSubStorePath = (): PathSelector => [ 'a', 'b' ];
+      }
+
+      const testInstance = new SubClass();
+      testInstance.foo$
+        .take(1)
+        .subscribe(v => expect(v).toEqual('Foo!'));
+    });
+
+    it('lets you select in a sub class against a path from the super class', () => {
+      @SubStore({ basePathMethodName, localReducer })
+      class SuperClass {
+        getSubStorePath = (): PathSelector => [ 'a', 'b' ];
+      }
+
+      class SubClass extends SuperClass {
+        @select() foo$: Observable<string>;
+      }
+
+      const testInstance = new SubClass();
+      testInstance.foo$
+        .take(1)
+        .subscribe(v => expect(v).toEqual('Foo!'));
+    });
+
+    it('modifies behaviour of superclass selects in the subclass only', () => {
+      class SuperClass {
+        @select() foo$: Observable<string>;
+      }
+
+      @SubStore({ basePathMethodName, localReducer })
+      class SubClass extends SuperClass {
+        getSubStorePath = (): PathSelector => [ 'a', 'b' ];
+      }
+
+      const testSubInstance = new SubClass();
+      testSubInstance.foo$
+        .take(1)
+        .subscribe(v => expect(v).toEqual('Foo!'));
+
+      const testSuperInstance = new SuperClass();
+      testSuperInstance.foo$
+        .take(1)
+        .subscribe(v => expect(v).toEqual('Root Foo!'));
     });
   });
 });

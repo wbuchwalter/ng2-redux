@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { Reducer } from 'redux';
 import { NgRedux } from '../components/ng-redux';
 import { ObservableStore } from '../components/observable-store';
@@ -11,31 +12,55 @@ export interface IFractalStoreOptions {
   localReducer: Reducer<any>;
 }
 
-const SUBSTORE_OPTIONS_KEY = '@angular-redux::fractal-store::options';
-const SUBSTORE_INSTANCE_KEY = '@angular-redux::decorator::store';
+/**
+ * OPTIONS_KEY: this is per-class (static) and holds the config from the @SubStore
+ * decorator. It's stored using the reflect-metadata API.
+ */
+const OPTIONS_KEY = '@angular-redux::substore::class::options';
+
+/**
+ * INSTANCE_SUBSTORE_KEY, INSTANCE_SELECTIONS_KEY: these are per-instance (non-static) and
+ * holds references to the substores/selected observables to be used by an instance of a
+ * decorated class. I'm not using reflect-metadata here because I want
+ *
+ * 1. different instances to have different substores in the case where `basePathMethodName`
+ * is dynamic.
+ * 2. the instance substore to be garbage collected when the instance is no longer reachable.
+ *
+ * This is therefore an own-property on the actual instance of the decorated class.
+ */
+const INSTANCE_SUBSTORE_KEY = '@angular-redux::substore::instance::store';
+const INSTANCE_SELECTIONS_KEY = '@angular-redux::substore::instance::selections';
 
 const getClassOptions = (decoratedInstance: any): IFractalStoreOptions =>
-  decoratedInstance.constructor[SUBSTORE_OPTIONS_KEY];
+  Reflect.getMetadata(OPTIONS_KEY, decoratedInstance.constructor);
 
 export const setClassOptions = (
   decoratedClassConstructor: any,
   options: IFractalStoreOptions): void => {
-    decoratedClassConstructor[SUBSTORE_OPTIONS_KEY] = options;
-  }
+  Reflect.defineMetadata(OPTIONS_KEY, options, decoratedClassConstructor)
+}
 
+// Not using Reflect-Metadata here: I want the store to be saved on the actual
+// instance so
+// 1. different instances can have distinct substores if necessary
+// 2. the substore/selections will be marked for garbage collection when the
+//    instance is destroyed.
 const setInstanceStore = (decoratedInstance: any, store?: ObservableStore<any>) =>
-  decoratedInstance[SUBSTORE_INSTANCE_KEY] = store;
+  decoratedInstance[INSTANCE_SUBSTORE_KEY] = store;
 
 const getInstanceStore = (decoratedInstance: any): ObservableStore<any> =>
-  decoratedInstance[SUBSTORE_INSTANCE_KEY];
+  decoratedInstance[INSTANCE_SUBSTORE_KEY];
+
+const getInstanceSelectionMap = (decoratedInstance: any) => {
+  const map = decoratedInstance[INSTANCE_SELECTIONS_KEY] || {};
+  decoratedInstance[INSTANCE_SELECTIONS_KEY] = map;
+  return map;
+}
 
 // TODO: run memory tests.
 // TODO: blog post.
-// TODO: friendly errors for misconfigs.
-// TODO: constantify caching prop names.
 // TODO: docs.
-// TODO: dispatch unit tests.
-// TODO: use reflect-metadata.
 
 /**
  * Gets the store associated with a decorated instance (e.g. a
@@ -78,15 +103,13 @@ export const getInstanceSelection = <T>(
   const store = getBaseStore(decoratedInstance);
 
   if (store) {
-    const selections = decoratedInstance['@angular-redux::decorator::selections'] || {};
+    const selections = getInstanceSelectionMap(decoratedInstance);
 
     selections[key] = !transformer ?
       store.select(selector, comparator) :
       store.select(selector)
         .let(transformer)
         .distinctUntilChanged(comparator);
-    decoratedInstance['@angular-redux::decorator::selections'] = selections;
-
     return selections[key];
   }
 
