@@ -9,7 +9,7 @@
     "build:src": "ngc -p tsconfig.build.json",
     "build:testing": "ngc -p tsconfig.testing.json",
     "lint": "tslint 'src/**/*.ts'",
-    "prepublish": "npm run lint && npm test && npm run build",
+    "prepublish": "npm run lint && npm run build && npm test",
     "test": "nyc node tests.js",
     "test:watch": "nodemon tests.js -w src -w testing -e ts",
     "ci": "npm run lint && npm run build && npm test",
