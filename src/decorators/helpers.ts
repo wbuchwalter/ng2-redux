@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { Reducer } from 'redux';
 import { NgRedux } from '../components/ng-redux';
 import { ObservableStore } from '../components/observable-store';
@@ -14,7 +13,7 @@ export interface IFractalStoreOptions {
 
 /**
  * OPTIONS_KEY: this is per-class (static) and holds the config from the @SubStore
- * decorator. It's stored using the reflect-metadata API.
+ * decorator.
  */
 const OPTIONS_KEY = '@angular-redux::substore::class::options';
 
@@ -33,16 +32,15 @@ const INSTANCE_SUBSTORE_KEY = '@angular-redux::substore::instance::store';
 const INSTANCE_SELECTIONS_KEY = '@angular-redux::substore::instance::selections';
 
 const getClassOptions = (decoratedInstance: any): IFractalStoreOptions =>
-  Reflect.getMetadata(OPTIONS_KEY, decoratedInstance.constructor);
+  decoratedInstance.constructor[OPTIONS_KEY];
 
 export const setClassOptions = (
   decoratedClassConstructor: any,
   options: IFractalStoreOptions): void => {
-  Reflect.defineMetadata(OPTIONS_KEY, options, decoratedClassConstructor)
+    decoratedClassConstructor[OPTIONS_KEY] = options
 }
 
-// Not using Reflect-Metadata here: I want the store to be saved on the actual
-// instance so
+// I want the store to be saved on the actual instance so
 // 1. different instances can have distinct substores if necessary
 // 2. the substore/selections will be marked for garbage collection when the
 //    instance is destroyed.
@@ -57,10 +55,6 @@ const getInstanceSelectionMap = (decoratedInstance: any) => {
   decoratedInstance[INSTANCE_SELECTIONS_KEY] = map;
   return map;
 }
-
-// TODO: run memory tests.
-// TODO: blog post.
-// TODO: docs.
 
 /**
  * Gets the store associated with a decorated instance (e.g. a

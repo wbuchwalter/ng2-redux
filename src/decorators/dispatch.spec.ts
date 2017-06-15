@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { Reducer, Action } from 'redux';
 import { NgZone } from '@angular/core';
 import { NgRedux } from '../components/ng-redux';

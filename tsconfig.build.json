@@ -15,7 +15,10 @@
       "es2015.iterable",
       "dom"
     ],
-    "strict": true
+    "strict": true,
+    "paths": {
+      "@angular-redux/store": [ "./src/index.ts" ]
+    }
   },
   "compileOnSave": false,
   "buildOnSave": false,
