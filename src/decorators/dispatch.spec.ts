@@ -3,7 +3,7 @@ import { NgZone } from '@angular/core';
 import { NgRedux } from '../components/ng-redux';
 import { RootStore } from '../components/root-store';
 import { dispatch } from './dispatch';
-import { SubStore } from './sub-store';
+import { WithSubStore } from './with-sub-store';
 
 class MockNgZone {
   run = (fn: Function) => fn()
@@ -133,7 +133,7 @@ describe('@dispatch', () => {
 
   describe('On a substore', () => {
     const localReducer = (state: any, action: Action) => state;
-    @SubStore({
+    @WithSubStore({
       basePathMethodName: 'getBasePath',
       localReducer,
     })

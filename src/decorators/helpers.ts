@@ -6,8 +6,26 @@ import { Selector, Comparator, Transformer } from '../components/selectors';
 import 'rxjs/add/operator/let';
 import 'rxjs/add/operator/distinctUntilChanged';
 
+/**
+ * Used with the `@WithSubStore` class decorator to define a SubStore (AKA a
+ * fractal store).
+ *
+ * For more info on substores, see
+ * https://github.com/angular-redux/store/blob/master/articles/fractal-store.md
+ */
 export interface IFractalStoreOptions {
-  basePathMethodName: string
+  /**
+   * The name of an instance method that will define the
+   * base path for the subStore. This method is expected to return an array
+   * of property names or undefined/null. The substore will be created from the
+   * first non-falsy value that gets returned. Return values from subsequent
+   * invocations will be ignored.
+   */
+  basePathMethodName: string;
+
+  /**
+   * The localReducer for the substore in question.
+   */
   localReducer: Reducer<any>;
 }
 
@@ -34,6 +52,7 @@ const INSTANCE_SELECTIONS_KEY = '@angular-redux::substore::instance::selections'
 const getClassOptions = (decoratedInstance: any): IFractalStoreOptions =>
   decoratedInstance.constructor[OPTIONS_KEY];
 
+/** @hidden */
 export const setClassOptions = (
   decoratedClassConstructor: any,
   options: IFractalStoreOptions): void => {

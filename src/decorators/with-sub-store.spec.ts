@@ -4,7 +4,7 @@ import { Action } from 'redux';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/take';
 
-import { SubStore } from './sub-store';
+import { WithSubStore } from './with-sub-store';
 import { select, select$ } from './select';
 import { dispatch } from './dispatch';
 import { PathSelector } from '../components/selectors';
@@ -13,7 +13,7 @@ import { RootStore } from '../components/root-store';
 
 class MockNgZone { run = (fn: Function) => fn() }
 
-describe('@SubStore', () => {
+describe('@WithSubStore', () => {
   let ngRedux: NgRedux<any>;
   const localReducer = (state: any, action: Action) => state;
   const basePathMethodName = 'getSubStorePath';
@@ -35,7 +35,7 @@ describe('@SubStore', () => {
 
   describe('on the class causes @select to', () => {
     it('use a substore for inferred-name selections', () => {
-      @SubStore({ basePathMethodName, localReducer })
+      @WithSubStore({ basePathMethodName, localReducer })
       class TestClass {
         @select() foo: Observable<string>;
         getSubStorePath = (): PathSelector => [ 'a', 'b' ];
@@ -48,7 +48,7 @@ describe('@SubStore', () => {
     });
 
     it('use a substore for inferred-name selections with $ on the end', () => {
-      @SubStore({ basePathMethodName, localReducer })
+      @WithSubStore({ basePathMethodName, localReducer })
       class TestClass {
         @select() foo$: Observable<string>;
         getSubStorePath = (): PathSelector => [ 'a', 'b' ];
@@ -61,7 +61,7 @@ describe('@SubStore', () => {
     });
 
     it('use a substore for a property selector', () => {
-      @SubStore({ basePathMethodName, localReducer })
+      @WithSubStore({ basePathMethodName, localReducer })
       class TestClass {
         @select('foo') obs$: Observable<string>;
         getSubStorePath = (): PathSelector => [ 'a', 'b' ];
@@ -74,7 +74,7 @@ describe('@SubStore', () => {
     });
 
     it('use a substore for a function selector', () => {
-      @SubStore({ basePathMethodName, localReducer })
+      @WithSubStore({ basePathMethodName, localReducer })
       class TestClass {
         @select(s => s.foo) obs$: Observable<string>;
         getSubStorePath = (): PathSelector => [ 'a', 'b' ];
@@ -87,7 +87,7 @@ describe('@SubStore', () => {
     });
 
     it('use a substore for a path selector', () => {
-      @SubStore({ basePathMethodName, localReducer })
+      @WithSubStore({ basePathMethodName, localReducer })
       class TestClass {
         @select(['b', 'foo']) obs$: Observable<string>;
         getSubStorePath = (): PathSelector => [ 'a' ];
@@ -100,7 +100,7 @@ describe('@SubStore', () => {
     });
 
     it('use a substore for a property selector with a comparator', () => {
-      @SubStore({ basePathMethodName, localReducer })
+      @WithSubStore({ basePathMethodName, localReducer })
       class TestClass {
         @select('foo', (x, y) => x !== y) obs$: Observable<string>;
         getSubStorePath = (): PathSelector => [ 'a', 'b' ];
@@ -113,7 +113,7 @@ describe('@SubStore', () => {
     });
 
     it('return a stable reference for the decorated property', () => {
-      @SubStore({ basePathMethodName, localReducer })
+      @WithSubStore({ basePathMethodName, localReducer })
       class TestClass {
         @select('foo') obs$: Observable<string>;
         getSubStorePath = (): PathSelector => [ 'a', 'b' ];
@@ -132,7 +132,7 @@ describe('@SubStore', () => {
 
   describe('on the class causes @select$ to', () => {
     it('use a substore for a property selector', () => {
-      @SubStore({ basePathMethodName, localReducer })
+      @WithSubStore({ basePathMethodName, localReducer })
       class TestClass {
         @select$('foo', o$ => o$.map(x => x)) obs$: Observable<string>;
         getSubStorePath = (): PathSelector => [ 'a', 'b' ];
@@ -145,7 +145,7 @@ describe('@SubStore', () => {
     });
 
     it('use a substore for a function selector', () => {
-      @SubStore({ basePathMethodName, localReducer })
+      @WithSubStore({ basePathMethodName, localReducer })
       class TestClass {
         @select$(s => s.foo, o$ => o$.map(x => x)) obs$: Observable<string>;
         getSubStorePath = (): PathSelector => [ 'a', 'b' ];
@@ -158,7 +158,7 @@ describe('@SubStore', () => {
     });
 
     it('use a substore for a path selector', () => {
-      @SubStore({ basePathMethodName, localReducer })
+      @WithSubStore({ basePathMethodName, localReducer })
       class TestClass {
         @select$(['b', 'foo'], o$ => o$.map(x => x)) obs$: Observable<string>;
         getSubStorePath = (): PathSelector => [ 'a' ];
@@ -171,7 +171,7 @@ describe('@SubStore', () => {
     });
 
     it('use a substore for a property selector with a comparator', () => {
-      @SubStore({ basePathMethodName, localReducer })
+      @WithSubStore({ basePathMethodName, localReducer })
       class TestClass {
         @select$(
           'foo',
@@ -191,7 +191,7 @@ describe('@SubStore', () => {
     it('scope dispatches to substore', () => {
       spyOn(NgRedux.instance, 'dispatch');
 
-      @SubStore({ basePathMethodName, localReducer })
+      @WithSubStore({ basePathMethodName, localReducer })
       class TestClass {
         @dispatch() createFooAction = () => ({ type: 'FOO' });
         getSubStorePath = (): PathSelector => [ 'a', 'b' ];
@@ -208,7 +208,7 @@ describe('@SubStore', () => {
   describe('coexists with', () => {
     it('@Component', () => {
       @Component({ template: '<p>Wat</p>' })
-      @SubStore({ basePathMethodName, localReducer })
+      @WithSubStore({ basePathMethodName, localReducer })
       class TestClass {
         @select() foo$: Observable<string>;
         getSubStorePath = (): PathSelector => [ 'a', 'b' ];
@@ -221,7 +221,7 @@ describe('@SubStore', () => {
     });
 
     it('@Component the other way round', () => {
-      @SubStore({ basePathMethodName, localReducer })
+      @WithSubStore({ basePathMethodName, localReducer })
       @Component({ template: '<p>Wat</p>' })
       class TestClass {
         @select() foo$: Observable<string>;
@@ -236,7 +236,7 @@ describe('@SubStore', () => {
 
     it('@Injectable', () => {
       @Injectable()
-      @SubStore({ basePathMethodName, localReducer })
+      @WithSubStore({ basePathMethodName, localReducer })
       class TestClass {
         @select() foo$: Observable<string>;
         getSubStorePath = (): PathSelector => [ 'a', 'b' ];
@@ -249,7 +249,7 @@ describe('@SubStore', () => {
     });
 
     it('@Injectable in the other order', () => {
-      @SubStore({ basePathMethodName, localReducer })
+      @WithSubStore({ basePathMethodName, localReducer })
       @Injectable()
       class TestClass {
         @select() foo$: Observable<string>;
@@ -265,7 +265,7 @@ describe('@SubStore', () => {
 
   describe('with inheritance', () => {
     it('lets you select in a super class against a path from the sub class', () => {
-      @SubStore({ basePathMethodName, localReducer })
+      @WithSubStore({ basePathMethodName, localReducer })
       class SuperClass {
         @select() foo$: Observable<string>;
       }
@@ -281,7 +281,7 @@ describe('@SubStore', () => {
     });
 
     it('lets you select in a sub class against a path from the super class', () => {
-      @SubStore({ basePathMethodName, localReducer })
+      @WithSubStore({ basePathMethodName, localReducer })
       class SuperClass {
         getSubStorePath = (): PathSelector => [ 'a', 'b' ];
       }
@@ -301,7 +301,7 @@ describe('@SubStore', () => {
         @select() foo$: Observable<string>;
       }
 
-      @SubStore({ basePathMethodName, localReducer })
+      @WithSubStore({ basePathMethodName, localReducer })
       class SubClass extends SuperClass {
         getSubStorePath = (): PathSelector => [ 'a', 'b' ];
       }
