@@ -7,31 +7,33 @@ import { getBaseStore } from './helpers';
  * Decorate a function creator method with @dispatch and its return
  * value will automatically be passed to ngRedux.dispatch() for you.
  */
-export const dispatch = () => (
-  target: Object,
-  key: string | symbol | number,
-  descriptor?: PropertyDescriptor): any => {
+export function dispatch(): PropertyDecorator {
+  return function decorate(
+    target: Object,
+    key: string | symbol | number,
+    descriptor?: PropertyDescriptor): PropertyDescriptor {
 
-  let originalMethod: Function;
+    let originalMethod: Function;
 
-  const wrapped = function (this: any, ...args: any[]) {
-    const result = originalMethod.apply(this, args);
-    const store = getBaseStore(this) || NgRedux.instance;
-    store.dispatch(result);
-    return result;
-  }
-
-  descriptor = descriptor || Object.getOwnPropertyDescriptor(target, key);
-  if (descriptor === undefined) {
-    const dispatchDescriptor: PropertyDescriptor = {
-      get: () => wrapped,
-      set: (setMethod) => originalMethod = setMethod,
+    const wrapped = function (this: any, ...args: any[]) {
+      const result = originalMethod.apply(this, args);
+      const store = getBaseStore(this) || NgRedux.instance;
+      store.dispatch(result);
+      return result;
     }
-    Object.defineProperty(target, key, dispatchDescriptor)
-    return dispatchDescriptor;
-  } else {
-    originalMethod = descriptor.value;
-    descriptor.value = wrapped;
-    return descriptor;
+
+    descriptor = descriptor || Object.getOwnPropertyDescriptor(target, key);
+    if (descriptor === undefined) {
+      const dispatchDescriptor: PropertyDescriptor = {
+        get: () => wrapped,
+        set: (setMethod) => originalMethod = setMethod,
+      }
+      Object.defineProperty(target, key, dispatchDescriptor)
+      return dispatchDescriptor;
+    } else {
+      originalMethod = descriptor.value;
+      descriptor.value = wrapped;
+      return descriptor;
+    }
   }
 }

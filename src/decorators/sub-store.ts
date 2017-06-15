@@ -1,12 +1,14 @@
 import { Reducer } from 'redux';
 import { IFractalStoreOptions, setClassOptions } from './helpers';
 
-export const SubStore = ({
+export function SubStore({
   basePathMethodName,
   localReducer
-}: IFractalStoreOptions) =>
-  (constructor: Function): void =>
+}: IFractalStoreOptions): ClassDecorator {
+  return function decorate(constructor: Function): void {
     setClassOptions(constructor, {
       basePathMethodName,
       localReducer,
     });
+  }
+}

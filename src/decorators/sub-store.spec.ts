@@ -111,6 +111,23 @@ describe('@SubStore', () => {
         .take(1)
         .subscribe(v => expect(v).toEqual('Foo!'));
     });
+
+    it('return a stable reference for the decorated property', () => {
+      @SubStore({ basePathMethodName, localReducer })
+      class TestClass {
+        @select('foo') obs$: Observable<string>;
+        getSubStorePath = (): PathSelector => [ 'a', 'b' ];
+      };
+
+      const testInstance = new TestClass();
+
+      // This looks odd, but it's because @select turns the property into a
+      // getter. In theory that getter could return a new Observable instance
+      // each time, which would be bad because it would leak memory like crazy.
+      // This test is just checking that it's a stable reference to the same
+      // instance.
+      expect(testInstance.obs$ === testInstance.obs$).toEqual(true);
+    });
   });
 
   describe('on the class causes @select$ to', () => {

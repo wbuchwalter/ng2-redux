@@ -99,11 +99,12 @@ export const getInstanceSelection = <T>(
   if (store) {
     const selections = getInstanceSelectionMap(decoratedInstance);
 
-    selections[key] = !transformer ?
+    selections[key] = selections[key] || (!transformer ?
       store.select(selector, comparator) :
       store.select(selector)
         .let(transformer)
-        .distinctUntilChanged(comparator);
+      .distinctUntilChanged(comparator));
+
     return selections[key];
   }
 
