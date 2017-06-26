@@ -23,18 +23,13 @@ interface IAppState {
 
 type PayloadAction = Action & { payload: string | number };
 
-describe('NgRedux Observable Store', () => {
-  interface IAppState {
-    foo: string;
-    bar: string;
-    baz: number;
-  };
+const mockNgZone = new MockNgZone() as NgZone;
 
+describe('NgRedux Observable Store', () => {
   let defaultState: IAppState;
   let rootReducer: Reducer<IAppState>;
   let store: Store<IAppState>;
   let ngRedux: NgRedux<IAppState>;
-  const mockNgZone = new MockNgZone() as NgZone;
 
   beforeEach(() => {
     defaultState = {
@@ -246,6 +241,92 @@ describe('NgRedux Observable Store', () => {
 
     ngRedux.configureStore(rootReducer, defaultState);
   });
+
+});
+
+describe('Lazy Loaded Reducers', () => {
+  interface LazyAppState {
+    root: IAppState;
+    child?: string;
+  }
+
+  let ngRedux: NgRedux<LazyAppState>;
+  let defaultState: LazyAppState;
+  let rootReducer: Reducer<IAppState>;
+
+  beforeEach(() => {
+    defaultState = {
+      root: {
+        foo: 'bar',
+        bar: 'foo',
+        baz: -1,
+      },
+    };
+
+    rootReducer = (state = defaultState.root, action: PayloadAction) => {
+      switch (action.type) {
+        case 'UPDATE_FOO':
+          return Object.assign({}, state, { foo: action.payload });
+        case 'UPDATE_BAZ':
+          return Object.assign({}, state, { baz: action.payload });
+        case 'UPDATE_BAR':
+          return Object.assign({}, state, { bar: action.payload });
+        default:
+          return state;
+      }
+    };
+
+    ngRedux = new RootStore<LazyAppState>(mockNgZone);
+  });
+
+  describe('when configuring the store', () => {
+    it('should be able to initialize the store with a reducers map object', done => {
+      const rootReducers = { root: rootReducer };
+      ngRedux.configureStore(rootReducers, defaultState);
+      ngRedux.select(state => state)
+        .subscribe(state => {
+          expect(state.root.foo).toEqual('bar');
+          expect(state.root.baz).toEqual(-1);
+          done();
+        })
+    });
+  });
+
+  describe('when adding reducers', () => {
+    const addedReducer = { child: (state = 'lazy', action: Action) => state };
+
+    it('should throw if store was not initially configured with a reducers map object', () => {
+      ngRedux.configureStore(rootReducer as any, defaultState);
+      expect(ngRedux.addReducers.bind(addedReducer)).toThrowError();
+    });
+
+    it('should successfully add the new reducers to the state', done => {
+      const rootReducers = { root: rootReducer };
+      ngRedux.configureStore(rootReducers, defaultState);
+      ngRedux.addReducers(addedReducer);
+      ngRedux.select(state => state)
+        .subscribe(state => {
+          expect(state.root.foo).toEqual('bar');
+          expect(state.child).toEqual('lazy');
+          done();
+        });
+    });
+
+    it('should overwrite existing root state keys', done => {
+      const hijackReducer = {
+        root: () => 'static state',
+      };
+      const rootReducers = { root: rootReducer };
+      ngRedux.configureStore(rootReducers, defaultState);
+      ngRedux.addReducers(hijackReducer);
+      ngRedux.select(state => state)
+        .subscribe(state => {
+          expect(state.root).toEqual('static state');
+          expect(state.root.foo).toBeUndefined();
+          done();
+        });
+    });
+  })
 });
 
 describe('Chained actions in subscriptions', () => {
@@ -257,7 +338,6 @@ describe('Chained actions in subscriptions', () => {
   let defaultState: IAppState;
   let rootReducer: Reducer<IAppState>;
   let ngRedux: NgRedux<IAppState>;
-  const mockNgZone = new MockNgZone() as NgZone;
 
   const doSearch = (word: string) => ngRedux.dispatch({ type: 'SEARCH', payload: word });
   const doFetch = (word: string) => ngRedux.dispatch({ type: 'SEARCH_RESULT', payload: word.length });

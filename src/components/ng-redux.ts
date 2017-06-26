@@ -4,7 +4,8 @@ import {
   Unsubscribe,
   Middleware,
   Store,
-  StoreEnhancer
+  StoreEnhancer,
+  ReducersMapObject,
 } from 'redux';
 import { Observable } from 'rxjs/Observable';
 import { ObservableStore } from './observable-store';
@@ -26,13 +27,16 @@ export abstract class NgRedux<RootState> implements ObservableStore<RootState> {
    * This should only be called once for the lifetime of your app, for
    * example in the constructor of your root component.
    *
+   * In order for reducers for portions of the root state to be asynchronously
+   * loaded, rootReducer must be provided as a reducers map object.
+   *
    * @param rootReducer Your app's root reducer
    * @param initState Your app's initial state
    * @param middleware Optional Redux middlewares
    * @param enhancers Optional Redux store enhancers
    */
   abstract configureStore: (
-    rootReducer: Reducer<RootState>,
+    rootReducer: Reducer<RootState> | ReducersMapObject,
     initState: RootState,
     middleware?: Middleware[],
     enhancers?: StoreEnhancer<RootState>[]) => void
@@ -47,7 +51,18 @@ export abstract class NgRedux<RootState> implements ObservableStore<RootState> {
    *
    * @param store Your app's store
    */
-  abstract provideStore: (store: Store<RootState>) => void
+  abstract provideStore: (store: Store<RootState>) => void;
+
+  /**
+   * Extends the current root reducer with the supplied reducers map object.
+   *
+   * This allows you to asynchronously add reducers to your store to controls
+   * portions of your root state. In order to utilize this functionality, the
+   * initial reducers must be provided as a reducers map object to configureStore().
+   *
+   * @param reducers The reducers map object that contains your new reducers
+   */
+  abstract addReducers: (reducers: ReducersMapObject) => void;
 
   // Redux Store methods
   abstract dispatch: Dispatch<RootState>;

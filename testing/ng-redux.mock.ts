@@ -5,7 +5,7 @@ import {
   ObservableStore,
   PathSelector,
 } from '@angular-redux/store';
-import { Reducer, Action, Dispatch, Middleware, Store, StoreEnhancer } from 'redux';
+import { Reducer, Action, Dispatch, Middleware, Store, StoreEnhancer, ReducersMapObject } from 'redux';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
@@ -77,6 +77,7 @@ export class MockNgRedux extends NgRedux<any> {
     initState: any,
     middleware?: Middleware[],
     enhancers?: StoreEnhancer<any>[]): void => {};
+  addReducers = (reducers: ReducersMapObject) => {};
 
   configureSubStore = this.mockRootStore.configureSubStore;
   select = this.mockRootStore.select;
