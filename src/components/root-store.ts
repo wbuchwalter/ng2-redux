@@ -9,6 +9,8 @@ import {
   applyMiddleware,
   compose,
   Dispatch,
+  ReducersMapObject,
+  combineReducers,
 } from 'redux';
 
 import { NgZone } from '@angular/core';
@@ -30,6 +32,7 @@ import { ObservableStore } from './observable-store';
 export class RootStore<RootState> extends NgRedux<RootState> {
   private _store: Store<RootState>;
   private _store$: BehaviorSubject<RootState>;
+  private _reducers: ReducersMapObject;
 
   constructor(private ngZone: NgZone) {
     super();
@@ -40,11 +43,16 @@ export class RootStore<RootState> extends NgRedux<RootState> {
   }
 
   configureStore = (
-    rootReducer: Reducer<RootState>,
+    rootReducer: Reducer<RootState> | ReducersMapObject,
     initState: RootState,
     middleware: Middleware[] = [],
     enhancers: StoreEnhancer<RootState>[] = []): void => {
     assert(!this._store, 'Store already configured!');
+
+    if (typeof rootReducer === 'object') {
+      this._reducers = rootReducer;
+      rootReducer = combineReducers<RootState>(rootReducer);
+    }
 
     // Variable-arity compose in typescript FTW.
     this.setStore(
@@ -56,6 +64,13 @@ export class RootStore<RootState> extends NgRedux<RootState> {
   provideStore = (store: Store<RootState>) => {
     assert(!this._store, 'Store already configured!');
     this.setStore(store);
+  };
+
+  addReducers = (reducers: ReducersMapObject) => {
+    assert(!!this._reducers,
+      'Reducers were not initially configured with a reducers map object in configureStore()');
+    this._reducers = Object.assign({}, this._reducers, reducers);
+    this.replaceReducer(combineReducers<RootState>(this._reducers));
   };
 
   getState = (): RootState => this._store.getState();
