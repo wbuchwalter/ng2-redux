@@ -134,7 +134,7 @@ So you no longer have to sacrifice declarative syntax for mutation-safety:
 @select(['counts', 'firstCount']) firstCount$: Observable<number>;
 
 // Selecting an immutable object
-@select() counts$: Observable<Map<string, number>>;
+@select('counts') counts$: Observable<Map<string, number>>;
 
 constructor() {
   this.counts$.map(counts: Map<string, number> => {
