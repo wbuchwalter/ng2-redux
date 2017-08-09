@@ -10,7 +10,7 @@ import { RootStore } from './root-store';
 import { select } from '../decorators/select';
 
 class MockNgZone {
-  run = (fn: Function) => fn()
+  run = (fn: Function) => fn();
 }
 
 type PayloadAction = Action & { payload?: string | number };
@@ -20,7 +20,7 @@ describe('NgRedux Observable Store', () => {
     foo: string;
     bar: string;
     baz: number;
-  };
+  }
 
   let defaultState: IAppState;
   let rootReducer: Reducer<IAppState>;
@@ -32,7 +32,7 @@ describe('NgRedux Observable Store', () => {
     defaultState = {
       foo: 'bar',
       bar: 'foo',
-      baz: -1,
+      baz: -1
     };
 
     rootReducer = (state = defaultState, action: PayloadAction) => {
@@ -56,35 +56,32 @@ describe('NgRedux Observable Store', () => {
   it('should throw when the store is configured twice', () => {
     // Configured once in beforeEach, now we try to configure
     // it a second time.
-    expect(ngRedux.configureStore.bind(ngRedux, rootReducer, defaultState))
-      .toThrowError(Error);
+    expect(
+      ngRedux.configureStore.bind(ngRedux, rootReducer, defaultState)
+    ).toThrowError(Error);
   });
 
-  it('should get the initial state', done => ngRedux
-    .select()
-    .subscribe((state: IAppState) => {
+  it('should get the initial state', done =>
+    ngRedux.select().subscribe((state: IAppState) => {
       expect(state.foo).toEqual('bar');
       expect(state.baz).toEqual(-1);
       done();
     }));
 
-  it('should accept a keyname for a selector', done => ngRedux
-    .select('foo')
-    .subscribe(stateSlice => {
+  it('should accept a keyname for a selector', done =>
+    ngRedux.select('foo').subscribe(stateSlice => {
       expect(stateSlice).toEqual('bar');
       done();
     }));
 
   it('should not trigger a selector if that slice of state was not changed', () => {
-    let fooData;
+    let fooData = '';
 
-    const spy = jasmine
-      .createSpy('spy')
-      .and.callFake((foo: string) => { fooData = foo; });
+    const spy = jasmine.createSpy('spy').and.callFake((foo: string) => {
+      fooData = foo;
+    });
 
-    const foo$ = ngRedux
-      .select('foo')
-      .subscribe(spy);
+    const foo$ = ngRedux.select('foo').subscribe(spy);
 
     expect(spy.calls.count()).toEqual(1);
     ngRedux.dispatch({ type: 'UPDATE_BAR', payload: 0 });
@@ -98,13 +95,11 @@ describe('NgRedux Observable Store', () => {
   });
 
   it('should not trigger a selector if the action payload is the same', () => {
-    let fooData;
-    const spy = jasmine
-      .createSpy('spy')
-      .and.callFake((foo: string) => { fooData = foo; });
-    const foo$ = ngRedux
-      .select('foo')
-      .subscribe(spy);
+    let fooData = '';
+    const spy = jasmine.createSpy('spy').and.callFake((foo: string) => {
+      fooData = foo;
+    });
+    const foo$ = ngRedux.select('foo').subscribe(spy);
 
     expect(spy.calls.count()).toEqual(1);
     expect(fooData).toEqual('bar');
@@ -116,13 +111,11 @@ describe('NgRedux Observable Store', () => {
   });
 
   it('should not call the sub if the result of the function is the same', () => {
-    let fooData;
-    const spy = jasmine
-      .createSpy('spy')
-      .and.callFake((foo: string) => { fooData = foo; });
-    ngRedux
-      .select(state => `${state.foo}-${state.baz}`)
-      .subscribe(spy);
+    let fooData = '';
+    const spy = jasmine.createSpy('spy').and.callFake((foo: string) => {
+      fooData = foo;
+    });
+    ngRedux.select(state => `${state.foo}-${state.baz}`).subscribe(spy);
 
     expect(spy.calls.count()).toEqual(1);
     expect(fooData).toEqual('bar--1');
@@ -144,11 +137,14 @@ describe('NgRedux Observable Store', () => {
   });
 
   it(`should accept a custom compare function`, () => {
-    interface IRecord { data?: string };
+    interface IRecord {
+      data?: string;
+    }
     let fooData: IRecord = {};
 
-    const spy = jasmine.createSpy('spy')
-      .and.callFake((data: IRecord) => fooData = data);
+    const spy = jasmine
+      .createSpy('spy')
+      .and.callFake((data: IRecord) => (fooData = data));
     const cmp = (a: IRecord, b: IRecord) => a.data === b.data;
 
     ngRedux
@@ -202,9 +198,9 @@ describe('NgRedux Observable Store', () => {
       baz: number;
 
       constructor(_ngRedux: NgRedux<any>) {
-        _ngRedux.select(n => n.foo).subscribe(foo => this.foo = foo);
-        _ngRedux.select(n => n.bar).subscribe(bar => this.bar = bar);
-        _ngRedux.select(n => n.baz).subscribe(baz => this.baz = baz);
+        _ngRedux.select(n => n.foo).subscribe(foo => (this.foo = foo));
+        _ngRedux.select(n => n.bar).subscribe(bar => (this.bar = bar));
+        _ngRedux.select(n => n.baz).subscribe(baz => (this.baz = baz));
       }
     }
     ngRedux = new RootStore<IAppState>(mockNgZone);
@@ -226,8 +222,7 @@ describe('NgRedux Observable Store', () => {
     ngRedux = new RootStore<IAppState>(mockNgZone);
 
     const someService = new SomeService();
-    someService
-      .foo$
+    someService.foo$
       .combineLatest(someService.bar$, someService.baz$)
       .subscribe(([foo, bar, baz]) => {
         expect(foo).toEqual('bar');
@@ -244,15 +239,17 @@ describe('Chained actions in subscriptions', () => {
   interface IAppState {
     keyword: string;
     keywordLength: number;
-  };
+  }
 
   let defaultState: IAppState;
   let rootReducer: Reducer<IAppState>;
   let ngRedux: NgRedux<IAppState>;
   const mockNgZone = new MockNgZone() as NgZone;
 
-  const doSearch = (word: string) => ngRedux.dispatch({ type: 'SEARCH', payload: word });
-  const doFetch = (word: string) => ngRedux.dispatch({ type: 'SEARCH_RESULT', payload: word.length });
+  const doSearch = (word: string) =>
+    ngRedux.dispatch({ type: 'SEARCH', payload: word });
+  const doFetch = (word: string) =>
+    ngRedux.dispatch({ type: 'SEARCH_RESULT', payload: word.length });
 
   beforeEach(() => {
     defaultState = {
@@ -279,20 +276,18 @@ describe('Chained actions in subscriptions', () => {
     it(`length sub should be called twice`, () => {
       const keyword$ = ngRedux.select(n => n.keyword);
       let keyword = '';
-      let length;
+      let length = 0;
       const length$ = ngRedux.select(n => n.keywordLength);
       const lengthSpy = jasmine
         .createSpy('lengthSpy')
-        .and.callFake((n: number) => length = n);
+        .and.callFake((n: number) => (length = n));
       let lenSub;
       let keywordSub;
 
-      keywordSub = keyword$.
-        filter(n => n !== '')
-        .subscribe(n => {
-          keyword = n;
-          doFetch(n);
-        });
+      keywordSub = keyword$.filter(n => n !== '').subscribe(n => {
+        keyword = n;
+        doFetch(n);
+      });
 
       lenSub = length$.subscribe(lengthSpy);
 
@@ -312,20 +307,18 @@ describe('Chained actions in subscriptions', () => {
     it(`second sub should get most current state value`, () => {
       const keyword$ = ngRedux.select(n => n.keyword);
       let keyword = '';
-      let length;
+      let length = 0;
       const length$ = ngRedux.select(n => n.keywordLength);
       const lengthSpy = jasmine
         .createSpy('lengthSpy')
-        .and.callFake((n: number) => length = n);
+        .and.callFake((n: number) => (length = n));
       let lenSub;
       let keywordSub;
 
-      keywordSub = keyword$.
-        filter(n => n !== '')
-        .subscribe(n => {
-          keyword = n;
-          doFetch(n);
-        });
+      keywordSub = keyword$.filter(n => n !== '').subscribe(n => {
+        keyword = n;
+        doFetch(n);
+      });
 
       lenSub = length$.subscribe(lengthSpy);
 
@@ -346,21 +339,19 @@ describe('Chained actions in subscriptions', () => {
     it(`length sub should be called twice`, () => {
       const keyword$ = ngRedux.select(n => n.keyword);
       let keyword = '';
-      let length;
+      let length = 0;
       const length$ = ngRedux.select(n => n.keywordLength);
       const lengthSpy = jasmine
         .createSpy('lengthSpy')
-        .and.callFake((n: number) => length = n);
+        .and.callFake((n: number) => (length = n));
       let lenSub;
       let keywordSub;
 
       lenSub = length$.subscribe(lengthSpy);
-      keywordSub = keyword$.
-        filter(n => n !== '')
-        .subscribe(n => {
-          keyword = n;
-          doFetch(n);
-        });
+      keywordSub = keyword$.filter(n => n !== '').subscribe(n => {
+        keyword = n;
+        doFetch(n);
+      });
 
       expect(keyword).toEqual('');
       expect(length).toEqual(-1);
@@ -378,21 +369,19 @@ describe('Chained actions in subscriptions', () => {
     it(`first sub should get most current state value`, () => {
       const keyword$ = ngRedux.select(n => n.keyword);
       let keyword = '';
-      let length;
+      let length = 0;
       const length$ = ngRedux.select(n => n.keywordLength);
       const lengthSpy = jasmine
         .createSpy('lengthSpy')
-        .and.callFake((n: number) => length = n);
+        .and.callFake((n: number) => (length = n));
       let lenSub;
       let keywordSub;
 
       lenSub = length$.subscribe(lengthSpy);
-      keywordSub = keyword$.
-        filter(n => n !== '')
-        .subscribe(n => {
-          keyword = n;
-          doFetch(n);
-        });
+      keywordSub = keyword$.filter(n => n !== '').subscribe(n => {
+        keyword = n;
+        doFetch(n);
+      });
 
       expect(keyword).toEqual('');
       expect(length).toEqual(-1);
