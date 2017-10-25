@@ -14,4 +14,4 @@ lib/
 coverage/
 *.ngsummary.json
 .DS_STORE
-.compiled
+.compile

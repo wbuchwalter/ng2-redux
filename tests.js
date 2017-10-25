@@ -21,7 +21,7 @@ require('zone.js/dist/jasmine-patch.js');
 const tsconfigPaths = require('tsconfig-paths');
 tsconfigPaths.register({
   baseUrl: '.',
-  paths: { '@angular-redux/store': [''] },
+  paths: { '@angular-redux/store': ['src/index'] },
 });
 
 const { getTestBed } = require('@angular/core/testing');
