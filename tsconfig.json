@@ -35,8 +35,8 @@
     "node_modules",
     "lib"
   ],
-  "angularCompilerOptions": {
-    "strictMetadataEmit": true,
-    "genDir": ".compiled"
+  "bundlerOptions": {
+    "entry": "public-api.ts",
+    "outDir": "lib"
   }
 }

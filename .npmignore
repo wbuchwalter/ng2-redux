@@ -11,6 +11,6 @@ articles/
 yarn.lock
 circle.yml
 npm-debug.log
-.compiled
+.compile
 ISSUE_TEMPLATE.md
 *.tgz

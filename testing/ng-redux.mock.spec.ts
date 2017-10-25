@@ -13,10 +13,10 @@ import { NgRedux, select, select$ } from '../src';
 class TestComponent {
   @select('foo')
   readonly obs$: Observable<number>;
-  
+
   @select$('bar', obs$ => obs$.map(x => 2 * x))
   readonly barTimesTwo$: Observable<number>;
-  
+
   readonly baz$: Observable<number>;
 
   constructor(ngRedux: NgRedux<any>) {
