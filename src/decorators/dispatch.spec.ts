@@ -33,6 +33,8 @@ describe('@dispatch', () => {
         case 'TEST':
           const { value = null, instanceProperty = null } = action.payload || {};
           return Object.assign({}, state, { value, instanceProperty });
+        case 'CONDITIONAL_DISPATCH_TEST':
+          return { ...state, ...action.payload };
         default:
           return state;
       }
@@ -56,10 +58,25 @@ describe('@dispatch', () => {
         }
       }
 
+      @dispatch() conditionalNoOpProperty(shouldDispatch: boolean): PayloadAction | string {
+        if (shouldDispatch) {
+          return {
+            type: 'CONDITIONAL_DISPATCH_TEST',
+            payload: {
+              value: 'Conditional Dispatch Action',
+              instanceProperty: this.instanceProperty
+            }
+          }
+        } else {
+          return NgRedux.DISPATCH_NOOP
+        }
+      }
+
       @dispatch() boundProperty = (value: string): PayloadAction => ({
         type: 'TEST',
         payload: { value, instanceProperty: this.instanceProperty }
       })
+
     }
 
     let instance: TestClass;
@@ -83,6 +100,31 @@ describe('@dispatch', () => {
       expect(NgRedux.instance).toBeTruthy();
       expect(NgRedux.instance && NgRedux.instance.dispatch)
         .toHaveBeenCalledWith(expectedArgs)
+    });
+
+    it('shouldn\'t call dispatch', () => {
+      const stateBeforeAction = NgRedux.instance && NgRedux.instance.getState();
+      const result = instance.conditionalNoOpProperty(false);
+      expect(result).toBe(NgRedux.DISPATCH_NOOP);
+      expect(NgRedux.instance).toBeTruthy();
+      expect(NgRedux.instance && NgRedux.instance.getState())
+        .toEqual(stateBeforeAction)
+    });
+
+    it('should call dispatch with result of function normally', () => {
+      const result = <PayloadAction>instance.conditionalNoOpProperty(true);
+      expect(result.type).toBe('CONDITIONAL_DISPATCH_TEST');
+      expect(result.payload && result.payload.value).toBe('Conditional Dispatch Action');
+      expect(result.payload && result.payload.instanceProperty).toBe('test');
+      expect(NgRedux.instance).toBeTruthy();
+      expect(NgRedux.instance && NgRedux.instance.dispatch)
+        .toHaveBeenCalledWith({
+          type: 'CONDITIONAL_DISPATCH_TEST',
+          payload: {
+            value: 'Conditional Dispatch Action',
+            instanceProperty: 'test'
+          }
+        })
     });
 
     it('should work with property initalizers', () => {

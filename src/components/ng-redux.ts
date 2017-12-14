@@ -20,6 +20,13 @@ export abstract class NgRedux<RootState> implements ObservableStore<RootState> {
   static instance?: ObservableStore<any> = undefined;
 
   /**
+   * Provides a way for methods that use the @dispatch decorator to
+   * return a value that won't trigger a dispatch so they can conditionally
+   * dispatch based on any logic that suits the need
+   */
+  static readonly DISPATCH_NOOP = 'DISPATCH_NOOP';
+
+  /**
    * Configures a Redux store and allows NgRedux to observe and dispatch
    * to it.
    *
