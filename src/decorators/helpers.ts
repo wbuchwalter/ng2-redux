@@ -174,7 +174,7 @@ export const getInstanceSelection = <T>(
         : store
             .select(selector)
             .pipe(
-              obs$ => transformer(obs$, decoratedInstance), 
+              obs$ => transformer(obs$, decoratedInstance),
               distinctUntilChanged(comparator)
             ));
 
