@@ -108,7 +108,7 @@ describe('@dispatch', () => {
       ).toHaveBeenCalledWith(expectedArgs);
     });
 
-    it("shouldn't call dispatch", () => {
+    it('should not call dispatch', () => {
       const stateBeforeAction = NgRedux.instance && NgRedux.instance.getState();
       const result = instance.conditionalDispatchMethod(false);
       expect(result).toBe(false);
