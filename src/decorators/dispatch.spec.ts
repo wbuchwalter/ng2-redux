@@ -6,7 +6,7 @@ import { dispatch } from './dispatch';
 import { WithSubStore } from './with-sub-store';
 
 class MockNgZone {
-  run = (fn: Function) => fn()
+  run = (fn: Function) => fn();
 }
 
 interface IAppState {
@@ -25,13 +25,14 @@ describe('@dispatch', () => {
   beforeEach(() => {
     defaultState = {
       value: 'init-value',
-      instanceProperty: 'init-instanceProperty'
+      instanceProperty: 'init-instanceProperty',
     };
 
     rootReducer = (state = defaultState, action: PayloadAction) => {
       switch (action.type) {
         case 'TEST':
-          const { value = null, instanceProperty = null } = action.payload || {};
+          const { value = null, instanceProperty = null } =
+            action.payload || {};
           return Object.assign({}, state, { value, instanceProperty });
         case 'CONDITIONAL_DISPATCH_TEST':
           return { ...state, ...action.payload };
@@ -47,36 +48,40 @@ describe('@dispatch', () => {
 
   describe('on the RootStore', () => {
     class TestClass {
-      instanceProperty = 'test'
+      instanceProperty = 'test';
 
       @dispatch() externalFunction: (value: string) => PayloadAction;
 
-      @dispatch() classMethod(value: string): PayloadAction {
+      @dispatch()
+      classMethod(value: string): PayloadAction {
         return {
           type: 'TEST',
-          payload: { value, instanceProperty: this.instanceProperty }
-        }
+          payload: { value, instanceProperty: this.instanceProperty },
+        };
       }
 
-      @dispatch() conditionalNoOpProperty(shouldDispatch: boolean): PayloadAction | string {
+      @dispatch()
+      conditionalDispatchMethod(
+        shouldDispatch: boolean
+      ): PayloadAction | false {
         if (shouldDispatch) {
           return {
             type: 'CONDITIONAL_DISPATCH_TEST',
             payload: {
               value: 'Conditional Dispatch Action',
-              instanceProperty: this.instanceProperty
-            }
-          }
+              instanceProperty: this.instanceProperty,
+            },
+          };
         } else {
-          return NgRedux.DISPATCH_NOOP
+          return false;
         }
       }
 
-      @dispatch() boundProperty = (value: string): PayloadAction => ({
+      @dispatch()
+      boundProperty = (value: string): PayloadAction => ({
         type: 'TEST',
-        payload: { value, instanceProperty: this.instanceProperty }
-      })
-
+        payload: { value, instanceProperty: this.instanceProperty },
+      });
     }
 
     let instance: TestClass;
@@ -91,40 +96,45 @@ describe('@dispatch', () => {
         type: 'TEST',
         payload: {
           value: 'class method',
-          instanceProperty: 'test'
-        }
+          instanceProperty: 'test',
+        },
       };
       expect(result.type).toBe('TEST');
       expect(result.payload && result.payload.value).toBe('class method');
       expect(result.payload && result.payload.instanceProperty).toBe('test');
       expect(NgRedux.instance).toBeTruthy();
-      expect(NgRedux.instance && NgRedux.instance.dispatch)
-        .toHaveBeenCalledWith(expectedArgs)
+      expect(
+        NgRedux.instance && NgRedux.instance.dispatch
+      ).toHaveBeenCalledWith(expectedArgs);
     });
 
-    it('shouldn\'t call dispatch', () => {
+    it("shouldn't call dispatch", () => {
       const stateBeforeAction = NgRedux.instance && NgRedux.instance.getState();
-      const result = instance.conditionalNoOpProperty(false);
-      expect(result).toBe(NgRedux.DISPATCH_NOOP);
+      const result = instance.conditionalDispatchMethod(false);
+      expect(result).toBe(false);
       expect(NgRedux.instance).toBeTruthy();
-      expect(NgRedux.instance && NgRedux.instance.getState())
-        .toEqual(stateBeforeAction)
+      expect(NgRedux.instance && NgRedux.instance.getState()).toEqual(
+        stateBeforeAction
+      );
     });
 
     it('should call dispatch with result of function normally', () => {
-      const result = <PayloadAction>instance.conditionalNoOpProperty(true);
+      const result = <PayloadAction>instance.conditionalDispatchMethod(true);
       expect(result.type).toBe('CONDITIONAL_DISPATCH_TEST');
-      expect(result.payload && result.payload.value).toBe('Conditional Dispatch Action');
+      expect(result.payload && result.payload.value).toBe(
+        'Conditional Dispatch Action'
+      );
       expect(result.payload && result.payload.instanceProperty).toBe('test');
       expect(NgRedux.instance).toBeTruthy();
-      expect(NgRedux.instance && NgRedux.instance.dispatch)
-        .toHaveBeenCalledWith({
-          type: 'CONDITIONAL_DISPATCH_TEST',
-          payload: {
-            value: 'Conditional Dispatch Action',
-            instanceProperty: 'test'
-          }
-        })
+      expect(
+        NgRedux.instance && NgRedux.instance.dispatch
+      ).toHaveBeenCalledWith({
+        type: 'CONDITIONAL_DISPATCH_TEST',
+        payload: {
+          value: 'Conditional Dispatch Action',
+          instanceProperty: 'test',
+        },
+      });
     });
 
     it('should work with property initalizers', () => {
@@ -133,18 +143,19 @@ describe('@dispatch', () => {
         type: 'TEST',
         payload: {
           value: 'bound property',
-          instanceProperty: 'test'
-        }
-      }
+          instanceProperty: 'test',
+        },
+      };
       expect(result.type).toBe('TEST');
       expect(result.payload && result.payload.value).toBe('bound property');
       expect(result.payload && result.payload.instanceProperty).toBe('test');
       expect(NgRedux.instance).toBeTruthy();
-      expect(NgRedux.instance && NgRedux.instance.dispatch)
-        .toHaveBeenCalledWith(expectedArgs)
+      expect(
+        NgRedux.instance && NgRedux.instance.dispatch
+      ).toHaveBeenCalledWith(expectedArgs);
     });
 
-    it('work with properties bound to function defined outside of the class', () => {
+    it('work with props bound to function defined outside of class', () => {
       const instanceProperty = 'test';
       function externalFunction(value: string) {
         return {
@@ -152,8 +163,8 @@ describe('@dispatch', () => {
           payload: {
             value,
             instanceProperty,
-          }
-        }
+          },
+        };
       }
       instance.externalFunction = externalFunction;
       const result = instance.externalFunction('external function');
@@ -161,15 +172,16 @@ describe('@dispatch', () => {
         type: 'TEST',
         payload: {
           value: 'external function',
-          instanceProperty: 'test'
-        }
-      }
+          instanceProperty: 'test',
+        },
+      };
       expect(result.type).toBe('TEST');
       expect(result.payload && result.payload.value).toBe('external function');
       expect(result.payload && result.payload.instanceProperty).toBe('test');
       expect(NgRedux.instance).toBeTruthy();
-      expect(NgRedux.instance && NgRedux.instance.dispatch)
-        .toHaveBeenCalledWith(expectedArgs)
+      expect(
+        NgRedux.instance && NgRedux.instance.dispatch
+      ).toHaveBeenCalledWith(expectedArgs);
     });
   });
 
@@ -180,13 +192,14 @@ describe('@dispatch', () => {
       localReducer,
     })
     class TestClass {
-      getBasePath = () => [ 'bar', 'foo' ]
+      getBasePath = () => ['bar', 'foo'];
 
-      @dispatch() decoratedActionCreator(value: string): PayloadAction {
+      @dispatch()
+      decoratedActionCreator(value: string): PayloadAction {
         return {
           type: 'TEST',
           payload: { value },
-        }
+        };
       }
     }
 
@@ -199,12 +212,13 @@ describe('@dispatch', () => {
     it('scopes decorated actions to the base path', () => {
       instance.decoratedActionCreator('hello');
 
-      expect(NgRedux.instance && NgRedux.instance.dispatch)
-        .toHaveBeenCalledWith({
-          type: 'TEST',
-          payload: { value: 'hello' },
-          '@angular-redux::fractalkey': '["bar","foo"]',
-        });
+      expect(
+        NgRedux.instance && NgRedux.instance.dispatch
+      ).toHaveBeenCalledWith({
+        type: 'TEST',
+        payload: { value: 'hello' },
+        '@angular-redux::fractalkey': '["bar","foo"]',
+      });
     });
   });
 });
