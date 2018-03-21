@@ -9,6 +9,7 @@ import 'rxjs/add/operator/map';
 import { NgRedux } from '../components/ng-redux';
 import { RootStore } from '../components/root-store';
 import { select, select$ } from './select';
+import { map } from 'rxjs/operators';
 
 interface IAppState {
   foo: string;
@@ -158,18 +159,49 @@ describe('Select decorators', () => {
   describe('@select$', () => {
     const transformer = (baz$: Observable<number>) => baz$.map(baz => 2 * baz);
 
-    it('applies a transformer to the observable', done => {
-      class MockClass {
-        @select$('baz', transformer)
-        baz$: Observable<number>;
-      }
-      const mockInstance = new MockClass();
+    describe('when passed a string', () => {
+      it('applies a transformer to the observable', done => {
+        class MockClass {
+          @select$('baz', transformer)
+          baz$: Observable<number>;
+        }
+        const mockInstance = new MockClass();
 
-      mockInstance.baz$
-        .take(2)
-        .toArray()
-        .subscribe(values => expect(values).toEqual([-2, 10]), undefined, done);
-      ngRedux.dispatch({ type: 'nvm', payload: 5 });
+        mockInstance.baz$
+          .take(2)
+          .toArray()
+          .subscribe(
+            values => expect(values).toEqual([-2, 10]), undefined, done);
+        ngRedux.dispatch({ type: 'nvm', payload: 5 });
+      });
+    });
+
+    describe('when passed a function', () => {
+
+      const toStringTrans = (baz$: Observable<number>): Observable<string> =>
+        baz$.pipe(
+          map((baz: number) => 2 * baz),
+          map((baz: number) => '' + baz)
+        );
+
+      const selector = function (state: IAppState): number {
+        return state.baz;
+      };
+
+      it('applies a transformer to the observable', done => {
+        class MockClass {
+          @select$(selector, toStringTrans)
+          baz$: Observable<string>;
+        }
+        const mockInstance = new MockClass();
+
+        mockInstance.baz$
+          .take(2)
+          .toArray()
+          .subscribe(
+            values => expect(values).toEqual(['-2', '10']), undefined, done);
+        ngRedux.dispatch({ type: 'nvm', payload: 5 });
+      });
     });
 
     describe('when passed a comparator', () => {
