@@ -57,9 +57,9 @@ export function select<T>(
  * }
  * ```
  */
-export function select$<T>(
-  selector: Selector<any, T>,
-  transformer: Transformer<any, T>,
+export function select$<S, T>(
+  selector: Selector<any, S>,
+  transformer: Transformer<S, T>,
   comparator?: Comparator
 ): PropertyDecorator {
   return decorate(selector, transformer, comparator);
