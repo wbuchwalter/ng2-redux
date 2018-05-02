@@ -5,6 +5,7 @@ import {
   Middleware,
   Store,
   StoreEnhancer,
+  AnyAction,
 } from 'redux';
 import { Observable } from 'rxjs/Observable';
 import { ObservableStore } from './observable-store';
@@ -51,7 +52,7 @@ export abstract class NgRedux<RootState> implements ObservableStore<RootState> {
   abstract provideStore: (store: Store<RootState>) => void;
 
   // Redux Store methods
-  abstract dispatch: Dispatch<RootState>;
+  abstract dispatch: Dispatch<AnyAction>;
   abstract getState: () => RootState;
   abstract subscribe: (listener: () => void) => Unsubscribe;
   abstract replaceReducer: (nextReducer: Reducer<RootState>) => void;

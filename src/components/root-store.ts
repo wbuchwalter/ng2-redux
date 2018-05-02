@@ -1,6 +1,6 @@
 import {
   Store,
-  Action,
+  AnyAction,
   Reducer,
   Middleware,
   StoreEnhancer,
@@ -76,7 +76,7 @@ export class RootStore<RootState> extends NgRedux<RootState> {
     this._store.replaceReducer(nextReducer);
   };
 
-  dispatch: Dispatch<RootState> = <A extends Action>(action: A): A => {
+  dispatch: Dispatch<AnyAction> = <A extends AnyAction>(action: A): A => {
     assert(
       !!this._store,
       'Dispatch failed: did you forget to configure your store? ' +
