@@ -1,14 +1,15 @@
-import { Reducer, Action } from 'redux';
+import { Reducer, Action, AnyAction } from 'redux';
 import { PathSelector } from './selectors';
 import { setIn } from '../utils/set-in';
 import { getIn } from '../utils/get-in';
 
-let reducerMap: { [id: string]: Reducer<any> } = {};
+let reducerMap: { [id: string]: Reducer<any, AnyAction> } = {};
 
-const composeReducers = (...reducers: Reducer<any>[]): Reducer<any> => (
-  state: any,
-  action: Action
-) => reducers.reduce((subState, reducer) => reducer(subState, action), state);
+const composeReducers =
+  (...reducers: Reducer<any, AnyAction>[]): Reducer<any, AnyAction> => (
+    state: any,
+    action: Action
+  ) => reducers.reduce((subState, reducer) => reducer(subState, action), state);
 
 /**
  * @param rootReducer Call this on your root reducer to enable SubStore
@@ -16,7 +17,7 @@ const composeReducers = (...reducers: Reducer<any>[]): Reducer<any> => (
  * NgRedux.configureStore
  * does it for you under the hood.
  */
-export function enableFractalReducers(rootReducer: Reducer<any>) {
+export function enableFractalReducers(rootReducer: Reducer<any, AnyAction>) {
   reducerMap = {};
   return composeReducers(rootFractalReducer, rootReducer);
 }
@@ -24,7 +25,7 @@ export function enableFractalReducers(rootReducer: Reducer<any>) {
 /** @hidden */
 export function registerFractalReducer(
   basePath: PathSelector,
-  localReducer: Reducer<any>
+  localReducer: Reducer<any, AnyAction>
 ): void {
   const existingFractalReducer = reducerMap[JSON.stringify(basePath)];
   if (existingFractalReducer && existingFractalReducer !== localReducer) {
@@ -39,7 +40,7 @@ export function registerFractalReducer(
 /** @hidden */
 export function replaceLocalReducer(
   basePath: PathSelector,
-  nextLocalReducer: Reducer<any>
+  nextLocalReducer: Reducer<any, AnyAction>
 ): void {
   reducerMap[JSON.stringify(basePath)] = nextLocalReducer;
 }
