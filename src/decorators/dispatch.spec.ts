@@ -46,7 +46,10 @@ describe('@dispatch', () => {
 
     ngRedux = new RootStore<any>(mockNgZone);
     ngRedux.configureStore(rootReducer, defaultState);
-    spyOn<ObservableStore<any>>(NgRedux.instance as ObservableStore<any>, 'dispatch');
+    spyOn<ObservableStore<any>>(
+      NgRedux.instance as ObservableStore<any>,
+      'dispatch'
+    );
   });
 
   describe('on the RootStore', () => {

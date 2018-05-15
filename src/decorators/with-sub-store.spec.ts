@@ -31,7 +31,9 @@ describe('@WithSubStore', () => {
       },
     };
 
-    ngRedux = new RootStore(new MockNgZone({enableLongStackTrace: false}) as NgZone);
+    ngRedux = new RootStore(
+      new MockNgZone({enableLongStackTrace: false}) as NgZone
+    );
     NgRedux.instance = ngRedux;
     ngRedux.configureStore((state: any, _: Action) => state, defaultState);
   });
@@ -143,7 +145,9 @@ describe('@WithSubStore', () => {
             take(2),
             toArray()
         )
-        .subscribe((v: Array<any>) => expect(v).toEqual([undefined, 'now I exist']));
+        .subscribe(
+          (v: Array<any>) => expect(v).toEqual([undefined, 'now I exist'])
+        );
       testInstance.makeItExist('now I exist');
     });
   });
@@ -200,7 +204,10 @@ describe('@WithSubStore', () => {
 
   describe('on the class causes @dispatch to', () => {
     it('scope dispatches to substore', () => {
-	  spyOn<ObservableStore<any>>(NgRedux.instance as ObservableStore<any>, 'dispatch');
+      spyOn<ObservableStore<any>>(
+        NgRedux.instance as ObservableStore<any>,
+        'dispatch'
+      );
 
       @WithSubStore({ basePathMethodName, localReducer })
       class TestClass {

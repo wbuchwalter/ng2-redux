@@ -31,7 +31,9 @@ describe('Substore', () => {
   let subStore: ObservableStore<ISubState>;
 
   beforeEach(() => {
-    ngRedux = new RootStore<IAppState>(new MockNgZone({enableLongStackTrace: false}) as NgZone);
+    ngRedux = new RootStore<IAppState>(
+      new MockNgZone({enableLongStackTrace: false}) as NgZone
+    );
     ngRedux.configureStore(defaultReducer, {
       foo: {
         bar: { wat: { quux: 3 } },
@@ -65,7 +67,10 @@ describe('Substore', () => {
         toArray()
       )
       .subscribe(v => expect(v).toEqual([undefined, 'now I exist']));
-    nonExistentSubStore.dispatch<AnyAction>({ type: 'nvm', newValue: 'now I exist' });
+    nonExistentSubStore.dispatch<AnyAction>({
+      type: 'nvm',
+      newValue: 'now I exist'
+    });
   });
 
   it(`handles path selection on a base path that doesn't exist yet`, () => {
@@ -80,7 +85,10 @@ describe('Substore', () => {
         toArray()
       )
       .subscribe(v => expect(v).toEqual([undefined, 'now I exist']));
-    nonExistentSubStore.dispatch<AnyAction>({ type: 'nvm', newValue: 'now I exist' });
+    nonExistentSubStore.dispatch<AnyAction>({
+      type: 'nvm',
+      newValue: 'now I exist'
+    });
   });
 
   it(`handles function selection on a base path that doesn't exist yet`, () => {
@@ -95,7 +103,10 @@ describe('Substore', () => {
         toArray()
       )
       .subscribe(v => expect(v).toEqual([undefined, 'now I exist']));
-    nonExistentSubStore.dispatch<AnyAction>({ type: 'nvm', newValue: 'now I exist' });
+    nonExistentSubStore.dispatch<AnyAction>({
+      type: 'nvm',
+      newValue: 'now I exist'
+    });
   });
 
   it('can create its own sub-store', () => {
