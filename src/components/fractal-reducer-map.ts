@@ -1,6 +1,6 @@
 import {
-	AnyAction,
-	Reducer
+    AnyAction,
+    Reducer
 } from 'redux';
 import { PathSelector } from './selectors';
 import { setIn } from '../utils/set-in';
