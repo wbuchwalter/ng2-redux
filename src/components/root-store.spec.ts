@@ -88,10 +88,10 @@ describe('NgRedux Observable Store', () => {
     ngRedux.dispatch({ type: 'UPDATE_BAR', payload: 0 });
     expect(spy.calls.count()).toEqual(1);
 
-    expect<string>(String(fooData)).toEqual('bar');
+    expect(fooData).toEqual('bar');
     ngRedux.dispatch({ type: 'UPDATE_FOO', payload: 'changeFoo' });
     expect(spy.calls.count()).toEqual(2);
-    expect<string>(String(fooData)).toEqual('changeFoo');
+    expect(fooData).toEqual('changeFoo');
     foo$.unsubscribe();
   });
 
@@ -103,11 +103,11 @@ describe('NgRedux Observable Store', () => {
     const foo$ = ngRedux.select('foo').subscribe(spy);
 
     expect(spy.calls.count()).toEqual(1);
-    expect<string>(String(fooData)).toEqual('bar');
+    expect(fooData).toEqual('bar');
 
     ngRedux.dispatch({ type: 'UPDATE_FOO', payload: 'bar' });
     expect(spy.calls.count()).toEqual(1);
-    expect<string>(String(fooData)).toEqual('bar');
+    expect(fooData).toEqual('bar');
     foo$.unsubscribe();
   });
 
@@ -119,21 +119,21 @@ describe('NgRedux Observable Store', () => {
     ngRedux.select(state => `${state.foo}-${state.baz}`).subscribe(spy);
 
     expect(spy.calls.count()).toEqual(1);
-    expect<string>(String(fooData)).toEqual('bar--1');
+    expect(fooData).toEqual('bar--1');
 
     expect(spy.calls.count()).toEqual(1);
-    expect<string>(String(fooData)).toEqual('bar--1');
+    expect(fooData).toEqual('bar--1');
 
     ngRedux.dispatch({ type: 'UPDATE_BAR', payload: 'bar' });
     expect(spy.calls.count()).toEqual(1);
-    expect<string>(String(fooData)).toEqual('bar--1');
+    expect(fooData).toEqual('bar--1');
 
     ngRedux.dispatch({ type: 'UPDATE_FOO', payload: 'update' });
-    expect<string>(String(fooData)).toEqual('update--1');
+    expect(fooData).toEqual('update--1');
     expect(spy.calls.count()).toEqual(2);
 
     ngRedux.dispatch({ type: 'UPDATE_BAZ', payload: 2 });
-    expect<string>(String(fooData)).toEqual('update-2');
+    expect(fooData).toEqual('update-2');
     expect(spy.calls.count()).toEqual(3);
   });
 
@@ -153,18 +153,18 @@ describe('NgRedux Observable Store', () => {
       .subscribe(spy);
 
     expect(spy.calls.count()).toEqual(1);
-    expect<string>(String(fooData.data)).toEqual('bar--1');
+    expect(fooData.data).toEqual('bar--1');
 
     ngRedux.dispatch({ type: 'UPDATE_BAR', payload: 'bar' });
     expect(spy.calls.count()).toEqual(1);
-    expect<string>(String(fooData.data)).toEqual('bar--1');
+    expect(fooData.data).toEqual('bar--1');
 
     ngRedux.dispatch({ type: 'UPDATE_FOO', payload: 'update' });
-    expect<string>(String(fooData.data)).toEqual('update--1');
+    expect(fooData.data).toEqual('update--1');
     expect(spy.calls.count()).toEqual(2);
 
     ngRedux.dispatch({ type: 'UPDATE_BAZ', payload: 2 });
-    expect<string>(String(fooData.data)).toEqual('update-2');
+    expect(fooData.data).toEqual('update-2');
     expect(spy.calls.count()).toEqual(3);
   });
 
