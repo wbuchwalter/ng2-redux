@@ -2,11 +2,7 @@ import { NgZone } from '@angular/core';
 import { Action } from 'redux';
 
 import { Observable } from 'rxjs';
-import {
-    map,
-    take,
-    toArray
-} from 'rxjs/operators';
+import { map, take, toArray } from 'rxjs/operators';
 
 import { NgRedux } from '../components/ng-redux';
 import { RootStore } from '../components/root-store';
@@ -48,10 +44,7 @@ describe('Select decorators', () => {
         const mockInstance = new MockClass();
 
         mockInstance.baz
-            .pipe(
-                take(2),
-                toArray()
-            )
+          .pipe(take(2), toArray())
           .subscribe(
             values => expect(values).toEqual([-1, 1]),
             undefined,
@@ -68,15 +61,12 @@ describe('Select decorators', () => {
         const mockInstance = new MockClass();
 
         mockInstance.baz$
-            .pipe(
-                take(2),
-                toArray()
-            )
-            .subscribe(
-                values => expect(values).toEqual([-1, 4]),
-                undefined,
-                done
-            );
+          .pipe(take(2), toArray())
+          .subscribe(
+            values => expect(values).toEqual([-1, 4]),
+            undefined,
+            done
+          );
         ngRedux.dispatch({ type: 'nvm', payload: 4 });
       });
     });
@@ -90,15 +80,12 @@ describe('Select decorators', () => {
         const mockInstance = new MockClass();
 
         mockInstance.obs$
-            .pipe(
-                take(2),
-                toArray()
-            )
-            .subscribe(
-                values => expect(values).toEqual([-1, 3]),
-                undefined,
-                done
-            );
+          .pipe(take(2), toArray())
+          .subscribe(
+            values => expect(values).toEqual([-1, 3]),
+            undefined,
+            done
+          );
         ngRedux.dispatch({ type: 'nvm', payload: 3 });
       });
     });
@@ -112,15 +99,12 @@ describe('Select decorators', () => {
         const mockInstance = new MockClass();
 
         mockInstance.obs$
-            .pipe(
-                take(2),
-                toArray()
-            )
-            .subscribe(
-                values => expect(values).toEqual([-2, 10]),
-                undefined,
-                done
-            );
+          .pipe(take(2), toArray())
+          .subscribe(
+            values => expect(values).toEqual([-2, 10]),
+            undefined,
+            done
+          );
         ngRedux.dispatch({ type: 'nvm', payload: 5 });
       });
     });
@@ -135,15 +119,12 @@ describe('Select decorators', () => {
       it('should only trigger next when comparator returns true', done => {
         const mockInstance = new MockClass();
         mockInstance.baz$
-            .pipe(
-                take(2),
-                toArray()
-            )
-            .subscribe(
-                values => expect(values).toEqual([-1, 2]),
-                undefined,
-                done
-            );
+          .pipe(take(2), toArray())
+          .subscribe(
+            values => expect(values).toEqual([-1, 2]),
+            undefined,
+            done
+          );
         ngRedux.dispatch({ type: 'nvm', payload: 1 });
         ngRedux.dispatch({ type: 'nvm', payload: 2 });
       });
@@ -169,7 +150,7 @@ describe('Select decorators', () => {
 
   describe('@select$', () => {
     const transformer = (baz$: Observable<number>) =>
-        baz$.pipe(map(baz => 2 * baz));
+      baz$.pipe(map(baz => 2 * baz));
 
     it('applies a transformer to the observable', done => {
       class MockClass {
@@ -179,10 +160,7 @@ describe('Select decorators', () => {
       const mockInstance = new MockClass();
 
       mockInstance.baz$
-        .pipe(
-            take(2),
-            toArray()
-        )
+        .pipe(take(2), toArray())
         .subscribe(values => expect(values).toEqual([-2, 10]), undefined, done);
       ngRedux.dispatch({ type: 'nvm', payload: 5 });
     });
@@ -197,15 +175,12 @@ describe('Select decorators', () => {
       it('should only trigger next when the comparator returns true', done => {
         const mockInstance = new MockClass();
         mockInstance.baz$
-            .pipe(
-                take(2),
-                toArray()
-            )
-            .subscribe(
-                values => expect(values).toEqual([-2, 2]),
-                undefined,
-                done
-            );
+          .pipe(take(2), toArray())
+          .subscribe(
+            values => expect(values).toEqual([-2, 2]),
+            undefined,
+            done
+          );
         ngRedux.dispatch({ type: 'nvm', payload: 1 });
         ngRedux.dispatch({ type: 'nvm', payload: 2 });
       });

@@ -35,12 +35,11 @@ export class RootStore<RootState> extends NgRedux<RootState> {
     super();
 
     NgRedux.instance = this;
-    this._store$     = new BehaviorSubject<RootState | undefined>(undefined)
-        .pipe(
-            filter(n => n !== undefined),
-            switchMap(observableStore => observableStore as any)
-            // TODO: fix this? needing to explicitly cast this is wrong
-        ) as BehaviorSubject<RootState>;
+    this._store$ = new BehaviorSubject<RootState | undefined>(undefined).pipe(
+      filter(n => n !== undefined),
+      switchMap(observableStore => observableStore as any)
+      // TODO: fix this? needing to explicitly cast this is wrong
+    ) as BehaviorSubject<RootState>;
   }
 
   configureStore = (
@@ -64,13 +63,13 @@ export class RootStore<RootState> extends NgRedux<RootState> {
     this.setStore(store);
   };
 
-  getState = (): RootState => this._store !.getState();
+  getState = (): RootState => this._store!.getState();
 
   subscribe = (listener: () => void): Unsubscribe =>
-    this._store !.subscribe(listener);
+    this._store!.subscribe(listener);
 
   replaceReducer = (nextReducer: Reducer<RootState, AnyAction>): void => {
-    this._store !.replaceReducer(nextReducer);
+    this._store!.replaceReducer(nextReducer);
   };
 
   dispatch: Dispatch<AnyAction> = <A extends AnyAction>(action: A): A => {
@@ -82,9 +81,9 @@ export class RootStore<RootState> extends NgRedux<RootState> {
     );
 
     if (!NgZone.isInAngularZone()) {
-      return this.ngZone.run(() => this._store !.dispatch(action));
+      return this.ngZone.run(() => this._store!.dispatch(action));
     } else {
-      return this._store !.dispatch(action);
+      return this._store!.dispatch(action);
     }
   };
 

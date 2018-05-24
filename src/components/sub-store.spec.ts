@@ -31,9 +31,9 @@ describe('Substore', () => {
   let subStore: ObservableStore<ISubState>;
 
   beforeEach(() => {
-    ngRedux = new RootStore<IAppState>(
-      new MockNgZone({enableLongStackTrace: false}) as NgZone
-    );
+    ngRedux = new RootStore<IAppState>(new MockNgZone({
+      enableLongStackTrace: false,
+    }) as NgZone);
     ngRedux.configureStore(defaultReducer, {
       foo: {
         bar: { wat: { quux: 3 } },
@@ -62,14 +62,11 @@ describe('Substore', () => {
     );
     nonExistentSubStore
       .select<any>('value')
-      .pipe(
-        take(2),
-        toArray()
-      )
+      .pipe(take(2), toArray())
       .subscribe(v => expect(v).toEqual([undefined, 'now I exist']));
     nonExistentSubStore.dispatch<AnyAction>({
       type: 'nvm',
-      newValue: 'now I exist'
+      newValue: 'now I exist',
     });
   });
 
@@ -80,14 +77,11 @@ describe('Substore', () => {
     );
     nonExistentSubStore
       .select<any>(['value'])
-      .pipe(
-        take(2),
-        toArray()
-      )
+      .pipe(take(2), toArray())
       .subscribe(v => expect(v).toEqual([undefined, 'now I exist']));
     nonExistentSubStore.dispatch<AnyAction>({
       type: 'nvm',
-      newValue: 'now I exist'
+      newValue: 'now I exist',
     });
   });
 
@@ -98,14 +92,11 @@ describe('Substore', () => {
     );
     nonExistentSubStore
       .select(s => (s ? s.value : s))
-      .pipe(
-        take(2),
-        toArray()
-      )
+      .pipe(take(2), toArray())
       .subscribe(v => expect(v).toEqual([undefined, 'now I exist']));
     nonExistentSubStore.dispatch<AnyAction>({
       type: 'nvm',
-      newValue: 'now I exist'
+      newValue: 'now I exist',
     });
   });
 

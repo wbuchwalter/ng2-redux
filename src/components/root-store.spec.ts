@@ -27,7 +27,7 @@ describe('NgRedux Observable Store', () => {
   let rootReducer: Reducer<IAppState, AnyAction>;
   let store: Store<IAppState>;
   let ngRedux: NgRedux<IAppState>;
-  const mockNgZone = new MockNgZone({enableLongStackTrace: false}) as NgZone;
+  const mockNgZone = new MockNgZone({ enableLongStackTrace: false }) as NgZone;
 
   beforeEach(() => {
     defaultState = {
@@ -245,7 +245,7 @@ describe('Chained actions in subscriptions', () => {
   let defaultState: IAppState;
   let rootReducer: Reducer<IAppState, AnyAction>;
   let ngRedux: NgRedux<IAppState>;
-  const mockNgZone = new MockNgZone({enableLongStackTrace: false}) as NgZone;
+  const mockNgZone = new MockNgZone({ enableLongStackTrace: false }) as NgZone;
 
   const doSearch = (word: string) =>
     ngRedux.dispatch({ type: 'SEARCH', payload: word });

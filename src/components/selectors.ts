@@ -32,7 +32,9 @@ export const sniffSelectorType = <RootState, S>(
     ? 'nil'
     : Array.isArray(selector)
       ? 'path'
-      : 'function' === typeof selector ? 'function' : 'property';
+      : 'function' === typeof selector
+        ? 'function'
+        : 'property';
 
 /** @hidden */
 export const resolver = <RootState, S>(selector?: Selector<RootState, S>) => ({

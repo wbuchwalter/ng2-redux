@@ -31,9 +31,9 @@ describe('@WithSubStore', () => {
       },
     };
 
-    ngRedux = new RootStore(
-      new MockNgZone({enableLongStackTrace: false}) as NgZone
-    );
+    ngRedux = new RootStore(new MockNgZone({
+      enableLongStackTrace: false,
+    }) as NgZone);
     NgRedux.instance = ngRedux;
     ngRedux.configureStore((state: any, _: Action) => state, defaultState);
   });
@@ -141,12 +141,9 @@ describe('@WithSubStore', () => {
 
       const testInstance = new TestClass();
       testInstance.obs$
-        .pipe(
-            take(2),
-            toArray()
-        )
-        .subscribe(
-          (v: Array<any>) => expect(v).toEqual([undefined, 'now I exist'])
+        .pipe(take(2), toArray())
+        .subscribe((v: Array<any>) =>
+          expect(v).toEqual([undefined, 'now I exist'])
         );
       testInstance.makeItExist('now I exist');
     });

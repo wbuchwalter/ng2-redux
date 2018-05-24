@@ -21,7 +21,7 @@ type PayloadAction = Action & { payload?: IAppState };
 
 describe('@dispatch', () => {
   let ngRedux;
-  const mockNgZone = new MockNgZone({enableLongStackTrace: false}) as NgZone;
+  const mockNgZone = new MockNgZone({ enableLongStackTrace: false }) as NgZone;
   let defaultState: IAppState;
   let rootReducer: Reducer<IAppState, AnyAction>;
 

@@ -4,7 +4,14 @@ import {
   Comparator,
   PathSelector,
 } from '@angular-redux/store';
-import { AnyAction, Reducer, Dispatch, Middleware, Store, StoreEnhancer } from 'redux';
+import {
+  AnyAction,
+  Reducer,
+  Dispatch,
+  Middleware,
+  Store,
+  StoreEnhancer,
+} from 'redux';
 import { Observable, Subject } from 'rxjs';
 import { MockObservableStore } from './observable-store.mock';
 // tslint:disable:member-ordering
