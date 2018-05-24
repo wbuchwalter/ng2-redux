@@ -3,7 +3,7 @@
 
 ## Angular 6+
 
-`@angular-redux/store@^8` is what you need.
+`@angular-redux/store@^9` is what you need.
 
 ## Angular 5
 
