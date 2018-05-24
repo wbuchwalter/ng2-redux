@@ -201,7 +201,7 @@ describe('@WithSubStore', () => {
 
   describe('on the class causes @dispatch to', () => {
     it('scope dispatches to substore', () => {
-      spyOn<ObservableStore<any>>(
+      spyOn(
         NgRedux.instance as ObservableStore<any>,
         'dispatch'
       );
