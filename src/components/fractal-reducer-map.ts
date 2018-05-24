@@ -1,18 +1,14 @@
-import {
-    AnyAction,
-    Reducer
-} from 'redux';
+import { AnyAction, Reducer } from 'redux';
 import { PathSelector } from './selectors';
 import { setIn } from '../utils/set-in';
 import { getIn } from '../utils/get-in';
 
 let reducerMap: { [id: string]: Reducer<any, AnyAction> } = {};
 
-const composeReducers =
-  (...reducers: Reducer<any, AnyAction>[]): Reducer<any, AnyAction> => (
-    state: any,
-    action: AnyAction
-  ) => reducers.reduce((subState, reducer) => reducer(subState, action), state);
+const composeReducers = (
+  ...reducers: Reducer<any, AnyAction>[]
+): Reducer<any, AnyAction> => (state: any, action: AnyAction) =>
+  reducers.reduce((subState, reducer) => reducer(subState, action), state);
 
 /**
  * @param rootReducer Call this on your root reducer to enable SubStore
