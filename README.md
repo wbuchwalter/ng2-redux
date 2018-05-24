@@ -3,13 +3,11 @@
 
 ## Angular 6+
 
-`@angular-redux/store@^9` is what you need.
+`@angular-redux/store@^9` is what you need. This consumes breaking changes from RxJS and Angular 6, as well as updated typedefs from Redux 4.
 
 ## Angular 5
 
 Use `@angular-redux/store@^7` - this version supports Angular 5, and also changes to using lettable operators.
-
-Any new major releases will released on the v7 branch and with the `@latest` tag for final publishes.
 
 ## Angular 4 or lower
 
