@@ -6,6 +6,7 @@ import {
   Middleware,
   Store,
   StoreEnhancer,
+  AnyAction,
 } from 'redux';
 import { Observable } from 'rxjs';
 import { ObservableStore } from './observable-store';
