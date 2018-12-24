@@ -28,7 +28,7 @@ export class DevToolsExtension {
     }
 
     // Make sure changes from dev tools update angular's view.
-    environment.devToolsExtension.listen(({ type }: any) => {
+    environment.__REDUX_DEVTOOLS_EXTENSION__.listen(({ type }: any) => {
       if (type === 'START') {
         subscription = this.ngRedux.subscribe(() => {
           if (!NgZone.isInAngularZone()) {
@@ -40,11 +40,11 @@ export class DevToolsExtension {
       }
     });
 
-    return environment.devToolsExtension(options);
+    return environment.__REDUX_DEVTOOLS_EXTENSION__(options);
   };
 
   /**
    * Returns true if the extension is installed and enabled.
    */
-  isEnabled = () => environment && environment.devToolsExtension;
+  isEnabled = () => environment && environment.__REDUX_DEVTOOLS_EXTENSION__;
 }
