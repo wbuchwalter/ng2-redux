@@ -1,0 +1,7 @@
+<input type="text" [(ngMode)]="searchTerm">
+<button (click)="update()">Search</button>
+<ul>
+  <li *ngFor="let instructor of instructors">
+    {{ instructor }}
+  </li>
+</ul>
